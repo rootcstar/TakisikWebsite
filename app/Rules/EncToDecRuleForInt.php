@@ -25,7 +25,7 @@ class EncToDecRuleForInt implements Rule
      */
     public function passes($attribute, $value)
     {
-        $dec_value = decrypt($value);
+        $dec_value = fiki_decrypt($value);
 
         if(is_int($dec_value)){
             return true;
