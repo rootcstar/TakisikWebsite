@@ -13,7 +13,7 @@ class WebsiteController extends Controller
     }
 
     public function get_confirm_account_page(){
-        $user_id = decrypt($_GET['user_id']);
+        $user_id = fiki_decrypt($_GET['user_id']);
         if($user_id != null | !empty($user_id)){
 
 
@@ -50,7 +50,7 @@ class WebsiteController extends Controller
 
     public function get_product_detail_page($product_name,$product_code){ // ACCORDING TO PRODUCTS THAT HAS MODEL NUMBER 1
 
-      //  $model_record_id = decrypt($enc_model_record_id);
+      //  $model_record_id = fiki_decrypt($enc_model_record_id);
 
         $product_models_data = DB::select("SELECT * FROM v_shop_products_with_tags WHERE product_code = '".$product_code."' ORDER BY model_number  asc");
 
