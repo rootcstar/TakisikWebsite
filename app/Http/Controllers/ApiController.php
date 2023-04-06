@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Rules\EncToDecRuleForInt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -80,7 +79,6 @@ class ApiController extends Controller
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                 ],
                 'account_type' => [
-                    new EncToDecRuleForInt(),
                     "required",
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                 ],
@@ -92,7 +90,7 @@ class ApiController extends Controller
 
             }
 
-            $account_type = fiki_decrypt($data['account_type']);
+            $account_type = $data['account_type'];
 
 
             $user_data = DB::select("SELECT * FROM users WHERE email = '" . $data['email'] . "' AND account_type = '".$account_type."'");

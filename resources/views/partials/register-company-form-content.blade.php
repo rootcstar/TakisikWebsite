@@ -25,6 +25,7 @@
                     <div class="input-group-prepend col-md-5 p-0">
                         <div class="country form-group" style="height: 100%;">
                             <select name="country_code" id="country_code" required="" class="form-control afm-grey">
+                                <option data-countrycode="US" value="1">USA (+1)</option>
                                 <option data-countrycode="GB" value="44">UK (+44)</option>
                                 <option data-countrycode="TUR" value="90" selected="">TUR (+90)</option>
                                 <optgroup label="Other countries">
