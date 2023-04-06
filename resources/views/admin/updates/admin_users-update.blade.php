@@ -80,7 +80,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Şifre</label>
-                                        <input id="password" type="text" class="form-control" name="password" value="{{ decrypt($data['password']) }}">
+                                        <input id="password" type="text" class="form-control" name="password" value="{{ fiki_decrypt($data['password']) }}">
                                     </div>
                                 </div>
                             </div>

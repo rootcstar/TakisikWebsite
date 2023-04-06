@@ -80,7 +80,7 @@
                                 <div class="row">
                                     @foreach($product_models as $key=>$model)
                                         <div class="col-3 col-md-2 pt-3" >
-                                            <a onclick="GetModel('{{ encrypt($model->model_record_id) }}',{{$key}})">
+                                            <a onclick="GetModel('{{ fiki_encrypt($model->model_record_id) }}',{{$key}})">
                                                 <img src="{{ $model->product_image }}" alt="" class="loading" data-was-processed="true">
                                             </a>
                                         </div>
@@ -95,14 +95,14 @@
                                         </div>
                                     </div>
                                     <div class="col-item">
-                                        <button onclick="AddToCartInput('{{ encrypt($product->model_record_id) }}')" id="pd-add-btn"  class="btn btn-lg"><i class="icon-f-39"></i>SEPETE EKLE</button>
+                                        <button onclick="AddToCartInput('{{ fiki_encrypt($product->model_record_id) }}')" id="pd-add-btn"  class="btn btn-lg"><i class="icon-f-39"></i>SEPETE EKLE</button>
                                     </div>
                                 </div>
                             </div>
                             <div class="tt-wrapper">
                                 <ul class="tt-list-btn">
                                     <li>
-                                        <a class="btn-link wishlist-btn {{ $fav }} " id="fav-btn-0" type="button" onclick="AddToFav('{{ encrypt($product->model_record_id) }}',0)" >
+                                        <a class="btn-link wishlist-btn {{ $fav }} " id="fav-btn-0" type="button" onclick="AddToFav('{{ fiki_encrypt($product->model_record_id) }}',0)" >
                                             <i class="icon-n-072"></i>
                                             <span id="add-wish-text">{{ $fav_text }}</span>
                                         </a>

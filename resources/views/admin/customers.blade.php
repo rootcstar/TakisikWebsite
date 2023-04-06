@@ -70,7 +70,7 @@
                                     'fnCreatedRow': function (nRow, aData, iDataIndex) {
                                         $(nRow).attr('id', '<?php echo $admin_table_data['table_id']; ?>-' + aData.<?php echo $admin_table_data['table_fields'][0]; ?>); // or whatever you choose to set as the id
                                     },
-                                    "ajax": "/api/fill-datatable?datatable_name=<?php echo $admin_table_data['table_id']; ?>&&primary_key=<?php echo $admin_table_data['table_fields'][0]; ?>&&cols=<?php echo encrypt(json_encode($admin_table_data['table_fields']));?>",
+                                    "ajax": "/api/fill-datatable?datatable_name=<?php echo $admin_table_data['table_id']; ?>&&primary_key=<?php echo $admin_table_data['table_fields'][0]; ?>&&cols=<?php echo fiki_encrypt(json_encode($admin_table_data['table_fields']));?>",
                                     "columnDefs": [{
                                         "defaultContent": "-",
                                         "targets": "_all"

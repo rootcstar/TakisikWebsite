@@ -27,8 +27,8 @@
                                         <div class="col-6 col-md-4 tt-col-item">
                                             <div class="tt-product thumbprod-center">
                                                 <div class="tt-image-box">
-                                                    <a  class="tt-btn-quickview" data-toggle="modal" data-target="#ModalquickView" type="button"  onclick="QuickView('{{ encrypt($product->product_code) }}')"></a>
-                                                    <a  class="tt-btn-wishlist2 <?php if(array_search($product->model_record_id, array_column(Session::get('user.favorites'), 'model_record_id')) !== false){ echo 'fav'; } ?>" onclick="AddToFav('{{ encrypt($product->model_record_id) }}',{{$key}})"  id="fav-btn-{{$key}}-hm"></a>
+                                                    <a  class="tt-btn-quickview" data-toggle="modal" data-target="#ModalquickView" type="button"  onclick="QuickView('{{ fiki_encrypt($product->product_code) }}')"></a>
+                                                    <a  class="tt-btn-wishlist2 <?php if(array_search($product->model_record_id, array_column(Session::get('user.favorites'), 'model_record_id')) !== false){ echo 'fav'; } ?>" onclick="AddToFav('{{ fiki_encrypt($product->model_record_id) }}',{{$key}})"  id="fav-btn-{{$key}}-hm"></a>
 
                                                     <a href="/urun-detay/{{ Str::slug($product->product_name) }}/{{ Str::slug($product->product_code) }}">
                                                         <span class="tt-img"><img src="{{ $product->product_image }}" data-src="{{ $product->product_image }}" alt=""></span>
@@ -45,11 +45,11 @@
                                                     </div>
                                                     <div class="tt-product-inside-hover">
                                                         <div class="tt-row-btn">
-                                                            <a href="#" class="tt-btn-addtocart thumbprod-button-bg" data-toggle="modal" data-target="#modalAddToCartProduct" onclick="AddToCart('{{ encrypt($product->model_record_id) }}',1)">SEPETE EKLE</a>
+                                                            <a href="#" class="tt-btn-addtocart thumbprod-button-bg" data-toggle="modal" data-target="#modalAddToCartProduct" onclick="AddToCart('{{ fiki_encrypt($product->model_record_id) }}',1)">SEPETE EKLE</a>
                                                         </div>
                                                         <div class="tt-row-btn">
-                                                            <a  class="tt-btn-quickview" data-toggle="modal" data-target="#ModalquickView" type="button"  onclick="QuickView('{{ encrypt($product->product_code) }}')"></a>
-                                                            <a  class="tt-btn-wishlist2 <?php if(array_search($product->model_record_id, array_column(Session::get('user.favorites'), 'model_record_id')) !== false){ echo 'fav';} ?>"   onclick="AddToFav('{{ encrypt($product->model_record_id) }}',{{$key}})"  id="fav-btn-{{$key}}-hm"></a>
+                                                            <a  class="tt-btn-quickview" data-toggle="modal" data-target="#ModalquickView" type="button"  onclick="QuickView('{{ fiki_encrypt($product->product_code) }}')"></a>
+                                                            <a  class="tt-btn-wishlist2 <?php if(array_search($product->model_record_id, array_column(Session::get('user.favorites'), 'model_record_id')) !== false){ echo 'fav';} ?>"   onclick="AddToFav('{{ fiki_encrypt($product->model_record_id) }}',{{$key}})"  id="fav-btn-{{$key}}-hm"></a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -60,7 +60,7 @@
                             </div>
 
                             <div class="text-center tt_product_showmore" id="load-more">
-                                <a href="#" class="btn btn-border" onclick="LoadMore('{{ encrypt(Session::get('website.selected_tag')) }}','{{ encrypt(Session::get('website.selected_sub_tag')) }}','{{ encrypt(9) }}')">LOAD MORE</a>
+                                <a href="#" class="btn btn-border" onclick="LoadMore('{{ fiki_encrypt(Session::get('website.selected_tag')) }}','{{ fiki_encrypt(Session::get('website.selected_sub_tag')) }}','{{ fiki_encrypt(9) }}')">LOAD MORE</a>
                                 <div class="tt_item_all_js">
                                     <a href="#" class="btn btn-border01">NO MORE ITEM TO SHOW</a>
                                 </div>

@@ -17,7 +17,7 @@
 
                         @foreach($categories as $category)
                             <div class="col-sm-6 col-md-4">
-                                <div type="button"  onclick="GetCategory('{{encrypt($category->tag_id)}}')" class="tt-promo-box tt-one-child category-select">
+                                <div type="button"  onclick="GetCategory('{{fiki_encrypt($category->tag_id)}}')" class="tt-promo-box tt-one-child category-select">
                                     <img src="{{$category->tag_image}}" data-src="{{$category->tag_image}}" onerror="this.onerror=null; this.src='{{ asset('assets/img/placeholder500x500.jpg') }}'">
                                     <div class="tt-description">
                                         <div class="tt-description-wrapper">

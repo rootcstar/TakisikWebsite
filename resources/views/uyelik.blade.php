@@ -31,8 +31,8 @@
                                             <label for="loginAcoountType">ÜYELİK *</label>
                                             <div class="tt-required">* zorunlu alanlar</div>
                                             <select class="form-control" id="account_type">
-                                                <option value="{{encrypt(1)}}">Bireysel</option>
-                                                <option value="{{encrypt(2)}}">Kurumsal</option>
+                                                <option value="{{fiki_encrypt(1)}}">Bireysel</option>
+                                                <option value="{{fiki_encrypt(2)}}">Kurumsal</option>
                                             </select>
                                         </div>
                                         <div class="form-group">

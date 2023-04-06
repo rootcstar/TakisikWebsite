@@ -43,7 +43,7 @@ class AdminApiController extends Controller
 
                 if(count($check_db) == 1){
 
-                    $password = decrypt($check_db[0]->password);
+                    $password = fiki_decrypt($check_db[0]->password);
 
                     if($password == $data['password']){
 
@@ -107,8 +107,8 @@ class AdminApiController extends Controller
         $where = "";
         $primary_key = $data['primary_key'];
 
-        // return decrypt($data['cols']);
-        $cols = decrypt($data['cols']);
+        // return fiki_decrypt($data['cols']);
+        $cols = fiki_decrypt($data['cols']);
         $cols = json_decode($cols, true);
 
         $columns = array();
@@ -302,7 +302,7 @@ class AdminApiController extends Controller
                 return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
             }
 
-            $data['password'] = encrypt($data['password']);
+            $data['password'] = fiki_encrypt($data['password']);
 
             try {
 
@@ -363,7 +363,7 @@ class AdminApiController extends Controller
             if ($validator->fails()) {
                 return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
             }
-            $data['password'] = encrypt($data['password']);
+            $data['password'] = fiki_encrypt($data['password']);
 
             try {
                 DB::table('admin_users')->where("admin_id", $data['admin_id'])->update($data);
@@ -794,7 +794,7 @@ class AdminApiController extends Controller
                 return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
             }
 
-            $table_name = decrypt($data['table_id']);
+            $table_name = fiki_decrypt($data['table_id']);
 
             $tables_data_array = array();
 

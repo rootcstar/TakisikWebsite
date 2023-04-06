@@ -57,7 +57,7 @@
                                         </div>
                                     </a>
                                     <div class="tt-item-close">
-                                        <a href="#" class="tt-btn-close"  data-toggle="modal" data-target="#DeleteItemsModal" onclick="DeleteItemsModal('{{ encrypt($product->model_record_id) }}')"></a>
+                                        <a href="#" class="tt-btn-close"  data-toggle="modal" data-target="#DeleteItemsModal" onclick="DeleteItemsModal('{{ fiki_encrypt($product->model_record_id) }}')"></a>
                                     </div>
                                 </div>
 

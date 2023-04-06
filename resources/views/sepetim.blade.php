@@ -27,7 +27,7 @@
 
                                         <tr>
                                             <td>
-                                                <a class="tt-btn-close"  data-toggle="modal" data-target="#DeleteItemsModal" onclick="DeleteItemsModal('{{ encrypt($product->model_record_id) }}')"></a>
+                                                <a class="tt-btn-close"  data-toggle="modal" data-target="#DeleteItemsModal" onclick="DeleteItemsModal('{{ fiki_encrypt($product->model_record_id) }}')"></a>
                                             </td>
                                             <td>
                                                 <a href="/urun-detay/{{ Str::slug($product->product_name) }}/{{ Str::slug($product->product_code) }}">
@@ -77,12 +77,12 @@
 
                                                         <div class="tt-input-counter style-01">
                                                             @if( $product->quantity == 1)
-                                                                <span class="minus-btn"  type=button"  data-toggle="modal" data-target="#DeleteItemsModal" onclick="DeleteItemsModal('{{ encrypt($product->model_record_id) }}')"></span>
+                                                                <span class="minus-btn"  type=button"  data-toggle="modal" data-target="#DeleteItemsModal" onclick="DeleteItemsModal('{{ fiki_encrypt($product->model_record_id) }}')"></span>
                                                             @else
-                                                                <span class="minus-btn"  type=button"  onclick="DeleteItem('{{ encrypt($product->model_record_id) }}')"></span>
+                                                                <span class="minus-btn"  type=button"  onclick="DeleteItem('{{ fiki_encrypt($product->model_record_id) }}')"></span>
                                                             @endif
                                                             <input class="cart-counter" value="{{ $product->quantity }}" size="1000" id="counter-input" disabled>
-                                                            <span class="plus-btn" type=button"  onclick="AddToCart('{{ encrypt($product->model_record_id) }}',1)"></span>
+                                                            <span class="plus-btn" type=button"  onclick="AddToCart('{{ fiki_encrypt($product->model_record_id) }}',1)"></span>
                                                         </div>
 
                                                 </div>

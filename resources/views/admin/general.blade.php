@@ -85,7 +85,7 @@
                         'fnCreatedRow': function (nRow, aData, iDataIndex) {
                             $(nRow).attr('id', '<?php echo $table['table_id']; ?>-' + aData.<?php echo $table['table_fields'][0]; ?>); // or whatever you choose to set as the id
                         },
-                        "ajax": "/api/fill-datatable?datatable_name=<?php echo $table['table_id']; ?>&&primary_key=<?php echo $table['table_fields'][0]; ?>&&cols=<?php echo encrypt(json_encode($table['table_fields']));?>",
+                        "ajax": "/api/fill-datatable?datatable_name=<?php echo $table['table_id']; ?>&&primary_key=<?php echo $table['table_fields'][0]; ?>&&cols=<?php echo fiki_encrypt(json_encode($table['table_fields']));?>",
                         "columnDefs": [{
                             "defaultContent": "-",
                             "targets": "_all"

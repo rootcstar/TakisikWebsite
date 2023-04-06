@@ -16,7 +16,7 @@
         <ul class="tt-list-row" id="tag_filter">
             @foreach(Session::get('website.shopping.tags') as $tag)
 
-                <li class="text-uppercase tag-list  @if($tag->tag_id == Session::get('website.selected_tag')) active @endif" onclick="GetTag('{{ encrypt($tag->tag_id) }}','{{ encrypt(0) }}')">{{ $tag->display_name }}</li>
+                <li class="text-uppercase tag-list  @if($tag->tag_id == Session::get('website.selected_tag')) active @endif" onclick="GetTag('{{ fiki_encrypt($tag->tag_id) }}','{{ fiki_encrypt(0) }}')">{{ $tag->display_name }}</li>
             @endforeach
 
         </ul>
@@ -29,10 +29,10 @@
             @php
                 $sub_tags = DB::select("SELECT * FROM v_tag_to_sub_tags WHERE tag_id='".Session::get('website.selected_tag')."'");
             @endphp
-            <li class="text-uppercase tag-list  active "  onclick="GetSubTag('{{ encrypt(Session::get('website.selected_tag')) }}',0)">ALL</li>
+            <li class="text-uppercase tag-list  active "  onclick="GetSubTag('{{ fiki_encrypt(Session::get('website.selected_tag')) }}',0)">ALL</li>
             @foreach(Session::get('website.sub_tag_filter_bar') as $sub_tag)
 
-                <li class="text-uppercase tag-list " onclick="GetSubTag('{{ encrypt(Session::get('website.selected_tag')) }}','{{ encrypt($sub_tag->sub_tag_id) }}')">
+                <li class="text-uppercase tag-list " onclick="GetSubTag('{{ fiki_encrypt(Session::get('website.selected_tag')) }}','{{ fiki_encrypt($sub_tag->sub_tag_id) }}')">
                     {{ $sub_tag->sub_tag_display_name }}
                 </li>
             @endforeach

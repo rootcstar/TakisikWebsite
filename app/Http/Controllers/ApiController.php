@@ -92,7 +92,7 @@ class ApiController extends Controller
 
             }
 
-            $account_type = decrypt($data['account_type']);
+            $account_type = fiki_decrypt($data['account_type']);
 
 
             $user_data = DB::select("SELECT * FROM users WHERE email = '" . $data['email'] . "' AND account_type = '".$account_type."'");
@@ -101,7 +101,7 @@ class ApiController extends Controller
                 return response(['result' => -1, "msg" => 'Bu email adresine ait bir hesap bulunamamaktadır.'], 200);
             }
 
-            if (decrypt($user_data[0]->password) != $data['password']) {
+            if (fiki_decrypt($user_data[0]->password) != $data['password']) {
                 return response(['result' => -2, "msg" => 'Lütfen şifrenizi doğru girdiğinizden emin olun.'], 200);
             }
 
@@ -203,7 +203,7 @@ class ApiController extends Controller
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                 ],
             ]);
-            $data['control'] = decrypt($data['control']);
+            $data['control'] = fiki_decrypt($data['control']);
             if ($validator->fails()) {
 
                 return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
@@ -221,7 +221,7 @@ class ApiController extends Controller
             }
 
 
-            DB::update("UPDATE users SET password = ? WHERE user_id= ? ", [encrypt($data['password']), $data['control']]);
+            DB::update("UPDATE users SET password = ? WHERE user_id= ? ", [fiki_encrypt($data['password']), $data['control']]);
 
 
             return response(['result' => 1, "msg" => 'Şifreniz yenilendi. Alışverişe başlayabilisiniz!'], 200);
@@ -289,7 +289,7 @@ class ApiController extends Controller
 
             try {
 
-                $data['password'] = encrypt($data['password']);
+                $data['password'] = fiki_encrypt($data['password']);
                 DB::table('users')->insert($data);
                 $user = DB::select("SELECT * FROM `users` WHERE email='" . $data['email'] . "' ORDER BY user_id DESC LIMIT 1");
                 $data['user_id'] = $user[0]->user_id;
@@ -316,7 +316,7 @@ class ApiController extends Controller
     {
         try {
             $data = $request->all();
-            $data['id'] = decrypt($data['id']);
+            $data['id'] = fiki_decrypt($data['id']);
             $validator = Validator::make($data, [
                 'id' => [
                     "integer",
@@ -363,8 +363,8 @@ class ApiController extends Controller
         try {
             $data = $request->all();
 
-            $data['tag_id'] = decrypt($data['tag_id']);
-            $data['sub_tag_id'] = decrypt($data['sub_tag_id']);
+            $data['tag_id'] = fiki_decrypt($data['tag_id']);
+            $data['sub_tag_id'] = fiki_decrypt($data['sub_tag_id']);
             $validator = Validator::make($data, [
                 'tag_id' => [
                     "integer",
@@ -410,7 +410,7 @@ class ApiController extends Controller
             </div>';
             } else {
 
-                $load_more = '<a href="#" class="btn btn-border" onclick="LoadMore(\'' . encrypt($data['tag_id']) . '\',\'' . encrypt($data['sub_tag_id']) . '\',\'' . encrypt(9) . '\')">LOAD MORE</a>
+                $load_more = '<a href="#" class="btn btn-border" onclick="LoadMore(\'' . fiki_encrypt($data['tag_id']) . '\',\'' . fiki_encrypt($data['sub_tag_id']) . '\',\'' . fiki_encrypt(9) . '\')">LOAD MORE</a>
             <div class="tt_item_all_js">
                 <a href="" class="btn btn-border01">NO MORE ITEM TO SHOW</a>
             </div>';
@@ -434,8 +434,8 @@ class ApiController extends Controller
         try {
             $data = $request->all();
 
-            $data['tag_id'] = decrypt($data['tag_id']);
-            $data['sub_tag_id'] = decrypt($data['sub_tag_id']);
+            $data['tag_id'] = fiki_decrypt($data['tag_id']);
+            $data['sub_tag_id'] = fiki_decrypt($data['sub_tag_id']);
             $validator = Validator::make($data, [
                 'tag_id' => [
                     "integer",
@@ -477,7 +477,7 @@ class ApiController extends Controller
             $products_div = view('partials.products-div', ["products" => $data_products, "empty_message" => "THERE ARE NO PRODUCT IN THIS CATEGORY"])->render();
             $sub_tag_filter = view('partials.sub-tag-filter', ["sub_tags" => $data_sub_tags])->render();
 
-            $load_more = '<a href="#" class="btn btn-border" onclick="LoadMore(\'' . encrypt($data['tag_id']) . '\',\'' . encrypt($data['sub_tag_id']) . '\',\'' . encrypt(9) . '\')">LOAD MORE</a>
+            $load_more = '<a href="#" class="btn btn-border" onclick="LoadMore(\'' . fiki_encrypt($data['tag_id']) . '\',\'' . fiki_encrypt($data['sub_tag_id']) . '\',\'' . fiki_encrypt(9) . '\')">LOAD MORE</a>
             <div class="tt_item_all_js">
                 <a href="" class="btn btn-border01">NO MORE ITEM TO SHOW</a>
             </div>';
@@ -500,9 +500,9 @@ class ApiController extends Controller
         try {
             $data = $request->all();
 
-            $data['tag_id'] = decrypt($data['tag_id']);
-            $data['sub_tag_id'] = decrypt($data['sub_tag_id']);
-            $data['start'] = decrypt($data['start']);
+            $data['tag_id'] = fiki_decrypt($data['tag_id']);
+            $data['sub_tag_id'] = fiki_decrypt($data['sub_tag_id']);
+            $data['start'] = fiki_decrypt($data['start']);
             $validator = Validator::make($data, [
                 'tag_id' => [
                     "integer",
@@ -566,7 +566,7 @@ class ApiController extends Controller
 
                 } else {
 
-                    $load_more = '<a href="#" class="btn btn-border" onclick="LoadMore(\'' . encrypt($data['tag_id']) . '\',\'' . encrypt($data['sub_tag_id']) . '\',\'' . encrypt(9) . '\')">LOAD MORE</a>
+                    $load_more = '<a href="#" class="btn btn-border" onclick="LoadMore(\'' . fiki_encrypt($data['tag_id']) . '\',\'' . fiki_encrypt($data['sub_tag_id']) . '\',\'' . fiki_encrypt(9) . '\')">LOAD MORE</a>
             <div class="tt_item_all_js">
                 <a href="" class="btn btn-border01">NO MORE ITEM TO SHOW</a>
             </div>';
@@ -592,7 +592,7 @@ class ApiController extends Controller
     {
         try {
             $data = $request->all();
-            $data['mri'] = decrypt($data['mri']);
+            $data['mri'] = fiki_decrypt($data['mri']);
             $validator = Validator::make($data, [
                 'mri' => [
                     "integer",
@@ -691,7 +691,7 @@ class ApiController extends Controller
     {
         try {
             $data = $request->all();
-            $data['mri'] = decrypt($data['mri']);
+            $data['mri'] = fiki_decrypt($data['mri']);
             $validator = Validator::make($data, [
                 'mri' => [
                     "integer",
@@ -785,7 +785,7 @@ class ApiController extends Controller
     public function delete_item(Request $request){  // DELETE 1 ITEM --> qty=1
         try {
             $data = $request->all();
-            $data['model_record_id'] = decrypt($data['model_record_id']);
+            $data['model_record_id'] = fiki_decrypt($data['model_record_id']);
             $validator = Validator::make($data, [
                 'model_record_id' => [
                     "integer",
@@ -879,7 +879,7 @@ class ApiController extends Controller
     {   // DELETE 1 ITEM --> qty = ALL
         try {
             $data = $request->all();
-            $data['model_record_id'] = decrypt($data['model_record_id']);
+            $data['model_record_id'] = fiki_decrypt($data['model_record_id']);
             $validator = Validator::make($data, [
                 'model_record_id' => [
                     "integer",
@@ -959,7 +959,7 @@ class ApiController extends Controller
 
     public function quick_view($product_code){
         try{
-            $product_code = decrypt($product_code);
+            $product_code = fiki_decrypt($product_code);
             $product_models_data = DB::select("SELECT * FROM v_shop_products_with_tags WHERE product_code = '".$product_code."' ORDER BY model_number  asc");
 
             $product_data = $product_models_data;
@@ -993,7 +993,7 @@ class ApiController extends Controller
         try {
             $data = $request->all();
             $enc_model_record_id = $data['model_record_id'];
-            $data['model_record_id'] = decrypt($data['model_record_id']);
+            $data['model_record_id'] = fiki_decrypt($data['model_record_id']);
             $validator = Validator::make($data, [
                 'model_record_id' => [
                     "integer",
@@ -1056,7 +1056,7 @@ class ApiController extends Controller
     public function get_product_model(Request $request){
         try {
             $data = $request->all();
-            $data['mri'] = decrypt($data['mri']);
+            $data['mri'] = fiki_decrypt($data['mri']);
             $validator = Validator::make($data, [
                 'mri' => [
                     "integer",
@@ -1090,7 +1090,7 @@ class ApiController extends Controller
             $data_product = $data_product[0];
             $product_code_model_number =  $data_product->product_code.'-'. $data_product->model_number ;
             $product_price = number_format(CalculateProductPrice($data_product->wholesale_price,$data_product->kdv,Session::get('website.user.user_discount')),2,'.','').' TL';
-            $enc_model_record_id = encrypt($data_product->model_record_id);
+            $enc_model_record_id = fiki_encrypt($data_product->model_record_id);
 
             return response(['result' => 1, "qty"=>($check_cart_result !== false) ? $shopping_cart_products[$check_cart_result]->quantity: 0,
                                             "prd-nm"=>$data_product->product_name,
@@ -1112,7 +1112,7 @@ class ApiController extends Controller
     public function get_category(Request $request){
         try {
             $data = $request->all();
-            $data['id'] = decrypt($data['id']);
+            $data['id'] = fiki_decrypt($data['id']);
             $validator = Validator::make($data, [
                 'id' => [
                     "integer",

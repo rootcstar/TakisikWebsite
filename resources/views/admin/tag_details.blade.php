@@ -12,12 +12,12 @@
         <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" id="tags-tab" data-toggle="pill"
-                   href="#tagstab" role="tab" aria-controls="tags" onclick="ShowTable('{{encrypt('tags')}}')"
+                   href="#tagstab" role="tab" aria-controls="tags" onclick="ShowTable('{{fiki_encrypt('tags')}}')"
                    aria-selected="true">Kategoriler</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link " id="subtags-tab" data-toggle="pill"
-                   href="#subtags" role="tab" aria-controls="subtags" onclick="ShowTable('{{encrypt('sub_tags')}}')"
+                   href="#subtags" role="tab" aria-controls="subtags" onclick="ShowTable('{{fiki_encrypt('sub_tags')}}')"
                    aria-selected="true">Alt Kategoriler</a>
             </li>
         </ul>
@@ -128,7 +128,7 @@
                                     'fnCreatedRow': function (nRow, aData, iDataIndex) {
                                         $(nRow).attr('id', '<?php echo $tags_table_data['table_id']; ?>-' + aData.<?php echo $tags_table_data['table_fields'][0]; ?>); // or whatever you choose to set as the id
                                     },
-                                    "ajax": "/api/fill-datatable?datatable_name=<?php echo $tags_table_data['table_id']; ?>&&primary_key=<?php echo $tags_table_data['table_fields'][0]; ?>&&cols=<?php echo encrypt(json_encode($tags_table_data['table_fields']));?>",
+                                    "ajax": "/api/fill-datatable?datatable_name=<?php echo $tags_table_data['table_id']; ?>&&primary_key=<?php echo $tags_table_data['table_fields'][0]; ?>&&cols=<?php echo fiki_encrypt(json_encode($tags_table_data['table_fields']));?>",
                                     "columnDefs": [{
                                         "defaultContent": "-",
                                         "targets": "_all"

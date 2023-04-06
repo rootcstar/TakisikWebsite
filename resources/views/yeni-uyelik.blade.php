@@ -9,7 +9,7 @@
                         <div class="col-md-8 col-lg-6">
                             <div class="row">
                                 <div class="col-md-6 col-lg-6 col-6 text-center">
-                                        <a class="tt-promo-02 register-btn-01" type="button" onclick="GetFrom('{{ encrypt(0) }}')">
+                                        <a class="tt-promo-02 register-btn-01" type="button" onclick="GetFrom('{{ fiki_encrypt(0) }}')">
                                             <div class="tt-description tt-point-h-l">
                                                 <div class="tt-description-wrapper">
                                                     <div class="tt-title-large">BIREYSEL</div>
@@ -17,7 +17,7 @@
                                             </div>
                                         </a>
                                 </div>
-                                <div class="col-md-6 col-lg-6 col-6 text-center" onclick="GetFrom('{{ encrypt(1) }}')">
+                                <div class="col-md-6 col-lg-6 col-6 text-center" onclick="GetFrom('{{ fiki_encrypt(1) }}')">
                                     <a class="tt-promo-02 register-btn-02" >
                                         <div class="tt-description tt-point-h-l">
                                             <div class="tt-description-wrapper">
