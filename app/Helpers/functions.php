@@ -6,6 +6,40 @@ function FixName($var){
     $var = str_replace("_", " ", $var); //Remove single quote _
     return ucwords($var);
 }
+function fiki_encrypt($data) {
+    $output = false;
+    $encrypt_method = "AES-256-CBC";
+    $secret_key = 'bRuD5WYw5wd0rdHR9yLlM6wt2vteuiniQBqE70nAuhU=';
+    $secret_iv =  'e0d2679eb5c7b266fed6a402e37fed66';
+    // hash
+    $key = hash('sha256', $secret_key);
+
+    // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
+    $iv = substr(hash('sha256', $secret_iv), 0, 16);
+
+    $output = openssl_encrypt($data, $encrypt_method, $key, 0, $iv);
+    $output = base64_encode($output);
+
+    return $output;
+}
+
+function fiki_decrypt($data) {
+
+    $output = false;
+    $encrypt_method = "AES-256-CBC";
+    $secret_key = 'bRuD5WYw5wd0rdHR9yLlM6wt2vteuiniQBqE70nAuhU=';
+    $secret_iv =  'e0d2679eb5c7b266fed6a402e37fed66';
+    // hash
+    $key = hash('sha256', $secret_key);
+
+    // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
+    $iv = substr(hash('sha256', $secret_iv), 0, 16);
+
+
+    $output = openssl_decrypt(base64_decode($data), $encrypt_method, $key, 0, $iv);
+
+    return $output;
+}
 
 /******************* FIKITECH ***************************/
 
