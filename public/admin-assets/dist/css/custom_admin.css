@@ -1,0 +1,69 @@
+.action-details {
+    background-color: #f8ac59 !important;
+    color: white !important;
+}
+
+.action-button {
+    height: 100% !important;
+    line-height: unset;
+    font-size: 15px;
+}
+
+.white{
+    color: white !important;
+}
+.red{
+    color: #dc3545;
+}
+
+.bg-black{
+    background-color: black !important;
+}
+
+.bg-takisik{
+    background-color: #111212 !important;
+}
+
+.text-takisik{
+    color: #FF0080 !important;
+}
+
+.grey{
+    color:#3F4443 !important;
+}
+.sidebar-dark-secondary{
+    background-color: #272727 !important;
+}
+.sign-in-btn{
+    color: #fff;
+    background-color: #43b02acf;
+    border-color: #43b02acf;
+
+}
+.sign-in-btn:hover{
+    color: #fff;
+    background-color: #3F4443;
+    border-color: #3F4443;
+}
+.sign-in-btn:active{
+    color: #fff;
+    background-color: #3F4443;
+    border-color: #3F4443;
+}
+
+.sign-in-logo-img{
+    height: auto;
+}
+.my-overlay{
+
+    background-color:#ccc;
+    position:fixed;
+    width:100%;
+    height:100%;
+    top:0px;
+    left:0px;
+    z-index:1000;
+}
+.custom-loader-not-active{
+    display:none;
+}
