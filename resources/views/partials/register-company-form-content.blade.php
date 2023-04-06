@@ -2,6 +2,7 @@
     <div class="tt-item">
         <div class="form-default">
             @csrf
+            <input type="hidden" id="account_type" class="form-control" value="2">
             <div class="form-group">
                 <label for="RegisterInputName">ŞİRKET ADI *</label>
                 <div class="tt-required">* Zorunlu Alanlar</div>
@@ -279,8 +280,9 @@
             var phone = $('#phone').val();
             var email = $('#email').val();
             var password = $('#password').val();
+            var account_type = $('#account_type').val();
 
-            let data = '{"first_name":"' + first_name + '","last_name":"' + last_name + '","email":"' + email + '","country_code":"' + country_code + '","phone":"' + phone + '","password":"' + password + '"}';
+            let data = '{"first_name":"' + first_name + '","account_type":"' + account_type + '","last_name":"' + last_name + '","email":"' + email + '","country_code":"' + country_code + '","phone":"' + phone + '","password":"' + password + '"}';
 
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function () {

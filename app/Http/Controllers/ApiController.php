@@ -270,6 +270,11 @@ class ApiController extends Controller
                     "required",
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                 ],
+                'account_type' => [
+                    "required",
+                    "numeric",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
             ]);
 
             if ($validator->fails()) {
