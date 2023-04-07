@@ -19203,6 +19203,7 @@ html.ie .tt-btn-col-close {
         color: #ffffff; }
     .tt-product:not(.tt-view) .tt-description {
         padding-top: 17px;
+        padding-bottom: 17px;
         position: relative;
         z-index: 2;
         background: #ffffff; }

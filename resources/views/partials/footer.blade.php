@@ -182,6 +182,8 @@
 <script src="{{ asset('assets/js/form/jquery.form-init.js') }}"></script>
 <script src="{{ asset('assets/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
 <script src="{{ asset('assets/plugins/toastr/toastr.min.js') }}"></script>
+<script src="{{ asset('assets/js/custom.js') }}"></script>
+<script src="{{ asset('assets/js/fikitech.js') }}"></script>
 @yield('external_js')
 <script>
     function GetTag(tag_id,sub_tag_id){

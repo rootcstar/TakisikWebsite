@@ -36,7 +36,7 @@ Route::middleware([LoginControlMiddleware::class])->group(function() {
 
     Route::get('/', [WebsiteController::class, 'get_index']);
     Route::get('/uyelik', [WebsiteController::class, 'get_signin_page'])->name('uyelik');
-    Route::get('/uyelik/yeni', [WebsiteController::class, 'get_register_page']);
+    Route::get('/uyelik/yeni', [WebsiteController::class, 'get_register_page'])->name('yeni_uyelik');
     Route::get('/iletisim', [WebsiteController::class, 'get_contact']);
 
 

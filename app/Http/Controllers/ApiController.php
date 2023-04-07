@@ -237,51 +237,60 @@ class ApiController extends Controller
         try {
             $data = $request->all();
             $validator = Validator::make($data, [
-                'first_name' => [
-                    "string",
-                    "required",
-                    'alpha', //only letters
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-                'last_name' => [
-                    "string",
-                    "required",
-                    'alpha', //only letters
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-                'email' => [
-                    "email",
-                    "required",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-                'country_code' => [
-                    "string",
-                    "required",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-                'phone' => [
-                    "string",
-                    "required",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-                'password' => [
-                    new PasswordRule(),
-                    "string",
-                    "required",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
                 'account_type' => [
                     "required",
                     "numeric",
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                 ],
+                'company_name' => [
+                    Rule::requiredIf(fn () => ($request->account_type == 2)),
+                    "nullable",
+                    "string",
+                    "regex:/(^[A-Za-z .-]+$)+/",
+                ],
+                'first_name' => [
+                    "required",
+                    "string",
+                    "regex:/(^[A-Za-z .-]+$)+/",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'last_name' => [
+                    "required",
+                    "string",
+                    "regex:/(^[A-Za-z .-]+$)+/",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'email' => [
+                    "required",
+                    "email",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'country_code' => [
+                    "required",
+                    "integer",
+                    "digits_between:1,5",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'phone' => [
+                    "required",
+                    "string",
+                    'regex:/(^[0-9\ +]+$)+/',
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'password' => [
+                    "required",
+                    new PasswordRule(),
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ]
             ]);
 
             if ($validator->fails()) {
 
-                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+                return response(['result' => -1, "msg" =>  $validator->errors()->first(), 'error' => $validator->errors()->keys()], 403);
 
             }
+
+
 
             $check_email_exist = DB::select("SELECT * FROM users WHERE email='" . $data['email'] . "'");
 

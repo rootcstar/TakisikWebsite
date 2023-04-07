@@ -88,7 +88,7 @@
 
                     if (resp['result'] == 1) {
                         $('#loader').addClass('hidden');
-                        window.location = '/alisveris';
+                        window.location = '/kategoriler';
                     }
 
                     $('#loader').addClass('hidden');

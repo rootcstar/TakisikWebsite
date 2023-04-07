@@ -25,7 +25,7 @@ use App\Http\Controllers\AdminWebsiteController;
     Route::post('/api-signin', [ApiController::class, 'signin']);
     Route::post('/api-forget-password', [ApiController::class, 'forget_password']);
     Route::post('/api-new-password', [ApiController::class, 'new_password']);
-    Route::post('/api-register', [ApiController::class, 'register']);
+    Route::post('/api-register', [ApiController::class, 'register'])->name('register_api');
     Route::post('/api-get-register-form', [ApiController::class, 'get_register_form']);
     Route::post('/api-logout', [ApiController::class, 'logout']);
 

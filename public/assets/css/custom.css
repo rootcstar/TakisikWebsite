@@ -233,3 +233,10 @@ header .tt-cart .tt-cart-layout .tt-cart-content .tt-cart-list .tt-item-close .t
 .category-select{
     cursor: pointer;
 }
+.register-btn-01.selected{
+    background: #ff0080;
+    height: 100%;
+    width: 100%;
+    border-radius: 8px 8px 0px 0px;
+    height: 70px;
+}
