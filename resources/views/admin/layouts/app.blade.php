@@ -1,322 +1,292 @@
-<!DOCTYPE html>
-<!--
-This is a starter template page. Use this page to start your new project from
-scratch. This page gets rid of all links and provides the needed markup only.
--->
-<html lang="en">
+<html dir ='ltr' lang="en">
 <head>
-
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Takışık Admin Panel</title>
-    <link rel="shortcut icon" href="{{asset("assets/img/logos/favicon.png")}}"/>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('assets/img/logos/favicon.png')}}">
+    <title>{{config('constants.app_title')}}</title>
 
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="{{asset('admin-assets/plugins/fontawesome-free/css/all.min.css')}}">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="{{asset('admin-assets/dist/css/adminlte.css')}}">
-
-    <link rel="stylesheet" href="{{asset('admin-assets/plugins/ekko-lightbox/ekko-lightbox.css')}}">
-    <!-- Google Font: Source Sans Pro -->
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-
-    <link rel="stylesheet" href="{{asset('admin-assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
-
-    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/preview/searchPane/dataTables.searchPane.min.css">
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <!-- Select2 -->
-    <link rel="stylesheet" href="{{asset('admin-assets/plugins/select2/css/select2.min.css')}}">
-    <link rel="stylesheet" href="{{asset('admin-assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-    <link rel="stylesheet" href="{{ asset('admin-assets/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}"> {{-- not found in assets --}}
-    <link rel="stylesheet" href="{{asset('admin-assets/plugins/summernote/summernote-bs4.min.css')}}">
-    <link rel="stylesheet" href="{{asset('admin-assets/dist/css/admin-custom.css')}}">
-
+    <link href="{{asset('admin-assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css')}}" rel="stylesheet">
+    <link href="{{asset('admin-assets/extra-libs/c3/c3.min.css')}}" rel="stylesheet">
+    <link href="{{asset('admin-assets/extra-libs/jvector/jquery-jvectormap-2.0.2.css')}}" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{{asset('dist/css/style.css')}}" rel="stylesheet">
+    <link href="{{asset('admin-assets/css/custom.css')}}" rel="stylesheet">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 </head>
 
-<body class="hold-transition sidebar-mini text-sm layout-fixed">
-<div class="wrapper">
-
-    <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand  navbar-light">
-        <!-- Left navbar links -->
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" data-widget="pushmenu" href="#" role="button">
-                    <i class="fas fa-bars"></i>
-                </a>
-            </li>
-        </ul>
-    </nav>
-    <!-- /.navbar -->
-
-    <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-light-primary elevation-4">
-
-        <img src="{{asset('assets/img/logos/logo-b.png')}}" class="brand-image ml-0 mr-0 elevation-3 w-100">
-        <div class="user-panel pt-3 pb-3 pb-0 d-flex">
-            <div class="info">
-                    <span  class="d-block user-name">{{ Session::get('admin.username') }}
-                         <a class="right badge badge-danger logout-button" href="{{ url('admin/logout') }}"><span class="">{{ LanguageChange('Logout') }}</span></a>
-
-</span>
-
-            </div>
-        </div>
-        <!-- Sidebar -->
-        <div class="sidebar pr-0 pl-0">
-            <!-- Sidebar user panel (optional) -->
-
-
-            <!-- Sidebar Menu -->
-            <nav class="mt-0">
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false">
-                    <li class="nav-item has-treeview menu-open">
-                        <ul class="nav nav-treeview">
-                            @include('admin.layouts.sidebar')
-                        </ul>
-                    </li>
-                </ul>
-            </nav>
-            <!-- /.sidebar-menu -->
-        </div>
-        <!-- /.sidebar -->
-    </aside>
-
-
-
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <div class="content-header">
-        </div>
-        <!-- /.content-header -->
-        <!-- Main content -->
-        <section class="content">
-
-            @yield('content')
-
-            <div class="modal fade" id="modal-warning">
-                <div class="modal-dialog">
-                    <div class="modal-content bg-warning">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Warning Modal</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span></button>
-                        </div>
-                        <div class="modal-body">
-                            <p>One fine body&hellip;</p>
-                        </div>
-                        <div class="modal-footer ">
-                            <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-outline-dark">Save changes</button>
-                        </div>
-                    </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-            <!-- /.modal -->
-            <div class="modal fade" id="modal-danger">
-                <div class="modal-dialog">
-                    <div class="modal-content bg-danger">
-                        <div class="modal-header">
-                            <h4 class="modal-title" id="danger-title">Are you sure?</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <p id="danger-text">This action may not be reversable from admin panel.</p>
-                        </div>
-                        <div class="modal-footer ">
-                            <button type="button" class="btn btn-outline-light" data-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-outline-light" id="danger-yes-button" onclick="">Yes
-                            </button>
-                        </div>
-                    </div>
-                    <!-- /.modal-content -->
-                </div>
-            </div>
-        </section>
+<body>
+<!-- ============================================================== -->
+<!-- Preloader - style you can find in spinners.css -->
+<!-- ============================================================== -->
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
     </div>
+</div>
+<div id="main-wrapper">
 
-    <!-- Main Footer -->
-    <footer class="main-footer">
-        <!-- To the right -->
-        <div class="float-right d-none d-sm-inline"></div>
-        <!-- Default to the left -->
-        <strong>Copyright &copy; 2022 <a href="http://fikitech.com/" class="fikitech-blue">Fiki Tech Solutions</a>.</strong> All rights reserved.
-    </footer>
+    @include('admin.layouts.sidebar')
+    <div class="page-wrapper">
 
+        @include('admin.partials.breadcrumb')
 
-    <div class="modal fade" id="modal-delete">
-        <div class="modal-dialog">
-            <div class="modal-content bg-danger">
-                <div class="modal-header">
-                    <h4 class="modal-title">Bu kaydı silmek istediğinize emin misiniz?</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>One fine body&hellip;</p>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Kapat</button>
-                    <button type="button" class="btn btn-outline-light" id="delete-record-btn">Sil</button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
+        @yield('content')
+        <footer class="footer text-center">
+            &copy; Copyright <strong><a href="https://fikitech.com">Fiki Tech Solutions</a></strong>. All Rights Reserved.
+        </footer>
     </div>
-    <!-- /.modal -->
-
 </div>
 
-<!-- ./wrapper -->
-
-<!-- REQUIRED SCRIPTS -->
-
-
-<script src="{{asset('admin-assets/plugins/jquery/jquery.min.js')}}"></script>
-<script src="{{asset('admin-assets/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-<script src="{{asset('admin-assets/dist/js/adminlte.min.js')}}"></script>
-<script src="{{asset('admin-assets/plugins/jquery-ui/jquery-ui.min.js')}}"></script>
-<!-- DataTables -->
-<script src="{{asset('admin-assets/plugins/datatables/jquery.dataTables.min.js')}}"></script>
-<script src="{{asset('admin-assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
-<script src="{{asset('admin-assets/plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
-<script src="{{asset('admin-assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
-
-<script src="{{asset('admin-assets/plugins/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
-<script src="{{asset('admin-assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
-<script src="{{asset('admin-assets/plugins/datatables-buttons/js/buttons.html5.min.js')}}"></script>
-<script src="{{asset('admin-assets/plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
-<script src="{{asset('admin-assets/plugins/moment/moment.min.js')}}"></script>
-<link rel="stylesheet" href="{{asset('admin-assets/plugins/daterangepicker/daterangepicker.css')}}">
-<script src="{{asset('admin-assets/plugins/daterangepicker/daterangepicker.js')}}"></script>
-<script src="{{asset('admin-assets/plugins/select2/js/select2.full.min.js')}}"></script>
-<script src="{{asset('admin-assets/plugins/bs-custom-file-input/bs-custom-file-input.min.js')}}"></script>
-<script src="{{asset('admin-assets/plugins/ekko-lightbox/ekko-lightbox.min.js')}}"></script>
-<!-- Bootstrap4 Duallistbox -->
-<script src="{{asset('admin-assets/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js')}}"></script>
-
-<script src="{{asset('admin-assets/plugins/summernote/summernote-bs4.min.js')}}"></script>
-<script src="{{ asset('admin-assets/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
-<!-- Select2 -->
-<script src="{{ asset('admin-assets/plugins/select2/js/select2.full.min.js') }}"></script>
-
-@yield('external_js')
-<script>
-    //Initialize Select2 Elements
-    $('.select2').select2()
-</script>
-<script>
-    function DeleteRecordModal(table_name,primary_key_id){
-
-        $('#delete-record-btn').attr("onclick", "DeleteRecord('" + table_name + "','" +primary_key_id+ "')");
-    }
-
-    function DeleteRecord(table_name,primary_key_id){
-
-        var data = '{"table_name":"' +table_name+ '","primary_key_id":"' + primary_key_id + '"}';
-console.log(data);
-
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-
-            if (this.readyState == 4 && this.status == 200) {
-                let resp = JSON.parse(this.responseText);
-                if (resp['result'] == 1) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: (resp['msg']),
-                        allowOutsideClick: false,
-                        showConfirmButton: false,
-                        timer: 1000
-                    })
-
-                    location.reload();
 
 
 
-                }else{
+<aside class="customizer">
+    <a href="javascript:void(0)" class="service-panel-toggle"><i class="fa fa-spin fa-cog"></i></a>
+    <div class="customizer-body">
+        <ul class="nav customizer-tab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true"><i class="mdi mdi-wrench font-20"></i></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#chat" role="tab" aria-controls="chat" aria-selected="false"><i class="mdi mdi-message-reply font-20"></i></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false"><i class="mdi mdi-star-circle font-20"></i></a>
+            </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
+            <!-- Tab 1 -->
+            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                <div class="p-15 border-bottom">
+                    <!-- Sidebar -->
+                    <h5 class="font-medium m-b-10 m-t-10">Layout Settings</h5>
+                    <div class="custom-control custom-checkbox m-t-10">
+                        <input type="checkbox" class="custom-control-input" name="theme-view" id="theme-view">
+                        <label class="custom-control-label" for="theme-view">Dark Theme</label>
+                    </div>
+                    <div class="custom-control custom-checkbox m-t-10">
+                        <input type="checkbox" class="custom-control-input sidebartoggler" name="collapssidebar" id="collapssidebar">
+                        <label class="custom-control-label" for="collapssidebar">Collapse Sidebar</label>
+                    </div>
+                    <div class="custom-control custom-checkbox m-t-10">
+                        <input type="checkbox" class="custom-control-input" name="sidebar-position" id="sidebar-position">
+                        <label class="custom-control-label" for="sidebar-position">Fixed Sidebar</label>
+                    </div>
+                    <div class="custom-control custom-checkbox m-t-10">
+                        <input type="checkbox" class="custom-control-input" name="header-position" id="header-position">
+                        <label class="custom-control-label" for="header-position">Fixed Header</label>
+                    </div>
+                    <div class="custom-control custom-checkbox m-t-10">
+                        <input type="checkbox" class="custom-control-input" name="boxed-layout" id="boxed-layout">
+                        <label class="custom-control-label" for="boxed-layout">Boxed Layout</label>
+                    </div>
+                </div>
+                <div class="p-15 border-bottom">
+                    <!-- Logo BG -->
+                    <h5 class="font-medium m-b-10 m-t-10">Logo Backgrounds</h5>
+                    <ul class="theme-color">
+                        <li class="theme-item"><a href="javascript:void(0)" class="theme-link" data-logobg="skin1"></a></li>
+                        <li class="theme-item"><a href="javascript:void(0)" class="theme-link" data-logobg="skin2"></a></li>
+                        <li class="theme-item"><a href="javascript:void(0)" class="theme-link" data-logobg="skin3"></a></li>
+                        <li class="theme-item"><a href="javascript:void(0)" class="theme-link" data-logobg="skin4"></a></li>
+                        <li class="theme-item"><a href="javascript:void(0)" class="theme-link" data-logobg="skin5"></a></li>
+                        <li class="theme-item"><a href="javascript:void(0)" class="theme-link" data-logobg="skin6"></a></li>
+                    </ul>
+                    <!-- Logo BG -->
+                </div>
+                <div class="p-15 border-bottom">
+                    <!-- Navbar BG -->
+                    <h5 class="font-medium m-b-10 m-t-10">Navbar Backgrounds</h5>
+                    <ul class="theme-color">
+                        <li class="theme-item"><a href="javascript:void(0)" class="theme-link" data-navbarbg="skin1"></a></li>
+                        <li class="theme-item"><a href="javascript:void(0)" class="theme-link" data-navbarbg="skin2"></a></li>
+                        <li class="theme-item"><a href="javascript:void(0)" class="theme-link" data-navbarbg="skin3"></a></li>
+                        <li class="theme-item"><a href="javascript:void(0)" class="theme-link" data-navbarbg="skin4"></a></li>
+                        <li class="theme-item"><a href="javascript:void(0)" class="theme-link" data-navbarbg="skin5"></a></li>
+                        <li class="theme-item"><a href="javascript:void(0)" class="theme-link" data-navbarbg="skin6"></a></li>
+                    </ul>
+                    <!-- Navbar BG -->
+                </div>
+                <div class="p-15 border-bottom">
+                    <!-- Logo BG -->
+                    <h5 class="font-medium m-b-10 m-t-10">Sidebar Backgrounds</h5>
+                    <ul class="theme-color">
+                        <li class="theme-item"><a href="javascript:void(0)" class="theme-link" data-sidebarbg="skin1"></a></li>
+                        <li class="theme-item"><a href="javascript:void(0)" class="theme-link" data-sidebarbg="skin2"></a></li>
+                        <li class="theme-item"><a href="javascript:void(0)" class="theme-link" data-sidebarbg="skin3"></a></li>
+                        <li class="theme-item"><a href="javascript:void(0)" class="theme-link" data-sidebarbg="skin4"></a></li>
+                        <li class="theme-item"><a href="javascript:void(0)" class="theme-link" data-sidebarbg="skin5"></a></li>
+                        <li class="theme-item"><a href="javascript:void(0)" class="theme-link" data-sidebarbg="skin6"></a></li>
+                    </ul>
+                    <!-- Logo BG -->
+                </div>
+            </div>
+            <!-- End Tab 1 -->
+            <!-- Tab 2 -->
+            <div class="tab-pane fade" id="chat" role="tabpanel" aria-labelledby="pills-profile-tab">
+                <ul class="mailbox list-style-none m-t-20">
+                    <li>
+                        <div class="message-center chat-scroll">
+                            <a href="javascript:void(0)" class="message-item" id='chat_user_1' data-user-id='1'>
+                                <span class="user-img"> <img src="{{asset('admin-assets/images/users/1.jpg')}}" alt="user" class="rounded-circle"> <span class="profile-status online pull-right"></span> </span>
+                                <span class="mail-contnet">
+                                        <h5 class="message-title">Pavan kumar</h5> <span class="mail-desc">Just see the my admin!</span> <span class="time">9:30 AM</span> </span>
+                            </a>
+                            <!-- Message -->
+                            <a href="javascript:void(0)" class="message-item" id='chat_user_2' data-user-id='2'>
+                                <span class="user-img"> <img src="{{asset('admin-assets/images/users/2.jpg')}}" alt="user" class="rounded-circle"> <span class="profile-status busy pull-right"></span> </span>
+                                <span class="mail-contnet">
+                                        <h5 class="message-title">Sonu Nigam</h5> <span class="mail-desc">I've sung a song! See you at</span> <span class="time">9:10 AM</span> </span>
+                            </a>
+                            <!-- Message -->
+                            <a href="javascript:void(0)" class="message-item" id='chat_user_3' data-user-id='3'>
+                                <span class="user-img"> <img src="{{asset("admin-assets/images/users/3.jpg")}}" alt="user" class="rounded-circle"> <span class="profile-status away pull-right"></span> </span>
+                                <span class="mail-contnet">
+                                        <h5 class="message-title">Arijit Sinh</h5> <span class="mail-desc">I am a singer!</span> <span class="time">9:08 AM</span> </span>
+                            </a>
+                            <!-- Message -->
+                            <a href="javascript:void(0)" class="message-item" id='chat_user_4' data-user-id='4'>
+                                <span class="user-img"> <img src="{{asset("admin-assets/images/users/4.jpg")}}" alt="user" class="rounded-circle"> <span class="profile-status offline pull-right"></span> </span>
+                                <span class="mail-contnet">
+                                        <h5 class="message-title">Nirav Joshi</h5> <span class="mail-desc">Just see the my admin!</span> <span class="time">9:02 AM</span> </span>
+                            </a>
+                            <!-- Message -->
+                            <!-- Message -->
+                            <a href="javascript:void(0)" class="message-item" id='chat_user_5' data-user-id='5'>
+                                <span class="user-img"> <img src="{{asset('admin-assets/images/users/5.jpg')}}" alt="user" class="rounded-circle"> <span class="profile-status offline pull-right"></span> </span>
+                                <span class="mail-contnet">
+                                        <h5 class="message-title">Sunil Joshi</h5> <span class="mail-desc">Just see the my admin!</span> <span class="time">9:02 AM</span> </span>
+                            </a>
+                            <!-- Message -->
+                            <!-- Message -->
+                            <a href="javascript:void(0)" class="message-item" id='chat_user_6' data-user-id='6'>
+                                <span class="user-img"> <img src="{{asset('admin-assets/images/users/6.jpg')}}" alt="user" class="rounded-circle"> <span class="profile-status offline pull-right"></span> </span>
+                                <span class="mail-contnet">
+                                        <h5 class="message-title">Akshay Kumar</h5> <span class="mail-desc">Just see the my admin!</span> <span class="time">9:02 AM</span> </span>
+                            </a>
+                            <!-- Message -->
+                            <!-- Message -->
+                            <a href="javascript:void(0)" class="message-item" id='chat_user_7' data-user-id='7'>
+                                <span class="user-img"> <img src="{{asset('admin-assets/images/users/7.jpg')}}" alt="user" class="rounded-circle"> <span class="profile-status offline pull-right"></span> </span>
+                                <span class="mail-contnet">
+                                        <h5 class="message-title">Pavan kumar</h5> <span class="mail-desc">Just see the my admin!</span> <span class="time">9:02 AM</span> </span>
+                            </a>
+                            <!-- Message -->
+                            <!-- Message -->
+                            <a href="javascript:void(0)" class="message-item" id='chat_user_8' data-user-id='8'>
+                                <span class="user-img"> <img src="{{asset('admin-assets/images/users/8.jpg')}}" alt="user" class="rounded-circle"> <span class="profile-status offline pull-right"></span> </span>
+                                <span class="mail-contnet">
+                                        <h5 class="message-title">Varun Dhavan</h5> <span class="mail-desc">Just see the my admin!</span> <span class="time">9:02 AM</span> </span>
+                            </a>
+                            <!-- Message -->
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <!-- End Tab 2 -->
+            <!-- Tab 3 -->
+            <div class="tab-pane fade p-15" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+                <h6 class="m-t-20 m-b-20">Activity Timeline</h6>
+                <div class="steamline">
+                    <div class="sl-item">
+                        <div class="sl-left bg-success"> <i class="ti-user"></i></div>
+                        <div class="sl-right">
+                            <div class="font-medium">Meeting today <span class="sl-date"> 5pm</span></div>
+                            <div class="desc">you can write anything </div>
+                        </div>
+                    </div>
+                    <div class="sl-item">
+                        <div class="sl-left bg-info"><i class="fas fa-image"></i></div>
+                        <div class="sl-right">
+                            <div class="font-medium">Send documents to Clark</div>
+                            <div class="desc">Lorem Ipsum is simply </div>
+                        </div>
+                    </div>
+                    <div class="sl-item">
+                        <div class="sl-left"> <img class="rounded-circle" alt="user" src="{{asset('admin-assets/images/users/2.jpg')}}"> </div>
+                        <div class="sl-right">
+                            <div class="font-medium">Go to the Doctor <span class="sl-date">5 minutes ago</span></div>
+                            <div class="desc">Contrary to popular belief</div>
+                        </div>
+                    </div>
+                    <div class="sl-item">
+                        <div class="sl-left"> <img class="rounded-circle" alt="user" src="{{asset('admin-assets/images/users/1.jpg')}}"> </div>
+                        <div class="sl-right">
+                            <div><a href="javascript:void(0)">Stephen</a> <span class="sl-date">5 minutes ago</span></div>
+                            <div class="desc">Approve meeting with tiger</div>
+                        </div>
+                    </div>
+                    <div class="sl-item">
+                        <div class="sl-left bg-primary"> <i class="ti-user"></i></div>
+                        <div class="sl-right">
+                            <div class="font-medium">Meeting today <span class="sl-date"> 5pm</span></div>
+                            <div class="desc">you can write anything </div>
+                        </div>
+                    </div>
+                    <div class="sl-item">
+                        <div class="sl-left bg-info"><i class="fas fa-image"></i></div>
+                        <div class="sl-right">
+                            <div class="font-medium">Send documents to Clark</div>
+                            <div class="desc">Lorem Ipsum is simply </div>
+                        </div>
+                    </div>
+                    <div class="sl-item">
+                        <div class="sl-left"> <img class="rounded-circle" alt="user" src="{{asset('admin-assets/images/users/4.jpg')}}"> </div>
+                        <div class="sl-right">
+                            <div class="font-medium">Go to the Doctor <span class="sl-date">5 minutes ago</span></div>
+                            <div class="desc">Contrary to popular belief</div>
+                        </div>
+                    </div>
+                    <div class="sl-item">
+                        <div class="sl-left"> <img class="rounded-circle" alt="user" src="{{asset('admin-assets/images/users/6.jpg')}}"> </div>
+                        <div class="sl-right">
+                            <div><a href="javascript:void(0)">Stephen</a> <span class="sl-date">5 minutes ago</span></div>
+                            <div class="desc">Approve meeting with tiger</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Tab 3 -->
+        </div>
+    </div>
+</aside>
 
-                    Swal.fire({
-                        icon: 'error',
-                        title: (resp['msg']),
-                        showConfirmButton: true,
-                        allowOutsideClick: false
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            location.reload();
-                        }
-                    });
-                }
+<!-- ============================================================== -->
+<!-- All Jquery -->
+<!-- ============================================================== -->
+<script src="{{asset('admin-assets/libs/jquery/dist/jquery.min.js')}}"></script>
+<!-- Bootstrap tether Core JavaScript -->
+<script src="{{asset('admin-assets/libs/popper.js/dist/umd/popper.min.js')}}"></script>
+<script src="{{asset('admin-assets/libs/bootstrap/dist/js/bootstrap.min.js')}}"></script>
+<!-- apps -->
+<script src="{{asset('dist/js/app.min.js')}}"></script>
+<script src="{{asset('dist/js/app.init.js')}}"></script>
+<script src="{{asset('dist/js/app-style-switcher.js')}}"></script>
+<!-- slimscrollbar scrollbar JavaScript -->
+<script src="{{asset('admin-assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js')}}"></script>
+<script src="{{asset('admin-assets/extra-libs/sparkline/sparkline.js')}}"></script>
+<!--Wave Effects -->
+<script src="{{asset('dist/js/waves.js')}}"></script>
+<!--Menu sidebar -->
+<script src="{{asset('dist/js/sidebarmenu.js')}}"></script>
+<!--Custom JavaScript -->
+<script src="{{asset('dist/js/custom.min.js')}}"></script>
+<script src="{{asset('admin-assets/js/fikitech.js')}}"></script>
+<script src="{{asset('admin-assets/extra-libs/DataTables/datatables.min.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-            } else if (this.status >= 400) {
-                let resp = JSON.parse(this.responseText);
-                Swal.fire({
-                    icon: 'warning',
-                    title: (resp['msg']),
-                    showConfirmButton: true,
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        location.reload();
-                    }
-                });
-            } else if (this.status >= 500) {
-                //Başarısız
-                alert('error');
-            }
-        };
-        xhttp.onerror = function onError(e) {
-
-            let resp = JSON.parse(this.responseText);
-            // $('#loader').addClass("hidden");
-
-            Swal.fire(resp['msg']);
-            // location.reload();
-        };
-
-        xhttp.open("POST", "/api/delete-record", true);
-        xhttp.setRequestHeader("Content-Type", "application/json");
-        xhttp.send(data);
-    }
-</script>
-<script>
-    var loadFile = function (event) {
-
-        var output = document.getElementById('new_img');
-        output.src = URL.createObjectURL(event.target.files[0]);
-        output.onload = function () {
-            URL.revokeObjectURL(output.src)
-        }
-
-    };
-</script>
-
-<script>
-    $(function () {
-        bsCustomFileInput.init();
-    });
-</script>
-
-<script>
-    $(function () {
-        // Summernote
-        $('.custom-text-editor').summernote()
-
-    })
-
-</script>
-
+@yield('scripts')
 </body>
+
 </html>

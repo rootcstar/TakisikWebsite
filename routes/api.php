@@ -6,6 +6,7 @@ use App\Http\Middleware\LoginControlMiddleware;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\AdminApiController;
 use App\Http\Controllers\AdminWebsiteController;
+use App\Http\Middleware\AdminLoginControlMiddleware;
 
 
 /*
@@ -42,14 +43,23 @@ use App\Http\Controllers\AdminWebsiteController;
     Route::post('/api-get-product-model', [ApiController::class, 'get_product_model']);
     Route::post('/api-get-category', [ApiController::class, 'get_category']);
 
-    // ADMIN PANEL APIS'S
-    Route::get('/fill-datatable', [AdminApiController::class, 'fillDataTable']);
+/**** LOGS ****/
+Route::post('/admin-login', [AdminApiController::class, 'adminLogin']);
 
-    /**** LOGS ****/
-    Route::post('/admin-login', [AdminApiController::class, 'adminLogin']);
+Route::middleware([AdminLoginControlMiddleware::class])->group(function () {
+    // ADMIN PANEL APIS'S
+    Route::get('admin/fill-datatable', [AdminApiController::class, 'fill_datatable'])->name('fill_datatable_api');;
+
+    Route::post('/admin/admin-user/create', [AdminApiController::class, 'insert_admin_user'])->name('new_admin_user_api');
+    Route::post('/admin/admin-user/delete', [AdminApiController::class, 'delete_admin_user'])->name('delete_admin_user_api');
+    Route::post('/admin/permissions/get', [AdminApiController::class, 'get_permissions'])->name('get_permissions_api');
+
+
+    Route::post('/admin/admin-user-type/create', [AdminApiController::class, 'insert_admin_user_type'])->name('new_admin_user_type_api');
+    Route::post('/admin/admin-user-type/delete', [AdminApiController::class, 'delete_admin_user_type'])->name('delete_admin_user_type_api');
 
     /**** ADD ****/
-    Route::post('/add-admin-user', [AdminApiController::class, 'addAdminUsers']);
+
     Route::post('/add-tag', [AdminApiController::class, 'addTag']);
     Route::post('/add-sub-tag', [AdminApiController::class, 'addSubtag']);
 
@@ -63,5 +73,4 @@ use App\Http\Controllers\AdminWebsiteController;
     /****** DELETE ******/
     Route::post('/delete-record', [AdminApiController::class, 'deleteRecord']);
 
-    /****** SPECIALS - PRIVATES ******/
-    Route::post('/show-table', [AdminApiController::class, 'showTable']);
+});

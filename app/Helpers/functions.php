@@ -57,7 +57,7 @@ function LanguageChange($value){
                     "Sub Tag Name" => "Alt Kategori Adı",
                     "Is Active" => "Sayfada Gösterilsin Mi?",
                     'Users' => 'Müşteriler',
-                    'Admin Users' => 'Admin Kullanıcıları',
+                    'Admin Users' => 'Yöneticiler',
                     "User Id" => "Kullanıcı ID",
                     'First Name' => 'Adı',
                     "Last Name" => "Soyadı",
@@ -74,6 +74,14 @@ function LanguageChange($value){
                     "Country" =>  "Ülke",
                     "Logout" =>  "Çıkış",
                     "Update" =>  "Düzenle",
+                    "Account Type" =>  "Üyelik",
+                    "Title" => 'Başlık',
+                    "Admin Id" => "Yönetici Id",
+                    "Admin User Type Id" => "ID",
+                    "Admin User Type Name" => "Yönetici Türü Adı",
+                    "Admin Type" =>  "Yönetici Türü",
+                    "Admin User Types" =>  "Yönetici Türlerı",
+                    "Permission Types" =>  "İzinler",
                     );
 
     if(Session::get('admin.lang') == 'tr'){

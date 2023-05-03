@@ -24,7 +24,8 @@
     "autoload": {
         "files": [
         "app/Helpers/functions.php",
-        "app/Helpers/ssp.class.php"
+        "app/Helpers/ssp_mysql.class.php",
+        "app/Helpers/ssp_pgsql.class.php"
         ],
         "psr-4": {
             "App\\": "app/",

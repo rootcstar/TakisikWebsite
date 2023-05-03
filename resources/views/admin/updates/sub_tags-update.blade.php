@@ -10,7 +10,7 @@
             <li class="nav-item">
                 <a class="nav-link active" id="detail-tab" data-toggle="pill"
                    href="#detail" role="tab" aria-controls="detail"
-                   aria-selected="true">Yeni Kayıt Ekleme</a>
+                   aria-selected="true">Alt Kategori Güncelleme</a>
             </li>
 
             <li class="nav-item">
@@ -85,7 +85,7 @@
                             </div>
                             <div class="col-md-2 p-0">
                                 <div  class="btn btn-block btn-info btn-lg atlantis-button" name=""
-                                      onclick="UpdateSubtag();">Ekle
+                                      onclick="UpdateSubtag();">Güncelle
                                 </div>
                             </div>
                         </form>

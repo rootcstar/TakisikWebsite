@@ -2,7 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdminUser;
+use App\Models\AdminUserType;
+use App\Models\AdminUserTypePermission;
+use App\Models\PermissionType;
+use App\Rules\CheckIfAdminUserTypeExists;
+use App\Rules\Exist_Already_Email_AdminUser;
 use App\Rules\OnlyLetterRule;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -78,60 +85,154 @@ class AdminApiController extends Controller
         }
     }
 
-    public function fillDataTable(Request $request)
+    public function get_permissions (Request $request){
+
+        try{
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'admin_user_type_id' => [
+                    "required",
+                    "numeric",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                    new CheckIfAdminUserTypeExists(),
+                ],
+            ]);
+            if ($validator->fails()) {
+                $resp = response(['result'=>-1,"msg"=>$validator->errors()->first(),'error' => $validator->errors() ,"function"=>__FUNCTION__,"data"=>$data],400);
+                return $resp;
+            }
+
+
+            $permission_types = AdminUserTypePermission::where('admin_user_type_id',$data['admin_user_type_id'])->get();
+            foreach ($permission_types as $permission_type){
+                $perm = PermissionType::where('permission_id',$permission_type->permission_id)->first();
+                $permission_type->permission_name = $perm->permission_name;
+            }
+
+
+            return response(['result'=>1,"msg"=>"Success","html"=>view('admin.partials.permissions')->with('permissions',$permission_types)->render()],200);
+        } catch (\Throwable $t) {
+
+            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+
+
+        }
+
+    }
+
+    public function delete_admin_user(Request $request)
     {
 
-        $data = $request->all();
-        $validator = Validator::make($data, [
-            'column' => [
-                'regex:/(^[A-Za-z0-9\_"]+$)+/', //only number letter and space and dot
-            ],
-            'datatable_name' => [
-                'required',
-            ],
-            'primary_key' => [
-                'required',
-            ],
-            'cols' => [
-                'required',
-            ]
+        try{
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'admin_id' => [
+                    "required",
+                    "numeric",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+            ]);
+            if ($validator->fails()) {
+                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
+                return $resp;
+            }
+
+            try{
+                AdminUser::where('admin_id',$data['admin_id'])->delete();
+
+            }catch (QueryException $e) {
+
+                $function_name = getcwd();
+                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+                return $resp;
+            }
+
+            return response(['result' => 1, "msg" => "Success"], 200);
+        } catch (\Throwable $t) {
+
+            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
 
 
-        ]);
-
-        if ($validator->fails()) {
-            return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
         }
 
-        $table = $data['datatable_name'];
-        $where = "";
-        $primary_key = $data['primary_key'];
 
-        // return fiki_decrypt($data['cols']);
-        $cols = fiki_decrypt($data['cols']);
-        $cols = json_decode($cols, true);
+    }
 
-        $columns = array();
-        foreach ($cols as $col) {
-            array_push($columns, array('db' => '' . $col . '', 'dt' => '' . $col . ''));
+
+    public function insert_admin_user_type(Request $request)
+    {
+
+        try{
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'admin_user_type_name' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+            ]);
+            if ($validator->fails()) {
+                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
+                return $resp;
+            }
+
+            try{
+
+                $created_record_id = AdminUserType::create($data)->admin_user_type_id;
+
+            }catch (QueryException $e) {
+
+                $function_name = getcwd();
+                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+                return $resp;
+            }
+
+            return response(['result' => 1, "msg" => "Success"], 200);
+        } catch (\Throwable $t) {
+
+            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+
+
         }
 
-        $method = 'get';
-        $sql_details = array(
-            'user' => env('DB_USERNAME'),
-            'db' => env('DB_DATABASE'),
-            'pass' => env('DB_PASSWORD'),
-            'host' => env('DB_HOST'),
-        );
 
-        //return 'here';
 
-        $ssp = new \SSP();
-        return json_encode(
-            $ssp::simple($_GET, $sql_details, $table, $primary_key, $columns, $where)
-        );
+    }
 
-        return $response;
+    public function delete_admin_user_type(Request $request)
+    {
+        try{
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'admin_user_type_id' => [
+                    "required",
+                    "numeric",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+            ]);
+            if ($validator->fails()) {
+                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
+                return $resp;
+            }
+
+            try{
+                AdminUserType::where('admin_user_type_id',$data['admin_user_type_id'])->delete();
+                AdminUserTypePermission::where('admin_user_type_id',$data['admin_user_type_id'])->delete();
+
+            }catch (QueryException $e) {
+
+                $function_name = getcwd();
+                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+                return $resp;
+            }
+
+            return response(['result' => 1, "msg" => "Success"], 200);
+        } catch (\Throwable $t) {
+
+            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+
+
+        }
 
 
     }
@@ -267,7 +368,7 @@ class AdminApiController extends Controller
 
     }
 
-    public function addAdminUsers(Request $request){
+    public function insert_admin_user(Request $request){
         try {
             $data = $request->all();
             $validator = Validator::make($data, [
@@ -281,14 +382,15 @@ class AdminApiController extends Controller
                     "string",
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                 ],
-                'phone' => [
-                    "required",
-                    "string",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
                 'email' => [
                     "required",
                     "email",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                    new Exist_Already_Email_AdminUser()
+                ],
+                'phone' => [
+                    "required",
+                    "digits:10",
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                 ],
                 'password' => [
@@ -296,6 +398,17 @@ class AdminApiController extends Controller
                     "string",
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                 ],
+                'admin_user_type_id' => [
+                    "required",
+                    "numeric",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                    new CheckIfAdminUserTypeExists(),
+                ],
+                'title' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ]
             ]);
 
             if ($validator->fails()) {
@@ -306,7 +419,7 @@ class AdminApiController extends Controller
 
             try {
 
-                DB::table('admin_users')->insert($data);
+                $created_id = AdminUser::create($data)->admin_id;
 
             } catch (QueryException $e) {
 
@@ -779,55 +892,87 @@ class AdminApiController extends Controller
         }
     }
 
-    public function showTable(Request $request){
+    public function fill_datatable(Request $request){
         try {
+
+
             $data = $request->all();
-            $validator = Validator::make($data, [
-                'table_id' => [
+
+            $validator = Validator::make($data,[
+
+                'table' => [
                     "required",
                     "string",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                    'regex:/(^[A-Za-z0-9\ _."]+$)+/', //only number letter and space and dot
+
                 ],
+                'primary_key' => [
+                    "required",
+                    "string",
+                    'regex:/(^[A-Za-z0-9\_]+$)+/', //only number letter and space and dot
+
+                ],
+                'where' => [
+                    "nullable",
+                ],
+                'post_or_get' => [
+                    "required",
+                    "string"
+                ]
+
             ]);
 
-            if ($validator->fails()) {
-                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+
+
+            if($validator->fails()){
+                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
+                return $resp;
             }
 
-            $table_name = fiki_decrypt($data['table_id']);
 
-            $tables_data_array = array();
+            $table = $data['table'];
+            $primary_key = $data['primary_key'];
+            $where = $data['where'];
+            $post_get_data = json_decode($data['post_or_get'],true);
 
-            $my_database = env('DB_DATABASE');
-            $table_columns = DB::select("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA =  '$my_database' AND TABLE_NAME = '$table_name' ORDER BY ORDINAL_POSITION;");
+            $columns = [];
+            foreach ($data['columns'] as $column){
+                if(!is_null($column['data'])){
+                    array_push($columns,['db' => $column['data'],'dt' => $column['data']]);
+                }
 
-            $columns_array = array();
-            foreach($table_columns as $columns){
-                array_push($columns_array,$columns->COLUMN_NAME); // for mysql
             }
 
-            if(count($table_columns) == 0){
-                return abort(404);
+            $sql_details = array(
+                'user' => env('DB_USERNAME'),
+                'db'   => env('DB_DATABASE'),
+                'pass' => env('DB_PASSWORD'),
+                'host' => env('DB_HOST'),
+            );
+
+            if(env('DB_TYPE') == 'mysql'){
+                $ssp = new \SSP_MYSQL();
+                return
+                    $ssp::simple( $request, $sql_details, $table, $primary_key, $columns,$where)
+                ;
+            }
+            if(env('DB_TYPE') == 'pgsql'){
+                $ssp = new \SSP_PGSQL();
+                return json_encode(
+                    $ssp::simple( $request, $sql_details, $table, $primary_key, $columns,$where)
+                );
             }
 
-            // return $table_columns;
-            $table_data['table_fields'] = $columns_array;
-            $table_data['table_name'] = $table_name;
-            $table_data['new_link'] = "/admin/". $table_name."/yeni";
-            $table_data['url_end'] = $table_name;
-            $table_data['table_id'] = $table_name;
 
-            array_push($tables_data_array,$table_data);
-
-            $table_content = view('admin.partials.show_table_content', ["table_data" => $tables_data_array])->render();
-
-
-            return response(['result' => 1, 'table_content' => $table_content, 'table_name' => $table_name], 200);
-
-        } catch (\Exception $e) { // 'msg' =>'Bir hata oluştu. Lütfen developer ile iletişime geçiniz.']
-            return response(['result' => -997, 'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__], 403);
 
         }
+        catch (\Throwable $t) {
+
+            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+
+
+        }
+
     }
 
 }

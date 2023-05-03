@@ -42,13 +42,21 @@ Route::middleware([LoginControlMiddleware::class])->group(function() {
 
     // ADMIN LOGS
     Route::get('/admin/login', [AdminWebsiteController::class, 'get_login'])->name('admin-login');
-    Route::get('/admin/logout', [AdminWebsiteController::class, 'admin_logout']);
+    Route::get('/admin/logout', [AdminWebsiteController::class, 'admin_logout'])->name('admin_panel_logout');
 
 //ADMIN URLS
 Route::middleware([AdminLoginControlMiddleware::class])->group(function() {
-    Route::get('/admin', [AdminWebsiteController::class, 'get_home']);
-    Route::get('/admin/{table_name}', [AdminWebsiteController::class, 'get_general']);
 
-    Route::get('/admin/{table_name}/yeni', [AdminWebsiteController::class, 'get_add_page']); // ADD
-    Route::get('/admin/{table_name}/detay/{id}', [AdminWebsiteController::class, 'get_detail_page']); // UPDATE
+    Route::get('/admin', [WebsiteController::class, 'get_admin_dashboard'])->name('admin_panel_dashboard');
+    Route::get('/admin/admin-users', [WebsiteController::class, 'get_admin_users'])->name('admin_panel_admin_users');
+    Route::get('/admin/admin-users/new', [WebsiteController::class, 'get_new_admin_user'])->name('admin_panel_new_admin_user');
+
+    Route::get('/admin/permission-types', [WebsiteController::class, 'get_permission_types'])->name('admin_panel_permission_types');
+    Route::get('/admin/permission-types/new', [WebsiteController::class, 'get_new_permission_type'])->name('admin_panel_new_permission_type');
+
+    Route::get('/admin/admin-user-types', [WebsiteController::class, 'get_admin_user_types'])->name('admin_panel_admin_user_types');
+    Route::get('/admin/admin-user-types/new', [WebsiteController::class, 'get_new_admin_user_type'])->name('admin_panel_new_admin_user_type');
+
+
+
 });
