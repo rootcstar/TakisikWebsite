@@ -215,7 +215,7 @@ var Extension = function () {
     }
 
     /**
-     * Method called after the colorpicker is updates
+     * Method called after the colorpicker is update
      *
      * @listens Colorpicker#colorpickerUpdate
      * @param {Event} event
@@ -3162,7 +3162,7 @@ var Colorpicker = function () {
       this.pickerHandler.update();
 
       /**
-       * (Colorpicker) Fired when the widget is updates.
+       * (Colorpicker) Fired when the widget is update.
        *
        * @event Colorpicker#colorpickerUpdate
        */
@@ -4568,7 +4568,7 @@ var InputHandler = function () {
     }
 
     /**
-     * If the input element is present, it updates the value with the current color object color string.
+     * If the input element is present, it update the value with the current color object color string.
      * If the value is changed, this method fires a "change" event on the input element.
      *
      * @param {String} val
@@ -4721,7 +4721,7 @@ var InputHandler = function () {
     }
 
     /**
-     * Function triggered when the input has changed, so the colorpicker gets updates.
+     * Function triggered when the input has changed, so the colorpicker gets update.
      *
      * @private
      * @param {Event} e
@@ -6248,7 +6248,7 @@ var AddonHandler = function () {
     }
 
     /**
-     * If the addon element is present, its background color is updates
+     * If the addon element is present, its background color is update
      */
 
   }, {

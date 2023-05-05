@@ -2095,7 +2095,7 @@
   }
 
   // When an aspect of a line changes, a string is added to
-  // lineView.changes. This updates the relevant part of the line's
+  // lineView.changes. This update the relevant part of the line's
   // DOM structure.
   function updateLineForChanges(cm, lineView, lineN, dims) {
     for (var j = 0; j < lineView.changes.length; j++) {
@@ -2687,7 +2687,7 @@
   }
 
   // Used to cheaply estimate the coordinates for a position. Used for
-  // intermediate scroll updates.
+  // intermediate scroll update.
   function estimateCoords(cm, pos) {
     var left = 0;
     pos = clipPos(cm.doc, pos);
@@ -3793,7 +3793,7 @@
   // Operations are used to wrap a series of changes to the editor
   // state in such a way that each change won't have to update the
   // cursor and display (which would be awkward, slow, and
-  // error-prone). Instead, display updates are batched and then all
+  // error-prone). Instead, display update are batched and then all
   // combined and executed at once.
 
   var nextOpId = 0;
@@ -3830,7 +3830,7 @@
     }); }
   }
 
-  // The DOM updates done when an operation finishes are batched so
+  // The DOM update done when an operation finishes are batched so
   // that the minimum number of relayouts are required.
   function endOperations(group) {
     var ops = group.ops;
@@ -4155,7 +4155,7 @@
     if (toUpdate > 4) { display.lineDiv.style.display = ""; }
     display.renderedView = display.view;
     // There might have been a widget with a focused element that got
-    // hidden or updates, if so re-focus it.
+    // hidden or update, if so re-focus it.
     restoreSelection(selSnapshot);
 
     // Prevent selection and cursors from interfering with the scroll
@@ -4744,7 +4744,7 @@
 
   // DOCUMENT DATA STRUCTURE
 
-  // By default, updates that start and end at the beginning of a line
+  // By default, update that start and end at the beginning of a line
   // are treated specially, in order to make the association of line
   // widgets and marker elements with the text behave more intuitive.
   function isWholeLineUpdate(doc, change) {
@@ -5549,10 +5549,10 @@
   // Tries to rebase an array of history events given a change in the
   // document. If the change touches the same lines as the event, the
   // event, and everything 'behind' it, is discarded. If the change is
-  // before the event, the event's positions are updates. Uses a
+  // before the event, the event's positions are update. Uses a
   // copy-on-write scheme for the positions, to avoid having to
   // reallocate them all on every rebase, but also avoid problems with
-  // shared position objects being unsafely updates.
+  // shared position objects being unsafely update.
   function rebaseHistArray(array, from, to, diff) {
     for (var i = 0; i < array.length; ++i) {
       var sub = array[i], ok = true;
@@ -6771,7 +6771,7 @@
   // This is a kludge to keep keymaps mostly working as raw objects
   // (backwards compatibility) while at the same time support features
   // like normalization and multi-stroke key bindings. It compiles a
-  // new normalized keymap, and then updates the old object to reflect
+  // new normalized keymap, and then update the old object to reflect
   // this.
   function normalizeKeyMap(keymap) {
     var copy = {};
@@ -8037,7 +8037,7 @@
     on(d.scroller, "touchcancel", finishTouch);
 
     // Sync scrolling between fake scrollbars and real scrollable
-    // area, ensure viewport is updates when scrolling.
+    // area, ensure viewport is update when scrolling.
     on(d.scroller, "scroll", function () {
       if (d.scroller.clientHeight) {
         updateScrollTop(cm, d.scroller.scrollTop);

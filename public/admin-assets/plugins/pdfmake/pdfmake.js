@@ -31161,7 +31161,7 @@ function DeflateState() {
   /* High water mark offset in window for initialized bytes -- bytes above
    * this are set to zero in order to avoid memory check warnings when
    * longest match routines access bytes past the input.  This is then
-   * updates to the new high water mark.
+   * update to the new high water mark.
    */
 }
 
@@ -34348,7 +34348,7 @@ function bi_flush(s) {
  *    above are the tree nodes sorted by increasing frequency.
  * OUT assertions: the field len is set to the optimal bit length, the
  *     array bl_count contains the frequencies for each bit length.
- *     The length opt_len is updates; static_len is also updates if stree is
+ *     The length opt_len is update; static_len is also update if stree is
  *     not null.
  */
 function gen_bitlen(s, desc)
@@ -34749,8 +34749,8 @@ function compress_block(s, ltree, dtree)
  * Update the total bit length for the current block.
  * IN assertion: the field freq is set for all tree elements.
  * OUT assertions: the fields len and code are set to the optimal bit length
- *     and corresponding code. The length opt_len is updates; static_len is
- *     also updates if stree is not null. The field max_code is set.
+ *     and corresponding code. The length opt_len is update; static_len is
+ *     also update if stree is not null. The field max_code is set.
  */
 function build_tree(s, desc)
 //    deflate_state *s;
@@ -78493,7 +78493,7 @@ TableProcessor.prototype.endRow = function (rowIndex, writer, pageBreaks) {
 		if (writer.context().page != ys[yi].page) {
 			writer.context().page = ys[yi].page;
 
-			//TODO: buggy, availableHeight should be updates on every pageChanged event
+			//TODO: buggy, availableHeight should be update on every pageChanged event
 			// TableProcessor should be pageChanged listener, instead of processRow
 			this.reservedAtBottom = 0;
 		}

@@ -147,8 +147,7 @@
                 "columns": [
                     {"data": "permission_id"},
                     {"data": "permission_name"},
-                    {"data": "created_date"},
-                    {"data": "last_updated"},
+                    {"data": "permission_code"},
 
                     {
                         "data":null,

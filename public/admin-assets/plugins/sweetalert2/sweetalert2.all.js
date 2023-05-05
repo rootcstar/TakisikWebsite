@@ -2659,7 +2659,7 @@
     return timer && (timer.running ? stopTimer() : resumeTimer());
   };
   /**
-   * Increase timer. Returns number of milliseconds of an updates timer.
+   * Increase timer. Returns number of milliseconds of an update timer.
    * If `timer` parameter isn't set, returns undefined.
    */
 

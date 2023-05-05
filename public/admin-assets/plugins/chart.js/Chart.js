@@ -2342,7 +2342,7 @@ var helpers = {
 
 	/**
 	 * Recursively deep copies `source` properties into `target` with the given `options`.
-	 * IMPORTANT: `target` is not cloned and will be updates with `source` properties.
+	 * IMPORTANT: `target` is not cloned and will be update with `source` properties.
 	 * @param {object} target - The target object in which all sources are merged into.
 	 * @param {object|object[]} source - Object(s) to merge into `target`.
 	 * @param {object} [options] - Merging options:
@@ -2378,7 +2378,7 @@ var helpers = {
 
 	/**
 	 * Recursively deep copies `source` properties into `target` *only* if not defined in target.
-	 * IMPORTANT: `target` is not cloned and will be updates with `source` properties.
+	 * IMPORTANT: `target` is not cloned and will be update with `source` properties.
 	 * @param {object} target - The target object in which all sources are merged into.
 	 * @param {object|object[]} source - Object(s) to merge into `target`.
 	 * @returns {object} The `target` object.
@@ -3818,7 +3818,7 @@ helpers$1.extend(DatasetController.prototype, {
 		}
 
 		// Re-sync meta data in case the user replaced the data array or if we missed
-		// any updates and so make sure that we handle number of datapoints changing.
+		// any update and so make sure that we handle number of datapoints changing.
 		me.resyncElements();
 	},
 
@@ -7266,7 +7266,7 @@ var core_layouts = {
 	},
 
 	/**
-	 * Sets (or updates) options on the given `item`.
+	 * Sets (or update) options on the given `item`.
 	 * @param {Chart} chart - the chart in which the item lives (or will be added to)
 	 * @param {ILayoutItem} item - the item to configure with the given options
 	 * @param {object} options - the new item options.
@@ -9248,7 +9248,7 @@ function initConfig(config) {
 	config = config || Object.create(null);
 
 	// Do NOT use mergeConfig for the data object because this method merges arrays
-	// and so would change references to labels and datasets, preventing data updates.
+	// and so would change references to labels and datasets, preventing data update.
 	var data = config.data = config.data || {};
 	data.datasets = data.datasets || [];
 	data.labels = data.labels || [];
@@ -9639,7 +9639,7 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 		// In case the entire data object changed
 		me.tooltip._data = me.data;
 
-		// Make sure dataset controllers are updates and new controllers are reset
+		// Make sure dataset controllers are update and new controllers are reset
 		var newControllers = me.buildOrUpdateControllers();
 
 		// Make sure all dataset controllers have correct meta data counts
@@ -9649,7 +9649,7 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 
 		me.updateLayout();
 
-		// Can only reset the new controllers after the scales have been updates
+		// Can only reset the new controllers after the scales have been update
 		if (me.options.animation && me.options.animation.duration) {
 			helpers$1.each(newControllers, function(controller) {
 				controller.reset();
@@ -9666,7 +9666,7 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 		// When we reset the tooltip, we need to clear it
 		me.lastActive = [];
 
-		// Do this before render so that any plugins that need final scale updates can use it
+		// Do this before render so that any plugins that need final scale update can use it
 		core_plugins.notify(me, 'afterUpdate');
 
 		me._layers.sort(compare2Level('z', '_idx'));
@@ -9699,7 +9699,7 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 		me._layers = [];
 		helpers$1.each(me.boxes, function(box) {
 			// _configure is called twice, once in core.scale.update and once here.
-			// Here the boxes are fully updates and at their final positions.
+			// Here the boxes are fully update and at their final positions.
 			if (box._configure) {
 				box._configure();
 			}
@@ -15412,7 +15412,7 @@ var Legend = core_element.extend({
 					lineWidths[lineWidths.length - (i > 0 ? 0 : 1)] = 0;
 				}
 
-				// Store the hitbox width and height here. Final position will be updates in `draw`
+				// Store the hitbox width and height here. Final position will be update in `draw`
 				hitboxes[i] = {
 					left: 0,
 					top: 0,
@@ -15450,7 +15450,7 @@ var Legend = core_element.extend({
 				currentColWidth = Math.max(currentColWidth, itemWidth);
 				currentColHeight += fontSize + vPadding;
 
-				// Store the hitbox width and height here. Final position will be updates in `draw`
+				// Store the hitbox width and height here. Final position will be update in `draw`
 				hitboxes[i] = {
 					left: 0,
 					top: 0,

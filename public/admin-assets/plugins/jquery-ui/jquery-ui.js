@@ -7414,7 +7414,7 @@ function Datepicker() {
 		onSelect: null, // Define a callback function when a date is selected
 		onChangeMonthYear: null, // Define a callback function when the month or year is changed
 		onClose: null, // Define a callback function when the datepicker is closed
-		onUpdateDatepicker: null, // Define a callback function when the datepicker is updates
+		onUpdateDatepicker: null, // Define a callback function when the datepicker is update
 		numberOfMonths: 1, // Number of months to show at a time
 		showCurrentAtPos: 0, // The position in multipe months at which to show the current month (starting at 0)
 		stepMonths: 1, // Number of months to step back/forward
@@ -17315,7 +17315,7 @@ $.widget( "ui.spinner", {
 				}
 			} );
 
-		// TODO: Right now button does not support classes this is already updates in button PR
+		// TODO: Right now button does not support classes this is already update in button PR
 		this._removeClass( this.buttons, "ui-corner-all" );
 
 		this._addClass( this.buttons.first(), "ui-spinner-button ui-spinner-up" );
@@ -18779,7 +18779,7 @@ $.widget( "ui.tooltip", {
 			return;
 		}
 
-		// Content can be updates multiple times. If the tooltip already
+		// Content can be update multiple times. If the tooltip already
 		// exists, then just update the content and bail.
 		tooltipData = this._find( target );
 		if ( tooltipData ) {

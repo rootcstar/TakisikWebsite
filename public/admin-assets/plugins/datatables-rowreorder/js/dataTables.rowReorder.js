@@ -54,7 +54,7 @@ var DataTable = $.fn.dataTable;
 /**
  * RowReorder provides the ability in DataTables to click and drag rows to
  * reorder them. When a row is dropped the data for the rows effected will be
- * updates to reflect the change. Normally this data point should also be the
+ * update to reflect the change. Normally this data point should also be the
  * column being sorted upon in the DataTable but this does not need to be the
  * case. RowReorder implements a "data swap" method - so the rows being
  * reordered take the value of the data point from the row that used to occupy
@@ -466,7 +466,7 @@ $.extend( RowReorder.prototype, {
 
 	/**
 	 * Mouse up event handler - release the event handlers and perform the
-	 * table updates
+	 * table update
 	 *
 	 * @param  {object} e Mouse event
 	 * @private

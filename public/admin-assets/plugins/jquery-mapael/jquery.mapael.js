@@ -525,7 +525,7 @@
          *
          * @param id the id of the element
          * @param type the type of the element (area, plot, link)
-         * @param elem object the element object (with mapElem), it will be updates
+         * @param elem object the element object (with mapElem), it will be update
          */
         initElem: function (id, type, elem) {
             var self = this;

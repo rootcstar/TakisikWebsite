@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\File;
 
 class AdminApiController extends Controller
 {
-    public function adminLogin(Request $request){
+    public function admin_login(Request $request){
         try {
             $data = $request->all();
             $validator = Validator::make($data, [
@@ -147,7 +147,7 @@ class AdminApiController extends Controller
                 return $resp;
             }
 
-            return response(['result' => 1, "msg" => "Success"], 200);
+            return response(['result' => 1, "msg" => "Kayıt başarıyla silindi"], 200);
         } catch (\Throwable $t) {
 
             return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
@@ -157,7 +157,6 @@ class AdminApiController extends Controller
 
 
     }
-
 
     public function insert_admin_user_type(Request $request)
     {
@@ -187,7 +186,7 @@ class AdminApiController extends Controller
                 return $resp;
             }
 
-            return response(['result' => 1, "msg" => "Success"], 200);
+            return response(['result' => 1, "msg" => "Kayıt başarıyla eklendi"], 200);
         } catch (\Throwable $t) {
 
             return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
@@ -226,7 +225,7 @@ class AdminApiController extends Controller
                 return $resp;
             }
 
-            return response(['result' => 1, "msg" => "Success"], 200);
+            return response(['result' => 1, "msg" => "Kayıt başarıyla silindi"], 200);
         } catch (\Throwable $t) {
 
             return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
@@ -390,7 +389,7 @@ class AdminApiController extends Controller
                 ],
                 'phone' => [
                     "required",
-                    "digits:10",
+                    'digits_between:10,11',
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                 ],
                 'password' => [
@@ -403,6 +402,11 @@ class AdminApiController extends Controller
                     "numeric",
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                     new CheckIfAdminUserTypeExists(),
+                ],
+                'is_active' => [
+                    "required",
+                    "boolean",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                 ],
                 'title' => [
                     "required",
@@ -435,17 +439,10 @@ class AdminApiController extends Controller
         }
     }
 
-    public function updateAdminUser(Request $request)
-    {
-
+    public function update_admin_user(Request $request){
         try {
             $data = $request->all();
             $validator = Validator::make($data, [
-                'admin_id' => [
-                    "required",
-                    "integer",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
                 'first_name' => [
                     "required",
                     "string",
@@ -456,14 +453,15 @@ class AdminApiController extends Controller
                     "string",
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                 ],
-                'phone' => [
-                    "required",
-                    "string",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
                 'email' => [
                     "required",
                     "email",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+
+                ],
+                'phone' => [
+                    "required",
+                    'digits_between:10,11',
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                 ],
                 'password' => [
@@ -471,15 +469,33 @@ class AdminApiController extends Controller
                     "string",
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                 ],
+                'admin_user_type_id' => [
+                    "required",
+                    "numeric",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                    new CheckIfAdminUserTypeExists(),
+                ],
+                'is_active' => [
+                    "required",
+                    "boolean",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'title' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ]
             ]);
 
             if ($validator->fails()) {
                 return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
             }
+
             $data['password'] = fiki_encrypt($data['password']);
 
             try {
-                DB::table('admin_users')->where("admin_id", $data['admin_id'])->update($data);
+
+                AdminUser::where('admin_id',$data['admin_id'])->update($data);
 
             } catch (QueryException $e) {
 
@@ -489,12 +505,10 @@ class AdminApiController extends Controller
 
             return response(['result' => 1, 'msg' => 'Kayıt başarıyla güncellendi.']);
 
-        } catch (\Exception $e) { // 'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__
-            return response(['result' => -997, 'msg' => 'Bir hata oluştu. Lütfen developer ile iletişime geçiniz.']);
+        } catch (\Exception $e) { // 'msg' => 'Bir hata oluştu. Lütfen developer ile iletişime geçiniz.'
+            return response(['result' => -997, 'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__]);
 
         }
-
-
     }
 
     public function addTag(Request $request){

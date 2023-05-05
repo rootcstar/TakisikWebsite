@@ -2963,7 +2963,7 @@
     // compute center of the popper
     var center = reference[side] + reference[len] / 2 - arrowElementSize / 2;
 
-    // Compute the sideValue using the updates popper offsets
+    // Compute the sideValue using the update popper offsets
     // take popper margin in account because we don't have this info available
     var css = getStyleComputedProperty(data.instance.popper);
     var popperMarginSide = parseFloat(css['margin' + sideCapitalized]);
@@ -3933,9 +3933,9 @@
     onCreate: function onCreate() {},
 
     /**
-     * Callback called when the popper is updates. This callback is not called
+     * Callback called when the popper is update. This callback is not called
      * on the initialization/creation of the popper, but only on subsequent
-     * updates.<br />
+     * update.<br />
      * By default, it is set to no-op.<br />
      * Access Popper.js instance with `data.instance`.
      * @prop {onUpdate}

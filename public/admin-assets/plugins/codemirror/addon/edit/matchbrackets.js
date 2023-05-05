@@ -80,7 +80,7 @@
   }
 
   function matchBrackets(cm, autoclear, config) {
-    // Disable brace matching in long lines, since it'll cause hugely slow updates
+    // Disable brace matching in long lines, since it'll cause hugely slow update
     var maxHighlightLen = cm.state.matchBrackets.maxHighlightLineLength || 1000,
       highlightNonMatching = config && config.highlightNonMatching;
     var marks = [], ranges = cm.listSelections();

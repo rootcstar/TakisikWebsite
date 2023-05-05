@@ -798,7 +798,7 @@
 		 * Update a table cell or row - this method will accept either a single value to
 		 * update the cell with, an array of values with one element for each column or
 		 * an object in the same format as the original data source. The function is
-		 * self-referencing in order to make the multi column updates easier.
+		 * self-referencing in order to make the multi column update easier.
 		 *  @param {object|array|string} mData Data to update the cell/row with
 		 *  @param {node|int} mRow TR element you want to update or the aoData index
 		 *  @param {int} [iColumn] The column to update, give as null or undefined to
@@ -11633,7 +11633,7 @@
 			 * This string gives information to the end user about the information
 			 * that is current on display on the page. The following tokens can be
 			 * used in the string and will be dynamically replaced as the table
-			 * display updates. This tokens can be placed anywhere in the string, or
+			 * display update. This tokens can be placed anywhere in the string, or
 			 * removed as needed by the language requires:
 			 *
 			 * * `\_START\_` - Display index of the first record on the current page
@@ -11685,7 +11685,7 @@
 			/**
 			 * When a user filters the information in a table, this string is appended
 			 * to the information (`info`) to give an idea of how strong the filtering
-			 * is. The variable _MAX_ is dynamically updates.
+			 * is. The variable _MAX_ is dynamically update.
 			 *  @type string
 			 *  @default (filtered from _MAX_ total entries)
 			 *

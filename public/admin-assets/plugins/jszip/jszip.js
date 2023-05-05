@@ -2266,7 +2266,7 @@ function GenericWorker(name) {
     this.isPaused = true;
     // true if the stream is finished (and should not do anything), false otherwise
     this.isFinished = false;
-    // true if the stream is locked to prevent further structure updates (pipe), false otherwise
+    // true if the stream is locked to prevent further structure update (pipe), false otherwise
     this.isLocked = false;
     // the event listeners
     this._listeners = {
@@ -2472,7 +2472,7 @@ GenericWorker.prototype = {
     },
 
     /**
-     * Lock the stream to prevent further updates on the workers chain.
+     * Lock the stream to prevent further update on the workers chain.
      * After calling this method, all calls to pipe will fail.
      */
     lock: function () {
@@ -2637,7 +2637,7 @@ function StreamHelper(worker, outputType, mimeType) {
         utils.checkSupport(internalType);
         this._worker = worker.pipe(new ConvertWorker(internalType));
         // the last workers can be rewired without issues but we need to
-        // prevent any updates on previous workers.
+        // prevent any update on previous workers.
         worker.lock();
     } catch(e) {
         this._worker = new GenericWorker("error");
@@ -3112,7 +3112,7 @@ function identity(input) {
  * Fill in an array with a string.
  * @param {String} str the string to use.
  * @param {Array|ArrayBuffer|Uint8Array|Buffer} array the array to fill in (will be mutated).
- * @return {Array|ArrayBuffer|Uint8Array|Buffer} the updates array.
+ * @return {Array|ArrayBuffer|Uint8Array|Buffer} the update array.
  */
 function stringToArrayLike(str, array) {
     for (var i = 0; i < str.length; ++i) {
@@ -3238,7 +3238,7 @@ exports.applyFromCharCode = arrayLikeToString;
  * Copy the data from an array-like to an other array-like.
  * @param {Array|ArrayBuffer|Uint8Array|Buffer} arrayFrom the origin array.
  * @param {Array|ArrayBuffer|Uint8Array|Buffer} arrayTo the destination array which will be mutated.
- * @return {Array|ArrayBuffer|Uint8Array|Buffer} the updates destination array.
+ * @return {Array|ArrayBuffer|Uint8Array|Buffer} the update destination array.
  */
 function arrayLikeToArrayLike(arrayFrom, arrayTo) {
     for (var i = 0; i < arrayFrom.length; i++) {
@@ -7142,7 +7142,7 @@ function DeflateState() {
   /* High water mark offset in window for initialized bytes -- bytes above
    * this are set to zero in order to avoid memory check warnings when
    * longest match routines access bytes past the input.  This is then
-   * updates to the new high water mark.
+   * update to the new high water mark.
    */
 }
 
@@ -10357,7 +10357,7 @@ function bi_flush(s) {
  *    above are the tree nodes sorted by increasing frequency.
  * OUT assertions: the field len is set to the optimal bit length, the
  *     array bl_count contains the frequencies for each bit length.
- *     The length opt_len is updates; static_len is also updates if stree is
+ *     The length opt_len is update; static_len is also update if stree is
  *     not null.
  */
 function gen_bitlen(s, desc)
@@ -10758,8 +10758,8 @@ function compress_block(s, ltree, dtree)
  * Update the total bit length for the current block.
  * IN assertion: the field freq is set for all tree elements.
  * OUT assertions: the fields len and code are set to the optimal bit length
- *     and corresponding code. The length opt_len is updates; static_len is
- *     also updates if stree is not null. The field max_code is set.
+ *     and corresponding code. The length opt_len is update; static_len is
+ *     also update if stree is not null. The field max_code is set.
  */
 function build_tree(s, desc)
 //    deflate_state *s;

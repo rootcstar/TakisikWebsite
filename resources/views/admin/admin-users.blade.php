@@ -19,6 +19,7 @@
                         <table id="{{$table_id}}" class="table table-striped table-bordered" >
                             <thead>
                             <tr>
+                                <th>Güncelle</th>
                                 @foreach($keys as $key)
                                     <th>{{ LanguageChange(ucwords(str_replace("_"," ",$key))) }}</th>
                                 @endforeach
@@ -31,6 +32,7 @@
 
                             <tfoot>
                             <tr>
+                                <th>Güncelle</th>
                                 @foreach($keys as $key)
                                     <th>{{ LanguageChange(ucwords(str_replace("_"," ",$key))) }}</th>
                                 @endforeach
@@ -107,6 +109,15 @@
                 }],
                 "columns": [
 
+                    {
+                        "data":null,
+                        "className": 'text-center ',
+                        mRender: function (data, type, row) {
+                            return '<a  target="_blank" href="/admin/admin-users/update/'+row.admin_id+'">' +
+                                '<button type="button" class="btn btn-warning" >Güncelle</button>'
+                                    '</a>'
+                        }
+                    },
                     {"data": "admin_id"},
                     {"data": "first_name"},
                     {"data": "last_name"},
@@ -117,7 +128,7 @@
                         "data":null,
                         "className": 'text-center ',
                         mRender: function (data, type, row) {
-                            return '<button type="button" class="btn btn-primary" onclick="delete_admin_user('+row.admin_id+')"><i class="fas fa-trash"></i></button>'
+                            return '<button type="button" class="btn btn-danger" onclick="delete_admin_user('+row.admin_id+')"><i class="fas fa-trash"></i></button>'
                         }
                     },
 

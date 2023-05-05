@@ -12,7 +12,7 @@
             <!-- Logo -->
             <!-- ============================================================== -->
             <div class="navbar-brand">
-                <a href="index.html" class="logo">
+                <a href="index.html" class="logo text-center">
                     <!-- Logo icon -->
                     <b class="logo-icon">
                         <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
@@ -59,7 +59,7 @@
                 <!-- User profile and search -->
                 <!-- ============================================================== -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle waves-effect waves-dark pro-pic text-white" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background: #3c52d0;">
+                    <a class="nav-link dropdown-toggle waves-effect waves-dark pro-pic text-white" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background: #FF0080;">
                         <img src="{{asset('assets/img/user-placeholder.png')}}" alt="user" class="rounded-circle" width="40">
                         <span class="m-l-5 font-medium d-none d-sm-inline-block">{{Session::get('admin.username')}} <i class="mdi mdi-chevron-down"></i></span>
                     </a>

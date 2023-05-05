@@ -454,7 +454,7 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
       }
     }
 
-    // If this block is changed, it may need to be updates in GFM mode
+    // If this block is changed, it may need to be update in GFM mode
     if (ch === '`') {
       var previousFormatting = state.formatting;
       if (modeCfg.highlightFormatting) state.formatting = "code";

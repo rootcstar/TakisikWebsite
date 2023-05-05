@@ -1535,7 +1535,7 @@
             }
         };
         /**
-         * updates the options within the pane
+         * update the options within the pane
          *
          * @param draw a flag to define whether this has been called due to a draw event or not
          */
@@ -1551,7 +1551,7 @@
                 var colOpts = this.s.colOpts;
                 var selected = this.s.dtPane.rows({ selected: true }).data().toArray();
                 var rowData = this.s.rowData;
-                // Clear the pane in preparation for adding the updates search options
+                // Clear the pane in preparation for adding the update search options
                 this.s.dtPane.clear();
                 // If it is not a custom pane
                 if (this.colExists) {
@@ -2535,7 +2535,7 @@
                     deselectPresent = true;
                 }
             }
-            // Build an updates list based on any selections or deselections added
+            // Build an update list based on any selections or deselections added
             if (!selectPresent) {
                 this.s.selectionList = [];
             }

@@ -44,14 +44,16 @@ use App\Http\Middleware\AdminLoginControlMiddleware;
     Route::post('/api-get-category', [ApiController::class, 'get_category']);
 
 /**** LOGS ****/
-Route::post('/admin-login', [AdminApiController::class, 'adminLogin']);
+Route::post('/admin-login', [AdminApiController::class, 'admin_login'])->name('admin_login_api');
 
 Route::middleware([AdminLoginControlMiddleware::class])->group(function () {
     // ADMIN PANEL APIS'S
     Route::get('admin/fill-datatable', [AdminApiController::class, 'fill_datatable'])->name('fill_datatable_api');;
 
     Route::post('/admin/admin-user/create', [AdminApiController::class, 'insert_admin_user'])->name('new_admin_user_api');
+    Route::post('/admin/admin-user/update', [AdminApiController::class, 'update_admin_user'])->name('update_admin_user_api');
     Route::post('/admin/admin-user/delete', [AdminApiController::class, 'delete_admin_user'])->name('delete_admin_user_api');
+
     Route::post('/admin/permissions/get', [AdminApiController::class, 'get_permissions'])->name('get_permissions_api');
 
 
@@ -64,7 +66,6 @@ Route::middleware([AdminLoginControlMiddleware::class])->group(function () {
     Route::post('/add-sub-tag', [AdminApiController::class, 'addSubtag']);
 
     /**** UPDATE ****/
-    Route::post('/update-admin-user', [AdminApiController::class, 'updateAdminUser']);
     Route::post('/update-tag', [AdminApiController::class, 'updateTag']);
     Route::post('/update-sub-tag', [AdminApiController::class, 'updateSubtag']);
     Route::post('/update-tags-of-sub-tag', [AdminApiController::class, 'updateTagsOfSubtag']);

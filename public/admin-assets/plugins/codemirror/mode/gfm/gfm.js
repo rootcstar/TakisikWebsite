@@ -54,7 +54,7 @@ CodeMirror.defineMode("gfm", function(config, modeConfig) {
         state.codeBlock = true;
         return null;
       }
-      // If this block is changed, it may need to be updates in Markdown mode
+      // If this block is changed, it may need to be update in Markdown mode
       if (stream.peek() === '`') {
         stream.next();
         var before = stream.pos;

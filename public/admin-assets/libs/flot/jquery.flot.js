@@ -144,7 +144,7 @@ Licensed under the MIT license.
                     mouseActiveRadius: 10 // how far the mouse can be away to activate an item
                 },
                 interaction: {
-                    redrawOverlayInterval: 1000/60 // time between updates, -1 means in same flow
+                    redrawOverlayInterval: 1000/60 // time between update, -1 means in same flow
                 },
                 hooks: {}
             },
@@ -2093,9 +2093,9 @@ Licensed under the MIT license.
                 radius = series.points.radius,
                 symbol = series.points.symbol;
 
-            // If the user sets the line width to 0, we change it to a very 
+            // If the user sets the line width to 0, we change it to a very
             // small value. A line width of 0 seems to force the default of 1.
-            // Doing the conditional here allows the shadow setting to still be 
+            // Doing the conditional here allows the shadow setting to still be
             // optional even with a lineWidth of 0.
 
             if( lw == 0 )

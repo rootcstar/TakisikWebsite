@@ -7748,7 +7748,7 @@ var defaultOptions = {
     }
   },
   processingmultiple: function processingmultiple() {},
-  // Called whenever the upload progress gets updates.
+  // Called whenever the upload progress gets update.
   // Receives `file`, `progress` (percentage 0-100) and `bytesSent`.
   // To get the total number of bytes of the file, use `file.size`
   uploadprogress: function uploadprogress(file, progress, bytesSent) {
@@ -7768,7 +7768,7 @@ var defaultOptions = {
       }
     }
   },
-  // Called whenever the total upload progress gets updates.
+  // Called whenever the total upload progress gets update.
   // Called with totalUploadProgress (0-100), totalBytes and totalBytesSent
   totaluploadprogress: function totaluploadprogress() {},
   // Called just before the file is sent. Gets the `xhr` object as second

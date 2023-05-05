@@ -228,7 +228,7 @@ $.extend( Responsive.prototype, {
 
 			// Redraw the details box on each draw which will happen if the data
 			// has changed. This is used until DataTables implements a native
-			// `updates` event for rows
+			// `update` event for rows
 			dt.on( 'draw.dtr', function () {
 				that._redrawChildren();
 			} );

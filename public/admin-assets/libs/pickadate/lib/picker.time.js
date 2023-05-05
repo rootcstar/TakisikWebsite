@@ -162,7 +162,7 @@ TimePicker.prototype.set = function( type, value, options ) {
         return value
     }).pop()
 
-    // Check if we need to cascade through more updates.
+    // Check if we need to cascade through more update.
     if ( type == 'select' ) {
         clock.set( 'highlight', clockItem.select, options )
     }

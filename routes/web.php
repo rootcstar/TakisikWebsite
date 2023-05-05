@@ -47,15 +47,17 @@ Route::middleware([LoginControlMiddleware::class])->group(function() {
 //ADMIN URLS
 Route::middleware([AdminLoginControlMiddleware::class])->group(function() {
 
-    Route::get('/admin', [WebsiteController::class, 'get_admin_dashboard'])->name('admin_panel_dashboard');
-    Route::get('/admin/admin-users', [WebsiteController::class, 'get_admin_users'])->name('admin_panel_admin_users');
-    Route::get('/admin/admin-users/new', [WebsiteController::class, 'get_new_admin_user'])->name('admin_panel_new_admin_user');
+    Route::get('/admin', [AdminWebsiteController::class, 'get_admin_dashboard'])->name('admin_panel_dashboard');
 
-    Route::get('/admin/permission-types', [WebsiteController::class, 'get_permission_types'])->name('admin_panel_permission_types');
-    Route::get('/admin/permission-types/new', [WebsiteController::class, 'get_new_permission_type'])->name('admin_panel_new_permission_type');
+    Route::get('/admin/admin-users', [AdminWebsiteController::class, 'get_admin_users'])->name('admin_panel_admin_users');
+    Route::get('/admin/admin-users/update/{pri_id}', [AdminWebsiteController::class, 'get_update_admin_user']);
+    Route::get('/admin/admin-users/new', [AdminWebsiteController::class, 'get_new_admin_user'])->name('admin_panel_new_admin_user');
 
-    Route::get('/admin/admin-user-types', [WebsiteController::class, 'get_admin_user_types'])->name('admin_panel_admin_user_types');
-    Route::get('/admin/admin-user-types/new', [WebsiteController::class, 'get_new_admin_user_type'])->name('admin_panel_new_admin_user_type');
+    Route::get('/admin/permission-types', [AdminWebsiteController::class, 'get_permission_types'])->name('admin_panel_permission_types');
+    Route::get('/admin/permission-types/new', [AdminWebsiteController::class, 'get_new_permission_type'])->name('admin_panel_new_permission_type');
+
+    Route::get('/admin/admin-user-types', [AdminWebsiteController::class, 'get_admin_user_types'])->name('admin_panel_admin_user_types');
+    Route::get('/admin/admin-user-types/new', [AdminWebsiteController::class, 'get_new_admin_user_type'])->name('admin_panel_new_admin_user_type');
 
 
 

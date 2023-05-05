@@ -1982,7 +1982,7 @@
 
                 /**
                  * Add OverlayScrollbars instance to the auto update loop. Only successful if the instance isn't already added.
-                 * @param instance The instance which shall be updates in a loop automatically.
+                 * @param instance The instance which shall be update in a loop automatically.
                  */
                 _base.add = function (instance) {
                     if (_inArray(instance, _loopingInstances) === -1) {
@@ -1998,7 +1998,7 @@
 
                 /**
                  * Remove OverlayScrollbars instance from the auto update loop. Only successful if the instance was added before.
-                 * @param instance The instance which shall be updates in a loop automatically.
+                 * @param instance The instance which shall be update in a loop automatically.
                  */
                 _base.remove = function (instance) {
                     var index = _inArray(instance, _loopingInstances);
@@ -4902,7 +4902,7 @@
                     var translateValue;
 
                     //DONT use the variable '_contentScrollSizeCache[scrollbarVars._w_h]' instead of '_viewportElement[0]['scroll' + scrollbarVars._Width_Height]'
-                    // because its a bit behind during the small delay when content size updates
+                    // because its a bit behind during the small delay when content size update
                     //(delay = mutationObserverContentLag, if its 0 then this var could be used)
                     var maxScroll = (_viewportElementNative[_strScroll + scrollbarVars._Width_Height] - _viewportElementNative['client' + scrollbarVars._Width_Height]) * (_rtlScrollBehavior.n && isRTLisHorizontal ? -1 : 1); //* -1 if rtl scroll max is negative
                     var getScrollRatio = function (base) {
@@ -5537,7 +5537,7 @@
                 /**
                  * Updates the plugin and DOM to the current options.
                  * This method should only be called if a update is 100% required.
-                 * @param force True if every property shall be updates and the cache shall be ignored.
+                 * @param force True if every property shall be update and the cache shall be ignored.
                  * !INTERNAL USAGE! : force can be a string "auto", "sync" or "zoom" too
                  * if "auto" then before a real update the content size and host element attributes gets checked, and if they changed only then the update method will be called.
                  * if "sync" then the async update process (MutationObserver or UpdateLoop) gets synchronized and a corresponding update takes place if one was needed due to pending changes.

@@ -546,7 +546,7 @@ $.fn.ajaxSubmit = function(options) {
             doSubmit();
         }
         else {
-            setTimeout(doSubmit, 10); // this lets dom updates render
+            setTimeout(doSubmit, 10); // this lets dom update render
         }
 
         var data, doc, domCheckCount = 50, callbackProcessed;

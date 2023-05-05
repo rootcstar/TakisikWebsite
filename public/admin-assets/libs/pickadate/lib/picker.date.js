@@ -171,7 +171,7 @@ DatePicker.prototype.set = function( type, value, options ) {
         return value
     }).pop()
 
-    // Check if we need to cascade through more updates.
+    // Check if we need to cascade through more update.
     if ( type == 'select' ) {
         calendar.set( 'highlight', calendarItem.select, options )
     }

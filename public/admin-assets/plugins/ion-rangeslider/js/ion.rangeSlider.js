@@ -470,7 +470,7 @@
     IonRangeSlider.prototype = {
 
         /**
-         * Starts or updates the plugin instance
+         * Starts or update the plugin instance
          *
          * @param [is_update] {boolean}
          */
