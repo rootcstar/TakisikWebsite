@@ -45,7 +45,7 @@ return [
         ],
         'tag_images' => [
             'driver' => 'local',
-            'root' => public_path().'/tag_images',
+            'root' => public_path().'/uploads/tag_images',
 
         ],
 

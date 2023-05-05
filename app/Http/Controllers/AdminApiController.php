@@ -6,7 +6,9 @@ use App\Models\AdminUser;
 use App\Models\AdminUserType;
 use App\Models\AdminUserTypePermission;
 use App\Models\PermissionType;
+use App\Models\Tag;
 use App\Rules\CheckIfAdminUserTypeExists;
+use App\Rules\CheckIfPermissionTypeExists;
 use App\Rules\Exist_Already_Email_AdminUser;
 use App\Rules\OnlyLetterRule;
 use Illuminate\Database\QueryException;
@@ -120,34 +122,40 @@ class AdminApiController extends Controller
 
     }
 
-    public function delete_admin_user(Request $request)
-    {
+    public function get_admin_user_types(Request $request){
+
+
 
         try{
             $data = $request->all();
             $validator = Validator::make($data, [
-                'admin_id' => [
+                'permission_id' => [
                     "required",
                     "numeric",
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                    new CheckIfPermissionTypeExists()
                 ],
             ]);
             if ($validator->fails()) {
-                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
+                $resp = response(['result'=>-1,"msg"=>$validator->errors()->first(),'error' => $validator->errors() ,"function"=>__FUNCTION__,"data"=>$data],400);
                 return $resp;
             }
 
-            try{
-                AdminUser::where('admin_id',$data['admin_id'])->delete();
+            $admin_user_types = AdminUserType::all();
+            foreach ($admin_user_types as $admin_user_type){
 
-            }catch (QueryException $e) {
+                $admin_user_type->is_checked = false;
+                $check_if_ts_checked = AdminUserTypePermission::where('admin_user_type_id',$admin_user_type->admin_user_type_id)
+                    ->where('permission_id',$data['permission_id'])->first();
+                if(!empty($check_if_ts_checked)){
+                    $admin_user_type->is_checked = true;
+                }
 
-                $function_name = getcwd();
-                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
-                return $resp;
             }
 
-            return response(['result' => 1, "msg" => "Kayıt başarıyla silindi"], 200);
+
+
+            return response(['result'=>1,"msg"=>"Success","html"=>view('admin.partials.admin_user_types')->with('admin_user_types',$admin_user_types)->render()],200);
         } catch (\Throwable $t) {
 
             return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
@@ -155,215 +163,6 @@ class AdminApiController extends Controller
 
         }
 
-
-    }
-
-    public function insert_admin_user_type(Request $request)
-    {
-
-        try{
-            $data = $request->all();
-            $validator = Validator::make($data, [
-                'admin_user_type_name' => [
-                    "required",
-                    "string",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-            ]);
-            if ($validator->fails()) {
-                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
-                return $resp;
-            }
-
-            try{
-
-                $created_record_id = AdminUserType::create($data)->admin_user_type_id;
-
-            }catch (QueryException $e) {
-
-                $function_name = getcwd();
-                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
-                return $resp;
-            }
-
-            return response(['result' => 1, "msg" => "Kayıt başarıyla eklendi"], 200);
-        } catch (\Throwable $t) {
-
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
-
-
-        }
-
-
-
-    }
-
-    public function delete_admin_user_type(Request $request)
-    {
-        try{
-            $data = $request->all();
-            $validator = Validator::make($data, [
-                'admin_user_type_id' => [
-                    "required",
-                    "numeric",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-            ]);
-            if ($validator->fails()) {
-                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
-                return $resp;
-            }
-
-            try{
-                AdminUserType::where('admin_user_type_id',$data['admin_user_type_id'])->delete();
-                AdminUserTypePermission::where('admin_user_type_id',$data['admin_user_type_id'])->delete();
-
-            }catch (QueryException $e) {
-
-                $function_name = getcwd();
-                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
-                return $resp;
-            }
-
-            return response(['result' => 1, "msg" => "Kayıt başarıyla silindi"], 200);
-        } catch (\Throwable $t) {
-
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
-
-
-        }
-
-
-    }
-
-    public function deleteRecord(Request $request)
-    {
-        try {
-            $data = $request->all();
-            $validator = Validator::make($data, [
-                'table_name' => [
-                    "required",
-                    "string",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-                'primary_key_id' => [ // User ID
-                    "required",
-                    "numeric",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ]
-
-            ]);
-
-            if ($validator->fails()) {
-                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
-            }
-
-            if($data['table_name'] == 'users'){ // Musteri silme
-
-                // Musteri Bilgilerinin kontrol edilip silinmesi
-
-                $billing_address_check = DB::select("SELECT * FROM user_billing_addresses WHERE user_id = '".$data['primary_key_id']."'");
-                if($billing_address_check != null || !empty($billing_address_check)){
-
-                    try{
-                        DB::table('user_billing_addresses')->where('user_id',$data['primary_key_id'])->delete();
-                    }catch(QueryException $e){
-                        return response(['result' => -5, 'message' => 'Query Error=>' . $e->getMessage()], 400);
-                    }
-                }
-
-                $shipping_address_check = DB::select("SELECT * FROM user_shipping_addresses WHERE user_id = '".$data['primary_key_id']."'");
-                if($shipping_address_check != null || !empty($shipping_address_check)){
-
-                    try{
-                        DB::table('user_shipping_addresses')->where('user_id',$data['primary_key_id'])->delete();
-                    }catch(QueryException $e){
-                        return response(['result' => -5, 'message' => 'Query Error=>' . $e->getMessage()], 400);
-                    }
-                }
-
-                $cards_check = DB::select("SELECT * FROM user_cards WHERE user_id = '".$data['primary_key_id']."'");
-                if($cards_check != null || !empty($cards_check)){
-                    try{
-                        DB::table('user_cards')->where('user_id',$data['primary_key_id'])->delete();
-                    }catch(QueryException $e){
-                        return response(['result' => -5, 'message' => 'Query Error=>' . $e->getMessage()], 400);
-                    }
-                }
-
-                $favs_check = DB::select("SELECT * FROM user_fav_items WHERE user_id = '".$data['primary_key_id']."'");
-                if($favs_check != null || !empty($favs_check)) {
-
-                    try{
-                        DB::table('user_fav_items')->where('user_id', $data['primary_key_id'])->delete();
-                    }catch(QueryException $e){
-                        return response(['result' => -5, 'message' => 'Query Error=>' . $e->getMessage()], 400);
-                    }
-                }
-
-                $discounts_check = DB::select("SELECT * FROM user_discounts WHERE user_id = '".$data['primary_key_id']."'");
-                if($discounts_check != null || !empty($discounts_check)){
-
-                    try{
-                        DB::table('user_discounts')->where('user_id',$data['primary_key_id'])->delete();
-                    }catch(QueryException $e){
-                        return response(['result' => -5, 'message' => 'Query Error=>' . $e->getMessage()], 400);
-                    }
-                }
-
-
-            }
-
-
-
-            $table_name = $data['table_name'];
-
-
-            $my_database = env('DB_DATABASE');// Finding primary key of table
-            $table_primary_key = DB::select("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '$my_database' AND TABLE_NAME = '$table_name' AND COLUMN_KEY = 'PRI';");
-
-            $photo_control = DB::select("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '$my_database' AND TABLE_NAME = '$table_name' AND ( COLUMN_NAME LIKE '%resmi%'
-                                                                                                                                                                           OR COLUMN_NAME LIKE '%foto%'
-                                                                                                                                                                           OR COLUMN_NAME LIKE '%resim%');");
-
-            if($photo_control != null || !empty($photo_control))
-            {
-                for($i=0; $i<count($photo_control); $i++)
-                {
-                    $column_name = $photo_control[$i]->COLUMN_NAME; // photo, resim. etc.
-
-                    // select all row of deleting record
-                    $selected_record = DB::select("SELECT * FROM $table_name WHERE " . $table_primary_key[0]->COLUMN_NAME . "=" . $data['primary_key_id'] . ";");
-
-                    $photo_path = explode('https://tuzenkimya.com/', $selected_record[0]->$column_name); // 0->tuzenkimya.com 1->photo path
-
-                    if (!File::exists(public_path(''.$photo_path[1].''))) {
-
-                        return response(['result' => -7, 'msg' => 'Üzgünüz resim dosyalarda bulunamadı.'], 200);
-
-                    }
-                    File::delete(public_path(''.$photo_path[1].''));
-                    /*    Delete Multiple files this way
-                          Storage::delete(['upload/test.png', 'upload/test2.png']);
-                      */
-
-                }
-
-            }
-
-            try{
-                DB::table($table_name)->where($table_primary_key[0]->COLUMN_NAME, $data['primary_key_id'])->delete();
-
-            }catch(QueryException $e){
-                return response(['result' => -5, 'message' => 'Query Error=>' . $e->getMessage()], 400);
-            }
-
-            return response(['result' => 1, 'msg' => 'Kayıt başarıyla silindi.'],200);
-
-        } catch (\Exception $e) { // 'msg' => 'Bir hata oluştu. Lütfen developer ile iletişime geçiniz'
-            return response(['result' => -997, 'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__]);
-
-        }
 
     }
 
@@ -419,7 +218,7 @@ class AdminApiController extends Controller
                 return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
             }
 
-            $data['password'] = fiki_encrypt($data['password']);
+
 
             try {
 
@@ -511,8 +310,339 @@ class AdminApiController extends Controller
         }
     }
 
-    public function addTag(Request $request){
-        try {
+    public function delete_admin_user(Request $request)
+    {
+
+        try{
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'admin_id' => [
+                    "required",
+                    "numeric",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+            ]);
+            if ($validator->fails()) {
+                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
+                return $resp;
+            }
+
+            try{
+                AdminUser::where('admin_id',$data['admin_id'])->delete();
+
+            }catch (QueryException $e) {
+
+                $function_name = getcwd();
+                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+                return $resp;
+            }
+
+            return response(['result' => 1, "msg" => "Kayıt başarıyla silindi"], 200);
+        } catch (\Throwable $t) {
+
+            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+
+
+        }
+
+
+    }
+
+    public function insert_permission_type(Request $request)
+    {
+
+        try{
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'permission_name' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'permission_code' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'admin_user_type_id_array' => [
+                    "required",
+                    "json",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+
+            ]);
+            if ($validator->fails()) {
+                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
+                return $resp;
+            }
+
+            $admin_user_type_id_array = json_decode($data['admin_user_type_id_array'],true);
+            if(!empty($admin_user_type_id_array)){
+                foreach ($admin_user_type_id_array as $admin_user_type_id) {
+                    // check admin user type exists
+                    $count = AdminUserType::where('admin_user_type_id', $admin_user_type_id)->count();
+                    if($count == 0){
+                        return response(['result' => -1, "msg" => "Admin User Type Not Found"], 400);
+                    }
+                }
+            }
+
+
+
+
+            try {
+                $create_data = [
+                    'permission_name' => $data['permission_name'],
+                    'permission_code' => $data['permission_code']
+                ];
+
+
+                $created_permission_id = PermissionType::create($create_data)->permission_id;
+
+            } catch (QueryException $e) {
+
+                $function_name = getcwd();
+                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+                return $resp;
+            }
+
+
+            $created_admin_user_type_permissions = [];
+
+            if(!empty($admin_user_type_id_array)){
+                foreach ($admin_user_type_id_array as $admin_user_type_id){
+
+
+                    try{
+                        $create_data = [
+                            'admin_user_type_id' => $admin_user_type_id,
+                            'permission_id' => $created_permission_id
+                        ];
+
+                        $created_record_id = AdminUserTypePermission::create($create_data)->record_id;
+                        array_push($created_admin_user_type_permissions,$created_record_id);
+                    } catch (QueryException $e) {
+                        PermissionType::where('permission_id',$created_permission_id)->delete();
+
+                        foreach ($created_admin_user_type_permissions as $created_admin_user_type_permission){
+                            AdminUserTypePermission::where('record_id',$created_admin_user_type_permission)->delete();
+                        }
+
+
+                        $function_name = getcwd();
+                        $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+                        return $resp;
+                    }
+                }
+
+
+            }
+
+
+            return response(['result' => 1, "msg" => "Success"], 200);
+        } catch (\Throwable $t) {
+
+            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+
+
+        }
+
+    }
+
+    public function delete_permission_type(Request $request)
+    {
+
+        try{
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'permission_id' => [
+                    "required",
+                    "numeric",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                    new CheckIfPermissionTypeExists()
+                ],
+            ]);
+            if ($validator->fails()) {
+                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
+                return $resp;
+            }
+
+            $check_if_already_assigned = AdminUserTypePermission::where('permission_id',$data['permission_id'])->count();
+            if($check_if_already_assigned > 0){
+                return response(['result' => -1, "msg" => "Please unassign this permission from all users before delete"], 400);
+            }
+
+            try {
+                PermissionType::where('permission_id',$data['permission_id'])->delete();
+                AdminUserTypePermission::where('permission_id',$data['permission_id'])->delete();
+            } catch (QueryException $e) {
+
+                $function_name = getcwd();
+                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+                return $resp;
+            }
+
+            return response(['result' => 1, "msg" => "Success"], 200);
+        } catch (\Throwable $t) {
+
+            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+
+
+        }
+
+
+    }
+
+    public function assign_permission_type(Request $request){
+
+        try{
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'permission_id' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                    new CheckIfPermissionTypeExists()
+                ],
+                'admin_user_type_id_array' => [
+                    "required",
+                    "json",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+
+            ]);
+            if ($validator->fails()) {
+                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
+                return $resp;
+            }
+
+
+            AdminUserTypePermission::where('permission_id',$data['permission_id'])->delete();
+
+            $created_admin_user_type_permissions = [];
+            $admin_user_type_id_array = json_decode($data['admin_user_type_id_array'],true);
+            foreach ($admin_user_type_id_array as $admin_user_type_id){
+
+
+
+
+                try{
+                    $create_data = [
+                        'admin_user_type_id' => $admin_user_type_id,
+                        'permission_id' => $data['permission_id']
+                    ];
+
+                    $created_record_id = AdminUserTypePermission::create($create_data)->record_id;
+                    array_push($created_admin_user_type_permissions,$created_record_id);
+                } catch (QueryException $e) {
+                    PermissionType::where('permission_id',$data['permission_id'])->delete();
+
+                    foreach ($created_admin_user_type_permissions as $created_admin_user_type_permission){
+                        AdminUserTypePermission::where('record_id',$created_admin_user_type_permission)->delete();
+                    }
+
+
+                    $function_name = getcwd();
+                    $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+                    return $resp;
+                }
+            }
+
+
+
+
+            return response(['result' => 1, "msg" => "Success"], 200);
+        } catch (\Throwable $t) {
+
+            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+
+
+        }
+
+    }
+
+    public function insert_admin_user_type(Request $request)
+    {
+
+        try{
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'admin_user_type_name' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+            ]);
+            if ($validator->fails()) {
+                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
+                return $resp;
+            }
+
+            try{
+
+                $created_record_id = AdminUserType::create($data)->admin_user_type_id;
+
+            }catch (QueryException $e) {
+
+                $function_name = getcwd();
+                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+                return $resp;
+            }
+
+            return response(['result' => 1, "msg" => "Kayıt başarıyla eklendi"], 200);
+        } catch (\Throwable $t) {
+
+            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+
+
+        }
+
+
+
+    }
+
+    public function delete_admin_user_type(Request $request)
+    {
+        try{
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'admin_user_type_id' => [
+                    "required",
+                    "numeric",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+            ]);
+            if ($validator->fails()) {
+                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
+                return $resp;
+            }
+
+            try{
+                AdminUserType::where('admin_user_type_id',$data['admin_user_type_id'])->delete();
+                AdminUserTypePermission::where('admin_user_type_id',$data['admin_user_type_id'])->delete();
+
+            }catch (QueryException $e) {
+
+                $function_name = getcwd();
+                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+                return $resp;
+            }
+
+            return response(['result' => 1, "msg" => "Kayıt başarıyla silindi"], 200);
+        } catch (\Throwable $t) {
+
+            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+
+
+        }
+
+
+    }
+
+    public function insert_tag(Request $request)
+    {
+
+        try{
             $data = $request->all();
             $validator = Validator::make($data, [
                 'tag_name' => [
@@ -525,14 +655,19 @@ class AdminApiController extends Controller
                     "boolean",
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                 ],
+                'display_name' => [
+                    "required",
+                    new OnlyLetterRule(),
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
                 'tag_image' => 'required|image|mimes:png,jpg,jpeg|max:2048|dimensions:ratio=1',
             ]);
-
             if ($validator->fails()) {
-                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
+                return $resp;
             }
 
-            $data['url_name'] = Str::slug($data['tag_name']);
+
 
             if ($request->hasFile('tag_image')) {
 
@@ -559,50 +694,30 @@ class AdminApiController extends Controller
             }
 
             try {
-                $data["tag_image"] = URL::asset('tag_images/' . $content_filename_small);
+                $data["tag_image"] = URL::asset('uploads/tag_images/' . $content_filename_small);
 
-
-                DB::table('tags')->insert($data);
+                Tag::create($data);
 
             } catch (QueryException $e) {
 
                 return response(['result' => -2, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
             }
 
-            $tags_table_data_array = array();
 
-            $tags_table_data['table_id'] =  'tags';
-            $my_database = env('DB_DATABASE');
-            $tags_table_columns = DB::select("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA =  '$my_database' AND TABLE_NAME = 'tags' ORDER BY ORDINAL_POSITION;");
+            return response(['result' => 1, 'msg' => 'Kayıt başarıyla eklendi.'],200);
 
-            $tags_columns_array = array();
-            foreach($tags_table_columns as $columns){
-                array_push($tags_columns_array,$columns->COLUMN_NAME); // for mysql
-            }
+        } catch (\Throwable $t) {
 
-            if(count($tags_table_columns) == 0){
-                return abort(404);
-            }
+            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
 
-            // return $table_columns;
-            $tags_table_data['table_fields'] = $tags_columns_array;
-            $tags_table_data['table_name'] = 'tags';
-            $tags_table_data['url_end'] = 'tags';
-
-
-            array_push($tags_table_data_array,$tags_table_data);
-
-            $table_content = view('admin.partials.show_table_content', ["table_data" => $tags_table_data_array])->render();
-
-            return response(['result' => 1, 'msg' => 'Kayıt başarıyla eklendi.', 'content' => $table_content]);
-
-        } catch (\Exception $e) { // 'msg' =>'Bir hata oluştu. Lütfen developer ile iletişime geçiniz.']
-            return response(['result' => -997, 'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__], 403);
 
         }
+
+
+
     }
 
-    public function updateTag(Request $request){
+    public function update_tag(Request $request){
         try {
             $data = $request->all();
             $validator = Validator::make($data, [
@@ -626,13 +741,49 @@ class AdminApiController extends Controller
                     "string",
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                 ],
+            ]);
+
+            if ($validator->fails()) {
+                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+            }
+
+
+            try {
+
+                Tag::where('tag_id',$data['tag_id'])->update($data);
+
+            } catch (QueryException $e) {
+
+                return response(['result' => -2, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+            }
+
+
+
+
+            return response(['result' => 1, 'msg' => 'Kayıt başarıyla güncellendi.']);
+
+        } catch (\Exception $e) { // 'msg' =>'Bir hata oluştu. Lütfen developer ile iletişime geçiniz.']
+            return response(['result' => -997, 'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__], 403);
+
+        }
+    }
+
+    public function update_tag_image(Request $request){
+        try {
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'tag_id' => [
+                    "required",
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
                 'tag_image' => 'required|image|mimes:png,jpg,jpeg|max:2048|dimensions:ratio=1',
             ]);
 
             if ($validator->fails()) {
                 return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
             }
-            $data['url_name'] = Str::slug($data['tag_name']);
+
 
             if ($request->hasFile('tag_image')) {
 
@@ -659,10 +810,10 @@ class AdminApiController extends Controller
             }
 
             try {
-                $data["tag_image"] = URL::asset('tag_images/' . $content_filename_small);
+                $data["tag_image"] = URL::asset('uploads/tag_images/' . $content_filename_small);
 
 
-                DB::table('tags')->where("tag_id", $data['tag_id'])->update($data);
+                Tag::where('tag_id',$data['tag_id'])->update($data);
 
             } catch (QueryException $e) {
 
@@ -679,7 +830,6 @@ class AdminApiController extends Controller
 
         }
     }
-
     public function addSubtag(Request $request){
         try {
             $data = $request->all();
@@ -904,6 +1054,137 @@ class AdminApiController extends Controller
             return response(['result' => -997, 'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__], 403);
 
         }
+    }
+
+    public function deleteRecord(Request $request)
+    {
+        try {
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'table_name' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'primary_key_id' => [ // User ID
+                    "required",
+                    "numeric",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ]
+
+            ]);
+
+            if ($validator->fails()) {
+                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+            }
+
+            if($data['table_name'] == 'users'){ // Musteri silme
+
+                // Musteri Bilgilerinin kontrol edilip silinmesi
+
+                $billing_address_check = DB::select("SELECT * FROM user_billing_addresses WHERE user_id = '".$data['primary_key_id']."'");
+                if($billing_address_check != null || !empty($billing_address_check)){
+
+                    try{
+                        DB::table('user_billing_addresses')->where('user_id',$data['primary_key_id'])->delete();
+                    }catch(QueryException $e){
+                        return response(['result' => -5, 'message' => 'Query Error=>' . $e->getMessage()], 400);
+                    }
+                }
+
+                $shipping_address_check = DB::select("SELECT * FROM user_shipping_addresses WHERE user_id = '".$data['primary_key_id']."'");
+                if($shipping_address_check != null || !empty($shipping_address_check)){
+
+                    try{
+                        DB::table('user_shipping_addresses')->where('user_id',$data['primary_key_id'])->delete();
+                    }catch(QueryException $e){
+                        return response(['result' => -5, 'message' => 'Query Error=>' . $e->getMessage()], 400);
+                    }
+                }
+
+                $cards_check = DB::select("SELECT * FROM user_cards WHERE user_id = '".$data['primary_key_id']."'");
+                if($cards_check != null || !empty($cards_check)){
+                    try{
+                        DB::table('user_cards')->where('user_id',$data['primary_key_id'])->delete();
+                    }catch(QueryException $e){
+                        return response(['result' => -5, 'message' => 'Query Error=>' . $e->getMessage()], 400);
+                    }
+                }
+
+                $favs_check = DB::select("SELECT * FROM user_fav_items WHERE user_id = '".$data['primary_key_id']."'");
+                if($favs_check != null || !empty($favs_check)) {
+
+                    try{
+                        DB::table('user_fav_items')->where('user_id', $data['primary_key_id'])->delete();
+                    }catch(QueryException $e){
+                        return response(['result' => -5, 'message' => 'Query Error=>' . $e->getMessage()], 400);
+                    }
+                }
+
+                $discounts_check = DB::select("SELECT * FROM user_discounts WHERE user_id = '".$data['primary_key_id']."'");
+                if($discounts_check != null || !empty($discounts_check)){
+
+                    try{
+                        DB::table('user_discounts')->where('user_id',$data['primary_key_id'])->delete();
+                    }catch(QueryException $e){
+                        return response(['result' => -5, 'message' => 'Query Error=>' . $e->getMessage()], 400);
+                    }
+                }
+
+
+            }
+
+
+
+            $table_name = $data['table_name'];
+
+
+            $my_database = env('DB_DATABASE');// Finding primary key of table
+            $table_primary_key = DB::select("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '$my_database' AND TABLE_NAME = '$table_name' AND COLUMN_KEY = 'PRI';");
+
+            $photo_control = DB::select("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '$my_database' AND TABLE_NAME = '$table_name' AND ( COLUMN_NAME LIKE '%resmi%'
+                                                                                                                                                                           OR COLUMN_NAME LIKE '%foto%'
+                                                                                                                                                                           OR COLUMN_NAME LIKE '%resim%');");
+
+            if($photo_control != null || !empty($photo_control))
+            {
+                for($i=0; $i<count($photo_control); $i++)
+                {
+                    $column_name = $photo_control[$i]->COLUMN_NAME; // photo, resim. etc.
+
+                    // select all row of deleting record
+                    $selected_record = DB::select("SELECT * FROM $table_name WHERE " . $table_primary_key[0]->COLUMN_NAME . "=" . $data['primary_key_id'] . ";");
+
+                    $photo_path = explode('https://tuzenkimya.com/', $selected_record[0]->$column_name); // 0->tuzenkimya.com 1->photo path
+
+                    if (!File::exists(public_path(''.$photo_path[1].''))) {
+
+                        return response(['result' => -7, 'msg' => 'Üzgünüz resim dosyalarda bulunamadı.'], 200);
+
+                    }
+                    File::delete(public_path(''.$photo_path[1].''));
+                    /*    Delete Multiple files this way
+                          Storage::delete(['upload/test.png', 'upload/test2.png']);
+                      */
+
+                }
+
+            }
+
+            try{
+                DB::table($table_name)->where($table_primary_key[0]->COLUMN_NAME, $data['primary_key_id'])->delete();
+
+            }catch(QueryException $e){
+                return response(['result' => -5, 'message' => 'Query Error=>' . $e->getMessage()], 400);
+            }
+
+            return response(['result' => 1, 'msg' => 'Kayıt başarıyla silindi.'],200);
+
+        } catch (\Exception $e) { // 'msg' => 'Bir hata oluştu. Lütfen developer ile iletişime geçiniz'
+            return response(['result' => -997, 'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__]);
+
+        }
+
     }
 
     public function fill_datatable(Request $request){

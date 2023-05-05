@@ -6,5 +6,5 @@ Session::forget('shopping_cart.3');*/
 
 
 
-echo fiki_decrypt('NWlnVWxZT01NZDZDL3A2OXhUcWRUZz09')
+echo Str::slug('TOKA k', );
 ?>

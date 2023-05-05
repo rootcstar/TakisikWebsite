@@ -13,7 +13,7 @@
                             <div class="col-md-6 form-group">
                                 <div class="form-floating">
                                     <label for="floatingName">{{LanguageChange('First Name')}}</label>
-                                    <input type="text" class="form-control input-fields" id="first_name"  pattern="[a-zA-Z]{2}[a-zA-Z ]{1,30}"
+                                    <input type="text" class="form-control input-fields" id="first_name"  pattern="[a-zA-ZğüşöçĞÜŞÖÇİ]{2}[a-zA-ZğüşöçĞÜŞÖÇİ ]{1,30}"
                                            placeholder="Lütfen doldurunuz" required>
                                     <div class="invalid-feedback"> Zorunlu alan. Min 3 harf</div>
                                 </div>
@@ -21,7 +21,7 @@
                             <div class="col-md-6 form-group">
                                 <div class="form-floating">
                                     <label for="floatingName">{{LanguageChange('Last Name')}}</label>
-                                    <input type="text" class="form-control input-fields" id="last_name" pattern="[a-zA-Z]{2}[a-zA-Z ]{1,30}"
+                                    <input type="text" class="form-control input-fields" id="last_name" pattern="[a-zA-ZğüşöçĞÜŞÖÇİ]{2}[a-zA-ZğüşöçĞÜŞÖÇİ ]{1,30}"
                                            placeholder="Lütfen doldurunuz" required>
                                     <div class="invalid-feedback"> Zorunlu alan.. Min 3 harf</div>
                                 </div>
@@ -51,7 +51,7 @@
                             <div class="col-md-6 form-group">
                                 <div class="form-floating">
                                     <label for="title">{{LanguageChange('Title')}}</label>
-                                    <input type="title" class="form-control input-fields" id="title" placeholder="Lütfen doldurunuz"  pattern="[a-zA-Z0-9 .,]{1,30}" required>
+                                    <input type="title" class="form-control input-fields" id="title" placeholder="Lütfen doldurunuz"  pattern="[a-zA-Z0-9ğüşöçĞÜŞÖÇİ]{1,30}" required>
                                     <div class="invalid-feedback"> Zorunlu alan. Sadece yazı, rakam ve bazı özel karakterler (.,)</div>
                                 </div>
                             </div>

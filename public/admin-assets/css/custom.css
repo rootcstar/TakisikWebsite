@@ -1,3 +1,11 @@
 .auth-wrapper .auth-box{
     border-radius: 8px;
 }
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove{
+    color: white !important;
+    background-color: #ff0080 !important;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice{
+    background-color: #ff0080 !important;
+    border: none !important;
+}

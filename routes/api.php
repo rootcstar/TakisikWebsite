@@ -53,20 +53,25 @@ Route::middleware([AdminLoginControlMiddleware::class])->group(function () {
     Route::post('/admin/admin-user/create', [AdminApiController::class, 'insert_admin_user'])->name('new_admin_user_api');
     Route::post('/admin/admin-user/update', [AdminApiController::class, 'update_admin_user'])->name('update_admin_user_api');
     Route::post('/admin/admin-user/delete', [AdminApiController::class, 'delete_admin_user'])->name('delete_admin_user_api');
-
     Route::post('/admin/permissions/get', [AdminApiController::class, 'get_permissions'])->name('get_permissions_api');
 
+    Route::post('/admin/permission-type/create', [AdminApiController::class, 'insert_permission_type'])->name('new_permission_type_api');
+    Route::post('/admin/permission-type/delete', [AdminApiController::class, 'delete_permission_type'])->name('delete_permission_type_api');
+    Route::post('/admin/permission-type/assign', [AdminApiController::class, 'assign_permission_type'])->name('assign_permission_type_api');
+    Route::post('/admin/admin-user-types/get', [AdminApiController::class, 'get_admin_user_types'])->name('get_admin_user_types_api');
 
     Route::post('/admin/admin-user-type/create', [AdminApiController::class, 'insert_admin_user_type'])->name('new_admin_user_type_api');
     Route::post('/admin/admin-user-type/delete', [AdminApiController::class, 'delete_admin_user_type'])->name('delete_admin_user_type_api');
 
+    Route::post('/admin/tag/create', [AdminApiController::class, 'insert_tag'])->name('new_tag_api');
+    Route::post('/admin/tag/update', [AdminApiController::class, 'update_tag'])->name('update_tag_api');
+    Route::post('/admin/tag/update-image', [AdminApiController::class, 'update_tag_image'])->name('update_tag_image_api');
+
     /**** ADD ****/
 
-    Route::post('/add-tag', [AdminApiController::class, 'addTag']);
     Route::post('/add-sub-tag', [AdminApiController::class, 'addSubtag']);
 
     /**** UPDATE ****/
-    Route::post('/update-tag', [AdminApiController::class, 'updateTag']);
     Route::post('/update-sub-tag', [AdminApiController::class, 'updateSubtag']);
     Route::post('/update-tags-of-sub-tag', [AdminApiController::class, 'updateTagsOfSubtag']);
 

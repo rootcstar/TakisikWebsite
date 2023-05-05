@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\AdminUser;
 use App\Models\AdminUserType;
 use App\Models\PermissionType;
+use App\Models\SubTag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Tag;
 use Session;
 
 class AdminWebsiteController extends Controller
@@ -116,6 +118,53 @@ class AdminWebsiteController extends Controller
     public function get_new_admin_user_type()
     {
         return view('admin.new.new-admin-user-type');
+    }
+
+    public function get_tags(){
+
+        $keys = [
+            'tag_id',
+            'tag_name',
+            'tag_image',
+            'is_active',
+        ];
+        $data = Tag::select($keys)->get();
+
+        $second_keys = [
+            'sub_tag_id',
+            'sub_tag_name',
+            'is_active',
+        ];
+        $second_data = SubTag::select($second_keys)->get();
+
+        return view('admin.tags')
+            ->with('table_id', 'tags')
+            ->with('title', 'Kategoriler')
+            ->with('keys', $keys)
+            ->with('data', $data)
+            ->with('second_table_id', 'sub_tags')
+            ->with('second_title', 'Alt Kategoriler')
+            ->with('second_keys', $second_keys)
+            ->with('second_data', $second_data)
+            ->with('new_button_name', 'Yeni Ekle');
+
+
+    }
+
+
+    public function get_update_tag($pri_id){
+
+        $data = Tag::where('tag_id',$pri_id)->first();
+
+        return view('admin.update.update-tag')
+            ->with('data',$data)
+            ->with('title','Kategori Güncelle')
+            ->with('update_button_name','Güncelle');
+    }
+
+    public function get_new_tag()
+    {
+        return view('admin.new.new-tag');
     }
 
 

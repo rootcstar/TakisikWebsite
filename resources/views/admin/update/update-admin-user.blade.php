@@ -13,7 +13,7 @@
                             <div class="col-md-6 form-group">
                                 <div class="form-floating">
                                     <label for="floatingName">{{LanguageChange('First Name')}}</label>
-                                    <input type="text" class="form-control input-fields" id="first_name"  pattern="[a-zA-Z]{2}[a-zA-Z ]{1,30}"
+                                    <input type="text" class="form-control input-fields" id="first_name"  pattern="[a-zA-ZğüşöçĞÜŞÖÇİ]{2}[a-zA-ZğüşöçĞÜŞÖÇİ ]{1,30}"
                                            value="{{$data['first_name']}}" required>
                                     <div class="invalid-feedback"> Zorunlu alan. Min 3 harf</div>
                                 </div>
@@ -21,7 +21,7 @@
                             <div class="col-md-6 form-group">
                                 <div class="form-floating">
                                     <label for="floatingName">{{LanguageChange('Last Name')}}</label>
-                                    <input type="text" class="form-control input-fields" id="last_name" pattern="[a-zA-Z]{2}[a-zA-Z ]{1,30}"
+                                    <input type="text" class="form-control input-fields" id="last_name" pattern="[a-zA-ZğüşöçĞÜŞÖÇİ]{2}[a-zA-ZğüşöçĞÜŞÖÇİ ]{1,30}"
                                            value="{{$data['first_name']}}" required>
                                     <div class="invalid-feedback"> Zorunlu alan.. Min 3 harf</div>
                                 </div>
@@ -51,7 +51,7 @@
                             <div class="col-md-6 form-group">
                                 <div class="form-floating">
                                     <label for="title">{{LanguageChange('Title')}}</label>
-                                    <input type="title" class="form-control input-fields" id="title" value="{{$data['title']}}"  pattern="[a-zA-Z0-9 .,]{1,30}" required>
+                                    <input type="title" class="form-control input-fields" id="title" value="{{$data['title']}}"  pattern="[a-zA-Z0-9ğüşöçĞÜŞÖÇİ .,-]{1,30}" required>
                                     <div class="invalid-feedback"> Zorunlu alan. Sadece yazı, rakam ve bazı özel karakterler (.,)</div>
                                 </div>
                             </div>
@@ -64,7 +64,7 @@
 
                                         <option value="" selected>Lütfen seçiniz</option>
                                         @foreach (\App\Models\AdminUserType::all() as $user_type)
-                                            <option value="{{ $user_type->admin_user_type_id }}">{{ $user_type->admin_user_type_name }}</option>
+                                            <option value="{{ $user_type->admin_user_type_id }}" @php echo ($user_type->admin_user_type_id == $data['admin_user_type_id']) ? 'selected' : '' @endphp>{{ $user_type->admin_user_type_name }}</option>
                                         @endforeach
                                     </select>
                                     <div class="invalid-feedback"> Zorunlu alan</div>
@@ -83,6 +83,31 @@
 
                             <div class="col-md-6 form-group" id="permissions">
 
+                                <ul class="list-group">
+                                    @php
+                                        $permission_types = \App\Models\AdminUserTypePermission::where('admin_user_type_id',$data['admin_user_type_id'])->get();
+                                        foreach ($permission_types as $permission_type){
+                                             $perm = \App\Models\PermissionType::where('permission_id',$permission_type->permission_id)->first();
+                                             $permission_type->permission_name = $perm->permission_name;
+                                         }
+                                    @endphp
+                                    @if($permission_types->isEmpty())
+                                        <li class="list-group-item">İzin bulanamadı</li>
+                                    @else
+                                        <li class="list-group-item">İzinler</li>
+
+                                    @endif
+                                    @foreach($permission_types as $permission_type)
+                                        <li class="list-group-item">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" name="permissions" value="{{$permission_type->permission_id}}" checked readonly>
+                                                <label class="custom-control-label" for="customCheck3">{{ $permission_type->permission_name }}</label>
+                                            </div>
+                                        </li>
+                                    @endforeach
+
+
+                                </ul>
 
                             </div>
 
@@ -169,7 +194,56 @@
 
         });
 
+        function display_permissions() {
 
+            var admin_user_type_id = $('#admin_user_type_id').find(':selected').val();
+            if (admin_user_type_id == '') {
+                $('#permissions').html("");
+
+                return;
+            }
+
+            show_loader();
+            let formData = new FormData();
+            formData.append('admin_user_type_id', admin_user_type_id);
+
+            fetch('{{ route('get_permissions_api') }}', {
+
+                method: "POST",
+                body: formData
+
+            })
+                .then(response => {
+                    if (response.status == 301) {
+                        window.location = '{{route('admin_panel_logout')}}';
+                        throw new Error('Logging out...');
+                    }
+                    return response.json();
+
+                })
+                .then(data => {
+                    Swal.close();
+                    if (data.result != '1') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: data.msg,
+                            confirmButtonColor: '#367ab2',
+                        })
+                        return;
+                    }
+
+                    $('#permissions').html(data.html);
+                    Swal.close();
+                })
+                .catch((error) => {
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: error,
+                    })
+
+                });
+        }
 
     </script>
 @endsection

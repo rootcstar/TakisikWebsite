@@ -1,5 +1,5 @@
 
-@extends('admin.layout.app-layout')
+@extends('admin.layouts.app')
 
 
 @section('content')
@@ -147,7 +147,7 @@
                 "columns": [
                     {"data": "permission_id"},
                     {"data": "permission_name"},
-                    {"data": "permission_code"},
+                    {"data": "permission_name"},
 
                     {
                         "data":null,

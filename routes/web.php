@@ -59,6 +59,10 @@ Route::middleware([AdminLoginControlMiddleware::class])->group(function() {
     Route::get('/admin/admin-user-types', [AdminWebsiteController::class, 'get_admin_user_types'])->name('admin_panel_admin_user_types');
     Route::get('/admin/admin-user-types/new', [AdminWebsiteController::class, 'get_new_admin_user_type'])->name('admin_panel_new_admin_user_type');
 
+    Route::get('/admin/tags', [AdminWebsiteController::class, 'get_tags'])->name('admin_panel_tags');
+    Route::get('/admin/tags/update/{pri_id}', [AdminWebsiteController::class, 'get_update_tag']);
+    Route::get('/admin/tags/new', [AdminWebsiteController::class, 'get_new_tag'])->name('admin_panel_new_tag');
+
 
 
 });

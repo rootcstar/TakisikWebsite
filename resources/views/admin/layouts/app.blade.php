@@ -1,4 +1,4 @@
-<html dir ='ltr' lang="en">
+<html dir ='ltr' lang="tr">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,6 +16,8 @@
     <!-- Custom CSS -->
     <link href="{{asset('dist/css/style.css')}}" rel="stylesheet">
     <link href="{{asset('admin-assets/css/custom.css')}}" rel="stylesheet">
+    <!-- Multiple Select CSS -->
+    <link rel="stylesheet" type="text/css" href="{{asset('admin-assets/libs/select2/dist/css/select2.min.css')}}">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -47,9 +49,6 @@
         </footer>
     </div>
 </div>
-
-
-
 
 <aside class="customizer">
     <a href="javascript:void(0)" class="service-panel-toggle"><i class="fa fa-spin fa-cog"></i></a>
@@ -285,6 +284,10 @@
 <script src="{{asset('admin-assets/js/fikitech.js')}}"></script>
 <script src="{{asset('admin-assets/extra-libs/DataTables/datatables.min.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Multiple Select JS -->
+<script src="{{asset('admin-assets/libs/select2/dist/js/select2.full.min.js')}}"></script>
+<script src="{{asset('admin-assets/libs/select2/dist/js/select2.min.js')}}"></script>
+<script src="{{asset('dist/js/pages/forms/select2/select2.init.js')}}"></script>
 
 @yield('scripts')
 </body>

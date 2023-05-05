@@ -109,13 +109,6 @@
 
 
                 ?>
-
-                <li class="sidebar-item">
-                    <a class="sidebar-link "  href="{{url('/admin/tags')}}">
-                        <i class="mdi mdi-home"></i>
-                        <span>Tag Detayları</span>
-                    </a>
-                </li>
                 @foreach($db_tables as $table)
                     @foreach($table as $key=>$value)
 
@@ -135,6 +128,13 @@
                         @endif
                     @endforeach
                 @endforeach
+
+                <li class="sidebar-item">
+                    <a class="sidebar-link "  href="{{route('admin_panel_tags')}}">
+                        <i class="mdi mdi-folder"></i>
+                        <span>{{LanguageChange('Tags')}}</span>
+                    </a>
+                </li>
                 <li class="nav-small-cap">
                     <i class="mdi mdi-dots-horizontal"></i>
                     <span class="hide-menu">Yönetim</span>
