@@ -290,7 +290,6 @@ class AdminApiController extends Controller
                 return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
             }
 
-            $data['password'] = fiki_encrypt($data['password']);
 
             try {
 

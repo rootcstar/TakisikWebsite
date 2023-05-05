@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="{{asset('assets/img/logos/favicon.png')}}">
-    <title>Golden Line Limo Admin Panel</title>
+    <title>Takışık Admin Panel</title>
     <!-- Custom CSS -->
     <link href="{{asset('dist/css/style.min.css')}}" rel="stylesheet">
     <link href="{{asset('admin-assets/css/custom.css')}}" rel="stylesheet">

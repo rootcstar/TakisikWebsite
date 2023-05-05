@@ -132,6 +132,9 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="col-sm-6">
+
+                                    </div>
                                     <div class="col-sm-6" style="text-align: -webkit-right;">
                                         <div class="btn btn-primary" id="new_subtag_form_submit">{{$new_button_name}}</div>
                                     </div>
@@ -327,7 +330,7 @@
             });
         });
 
-        $('#subtags-tab').onclick(function () {
+        $(document).ready( function () {
 
             var table_name = "sub_tags"
             var where = ""
@@ -339,7 +342,7 @@
                 "post_or_get="+post_or_get+"&&"+
                 "primary_key="+primary_key;
 
-            $('#{{$table_id}}').DataTable({
+            $('#{{$second_table_id}}').DataTable({
                 "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
                 "serverSide": true,
                 "processing": true,
@@ -363,7 +366,7 @@
                 ], "searching": true,
                 'fnCreatedRow': function (nRow, aData, iDataIndex) {
 
-                    $(nRow).attr('id', '{{$table_id}}_' + aData.sub_tag_id); // or whatever you choose to set as the id
+                    $(nRow).attr('id', '{{$second_table_id}}_' + aData.sub_tag_id); // or whatever you choose to set as the id
                 },
                 "ajax": "{{route('fill_datatable_api')}}?" +query_string+ "",
                 "columnDefs": [{

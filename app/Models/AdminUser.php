@@ -28,7 +28,12 @@ class AdminUser extends Model
             $model->password    = fiki_encrypt($model->password);
 
         });
+        self::updating(function ($model) {
+            $model->password    = fiki_encrypt($model->password);
+
+        });
     }
+
     use HasFactory;
     protected $table = 'admin_users';
     protected $primaryKey = 'admin_id';
