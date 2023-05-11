@@ -5,20 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 /**
- * @property integer $admin_id
+ * @property integer $user_id
+ * @property integer $account_type
+ * @property string $company_name
  * @property string $first_name
  * @property string $last_name
- * @property string $title
  * @property string $email
+ * @property string $country_code
  * @property string $phone
  * @property string $password
- * @property integer $admin_user_type_id
- * @property boolean $is_active
+ * @property boolean $is_confirmed
  * @property string $created_date
  * @property string $last_updated_date
  */
-class AdminUser extends Model
+class User extends Model
 {
     public static function boot()
     {
@@ -26,24 +28,19 @@ class AdminUser extends Model
         parent::boot();
         self::creating(function ($model) {
             $model->password    = fiki_encrypt($model->password );
+            $model->account_type = 2;
 
         });
         self::updating(function ($model) {
             $model->password    = fiki_encrypt($model->password );
 
         });
-
-        self::updated(function ($model) {
-            $model->password    = fiki_encrypt($model->password );
-
-        });
     }
 
     use HasFactory;
-    protected $table = 'admin_users';
-    protected $primaryKey = 'admin_id';
+    protected $table = 'users';
+    protected $primaryKey = 'user_id';
     const CREATED_AT = 'created_date';
     const UPDATED_AT = 'last_updated';
-    protected $fillable = ['first_name', 'last_name','title', 'email', 'phone', 'password', 'admin_user_type_id','is_active'];
-
+    protected $fillable = ['account_type','company_name','first_name', 'last_name','email', 'country_code', 'phone', 'password','is_confirmed'];
 }

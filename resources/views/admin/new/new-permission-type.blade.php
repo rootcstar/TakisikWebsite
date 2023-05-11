@@ -7,12 +7,12 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">Create new permission type</h4>
-                        <h5 class="card-subtitle"> You can crate a new permission type</h5>
+                        <h4 class="card-title">Yeni İzin Oluştur</h4>
+                        <h5 class="card-subtitle"> Yeni izin oluşturun</h5>
                         <form class="row g-3 needs-validation" id="form" novalidate>
                             <div class="col-md-6 form-group">
                                 <div class="form-floating">
-                                    <label for="permission_name">Permission Name</label>
+                                    <label for="permission_name">{{LanguageChange('Permission Name')}}</label>
                                     <input type="text" class="form-control" id="permission_name" pattern="[a-zA-Z0-9\s]+"
                                            placeholder="Permission Name" required>
                                     <div class="invalid-feedback"> Required. Min 3 letters.</div>
@@ -20,7 +20,7 @@
                             </div>
                             <div class="col-md-6 form-group">
                                 <div class="form-floating">
-                                    <label for="permission_code">Permission Code</label>
+                                    <label for="permission_code">{{LanguageChange('Permission Code')}}</label>
                                     <input type="text" class="form-control" id="permission_code"
                                            placeholder="Permission Code" required>
                                     <div class="invalid-feedback"> Please fill this field</div>
@@ -29,7 +29,7 @@
                             <div class="col-md-6 form-group">
                                 <div class="form-floating">
                                     <ul class="list-group">
-                                        <h5 class="card-title">Assign to a user type automatically</h5>
+                                        <h5 class="card-title">Kullanıcı türü atayın</h5>
                                         @php($i=1)
                                         @foreach( $admin_user_types as $admin_user_type)
 
@@ -47,10 +47,10 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="text-left">
-                                <div class="btn btn-primary" id="form_submit">Submit</div>
+                            <div class="col-md-6 form-group">
                             </div>
                         </form>
+                        <div class="btn btn-primary" id="form_submit">Ekle</div>
                     </div>
                 </div>
             </div>

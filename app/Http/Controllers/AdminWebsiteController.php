@@ -6,6 +6,8 @@ use App\Models\AdminUser;
 use App\Models\AdminUserType;
 use App\Models\PermissionType;
 use App\Models\SubTag;
+use App\Models\User;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tag;
@@ -75,11 +77,11 @@ class AdminWebsiteController extends Controller
 
         return view('admin.permission-types')
             ->with('table_id', 'permission_types')
-            ->with('title', 'Permission Types')
+            ->with('title', 'İzinler')
             ->with('keys', $keys )
             ->with('data', $data)
             ->with('new_button_route', 'admin_panel_new_permission_type')
-            ->with('new_button_name', 'New Permission Type')
+            ->with('new_button_name', 'Yeni EKle')
             ->with('admin_user_types',$admin_user_types);;
 
     }
@@ -151,7 +153,6 @@ class AdminWebsiteController extends Controller
 
     }
 
-
     public function get_update_tag($pri_id){
 
         $data = Tag::where('tag_id',$pri_id)->first();
@@ -162,11 +163,78 @@ class AdminWebsiteController extends Controller
             ->with('update_button_name','Güncelle');
     }
 
-    public function get_new_tag()
-    {
-        return view('admin.new.new-tag');
+    public function get_update_subtag($pri_id){
+
+        $data = SubTag::where('sub_tag_id',$pri_id)->first();
+
+        return view('admin.update.update-subtag')
+            ->with('data',$data)
+            ->with('title','Alt Kategori Güncelle')
+            ->with('update_button_name','Güncelle');
     }
 
+    public function get_users(){
 
+        $keys = [
+            'user_id',
+            'company_name',
+            'email',
+            'phone',
+        ];
+        $data = User::select($keys)->get();
+
+
+        return view('admin.users')
+            ->with('table_id', 'users')
+            ->with('title', 'Müşteriler')
+            ->with('keys', $keys)
+            ->with('data', $data)
+            ->with('new_button_route', 'admin_panel_new_user')
+            ->with('new_button_name', 'Yeni Ekle');
+
+
+    }
+
+    public function get_new_user(){
+        return view('admin.new.new-user');
+    }
+
+    public function get_update_user($pri_id){
+
+        $data = User::where('user_id',$pri_id)->first();
+
+        return view('admin.update.update-user')
+            ->with('data',$data)
+            ->with('title','Kullanıcı Güncelle')
+            ->with('update_button_name','Güncelle');
+    }
+
+    public function get_products(){
+
+        $keys = [
+            'product_id',
+            'barcode',
+            'product_code',
+            'product_name',
+            'is_active',
+            'is_new'
+        ];
+        $data = Product::select($keys)->get();
+
+
+        return view('admin.products')
+            ->with('table_id', 'products')
+            ->with('title', 'Ürünler')
+            ->with('keys', $keys)
+            ->with('data', $data)
+            ->with('new_button_route', 'admin_panel_new_product')
+            ->with('new_button_name', 'Yeni Ekle');
+
+
+    }
+
+    public function get_new_product(){
+        return view('admin.new.new-product');
+    }
 
 }

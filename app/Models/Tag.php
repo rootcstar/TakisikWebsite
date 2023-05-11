@@ -24,7 +24,11 @@ class Tag extends Model
 
         parent::boot();
         self::creating(function ($model) {
-            $model->url_name    = Str::slug($model->display_name,'');
+            $model->url_name    = Str::slug($model->display_name,'-');
+
+        });
+        self::updating(function ($model) {
+            $model->url_name    = Str::slug($model->display_name,'-');
 
         });
     }

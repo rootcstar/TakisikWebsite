@@ -101,36 +101,20 @@
         <nav class="sidebar-nav">
             <ul id="sidebarnav">
 
-                <?php
-                $db_tables = DB::select('show tables');
-                $not_to_show_table = array('tags','sub_tags');
-
-                $show_tables = array('companies','admin_users','users');
-
-
-                ?>
-                @foreach($db_tables as $table)
-                    @foreach($table as $key=>$value)
-
-                        @if(in_array($value,$not_to_show_table))
-                            @continue;
-
-                        @endif
-                        @if(in_array($value,$show_tables))
-
-
-                                <li class="sidebar-item">
-                                    <a class="sidebar-link "  href="{{url('/admin/'.$value)}}" {{ Request::is($value) ? 'active' : '' }}>
-                                        <i class="mdi mdi-calendar-clock"></i>
-                                        <span>{{ LanguageChange(FixName($value)) }}</span>
-                                    </a>
-                                </li>
-                        @endif
-                    @endforeach
-                @endforeach
-
                 <li class="sidebar-item">
-                    <a class="sidebar-link "  href="{{route('admin_panel_tags')}}">
+                    <a class="sidebar-link "  href="{{route('admin_panel_products')}}" {{ Request::is('products') ? 'active' : '' }}>
+                        <i class="fas fa-box"></i>
+                        <span>{{LanguageChange('Ürünler')}}</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link "  href="{{route('admin_panel_users')}}" {{ Request::is('users') ? 'active' : '' }}>
+                        <i class="mdi mdi-account-circle"></i>
+                        <span>{{LanguageChange('Users')}}</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link "  href="{{route('admin_panel_tags')}}" {{ Request::is('tags') ? 'active' : '' }}>
                         <i class="mdi mdi-folder"></i>
                         <span>{{LanguageChange('Tags')}}</span>
                     </a>

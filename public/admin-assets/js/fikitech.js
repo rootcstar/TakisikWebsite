@@ -45,3 +45,6 @@ var loadFile = function (event) {
     }
 
 };
+function RefreshTable($table_id) {
+    $( "#"+$table_id+"" ).load( ""+route('admin_panel_tags')+" #mytable" );
+}

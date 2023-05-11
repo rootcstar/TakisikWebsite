@@ -113,7 +113,7 @@
                                     <div class="col-md-6 form-group">
                                         <div class="form-floating">
                                             <label >Alt Kategori Adı</label>
-                                            <input id="sub_tag_name" type="text" class="form-control input-fields" pattern="[a-zA-ZğüşöçĞÜŞÖÇİ]{2}[a-zA-ZğüşöçĞÜŞÖÇİ ]{1,30}"
+                                            <input id="sub_tag_name" type="text" class="form-control" pattern="[a-zA-ZğüşöçĞÜŞÖÇİ]{2}[a-zA-ZğüşöçĞÜŞÖÇİ ]{1,30}"
                                                    placeholder="Lütfen doldurunuz" required>
                                             <div class="invalid-feedback"> Zorunlu alan. Min 3 harf</div>
                                         </div>
@@ -129,6 +129,24 @@
 
                                                     <option value="{{$tag->tag_id}}" >{{$tag->tag_name}}</option>
                                                 @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <div class="form-floating">
+                                            <label >Sayfada Görünen Adı</label>
+                                            <input id="subtag_display_name" type="text" class="form-control" pattern="[a-zA-ZğüşöçĞÜŞÖÇİ]{2}[a-zA-ZğüşöçĞÜŞÖÇİ ]{1,30}"
+                                                   placeholder="Lütfen doldurunuz" required>
+                                            <div class="invalid-feedback"> Zorunlu alan. Min 3 harf</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Sayfada Gösterilsin Mi?</label>
+                                            <select id="subtag_is_active" class="form-control" name="is_active" style="width: 100%;">
+                                                <option value="0" selected>Hayir</option>
+                                                <option value="1" >Evet</option>
                                             </select>
                                         </div>
                                     </div>
@@ -255,6 +273,74 @@
 
         });
 
+        $('#new_subtag_form_submit').on('click', function () {
+            is_valid = validate_form('subtag-form');
+            if (!is_valid) {
+                return;
+            }
+
+
+            show_loader();
+            let formData = new FormData();
+
+            formData.append("sub_tag_name", $("#sub_tag_name").val());
+            formData.append("is_active", $("#subtag_is_active").val());
+            formData.append("display_name", $("#subtag_display_name").val());
+
+            let tags = $("#tags-multiple").val();
+            console.log(tags);
+            formData.append("tags", JSON.stringify(tags));
+
+            fetch('{{ route('new_subtag_api') }}', {
+
+                method: "POST",
+                body: formData
+
+            })
+                .then(response => {
+                    if (response.status == 301) {
+                        window.location = '{{route('admin_panel_logout')}}';
+                        throw new Error('Logging out...');
+                    }
+                    return response.json();
+
+                })
+                .then(data => {
+
+                    if (data.result != '1') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: data.msg,
+                            confirmButtonColor: '#367ab2',
+                        })
+                        return;
+                    }
+
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: data.msg,
+                        confirmButtonColor: '#367ab2',
+                    }).then((result) => {
+                        if (result.isDismissed || result.isConfirmed) {
+                            window.location.reload();
+                        }
+
+                    })
+
+                })
+                .catch((error) => {
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: error,
+                    })
+
+                });
+
+
+        });
+
         $(document).ready(function () {
 
             var table_name = "tags"
@@ -321,7 +407,7 @@
                         "data":null,
                         "className": 'text-center ',
                         mRender: function (data, type, row) {
-                            return '<button type="button" class="btn btn-danger" ><i class="fas fa-trash"></i></button>'
+                            return '<button type="button" class="btn btn-danger" onclick="delete_tag('+row.tag_id+')"><i class="fas fa-trash"></i></button>'
                         }
                     },
 
@@ -391,7 +477,8 @@
                         "data":null,
                         "className": 'text-center ',
                         mRender: function (data, type, row) {
-                            return '<button type="button" class="btn btn-danger" ><i class="fas fa-trash"></i></button>'
+                            return '<button type="button" class="btn btn-danger" onclick="delete_subtag('+row.sub_tag_id+')"><i class="fas fa-trash"></i></button>'
+
                         }
                     },
 
@@ -399,6 +486,119 @@
                 ]
             });
         });
+
+        function delete_subtag(id) {
+
+            Swal.fire({
+                title: 'Do you want to delete?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                confirmButtonColor: '#367ab2',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    show_loader();
+
+                    let formData = new FormData();
+                    formData.append('sub_tag_id', id);
+
+                    fetch('{{ route('delete_subtag_api') }}', {
+                        method: "POST",
+                        body: formData
+                    })
+                        .then(response => {
+                            if (response.status == 301) {
+                                window.location = '{{route('admin_panel_logout')}}';
+                                throw new Error('Logging out...');
+                            }
+                            return response.json();
+
+                        })
+                        .then(data => {
+
+                            if (data.result != '1') {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: data.msg,
+                                    confirmButtonColor: '#367ab2',
+                                })
+                                return;
+                            }
+                            Swal.fire({
+                                icon: 'success',
+                                title: data.msg,
+                                confirmButtonColor: '#367ab2',
+                            })
+                            window.location.reload();
+
+                        })
+                        .catch((error) => {
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: error,
+                            })
+                        });
+
+                }
+            })
+        }
+
+        function delete_tag(id) {
+
+            Swal.fire({
+                title: 'Do you want to delete?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                confirmButtonColor: '#367ab2',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    show_loader();
+
+                    let formData = new FormData();
+                    formData.append('tag_id', id);
+
+                    fetch('{{ route('delete_tag_api') }}', {
+                        method: "POST",
+                        body: formData
+                    })
+                        .then(response => {
+                            if (response.status == 301) {
+                                window.location = '{{route('admin_panel_logout')}}';
+                                throw new Error('Logging out...');
+                            }
+                            return response.json();
+
+                        })
+                        .then(data => {
+
+                            if (data.result != '1') {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: data.msg,
+                                    confirmButtonColor: '#367ab2',
+                                })
+                                return;
+                            }
+                            Swal.fire({
+                                icon: 'success',
+                                title: data.msg,
+                                confirmButtonColor: '#367ab2',
+                            })
+                            window.location.reload();
+
+                        })
+                        .catch((error) => {
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: error,
+                            })
+                        });
+
+                }
+            })
+        }
+
     </script>
 
 

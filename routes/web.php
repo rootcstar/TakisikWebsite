@@ -61,8 +61,15 @@ Route::middleware([AdminLoginControlMiddleware::class])->group(function() {
 
     Route::get('/admin/tags', [AdminWebsiteController::class, 'get_tags'])->name('admin_panel_tags');
     Route::get('/admin/tags/update/{pri_id}', [AdminWebsiteController::class, 'get_update_tag']);
-    Route::get('/admin/tags/new', [AdminWebsiteController::class, 'get_new_tag'])->name('admin_panel_new_tag');
 
+    Route::get('/admin/subtags/update/{pri_id}', [AdminWebsiteController::class, 'get_update_subtag']);
+
+    Route::get('/admin/users', [AdminWebsiteController::class, 'get_users'])->name('admin_panel_users');
+    Route::get('/admin/users/new', [AdminWebsiteController::class, 'get_new_user'])->name('admin_panel_new_user');
+    Route::get('/admin/users/update/{pri_id}', [AdminWebsiteController::class, 'get_update_user']);
+
+    Route::get('/admin/products', [AdminWebsiteController::class, 'get_products'])->name('admin_panel_products');
+    Route::get('/admin/products/new', [AdminWebsiteController::class, 'get_new_product'])->name('admin_panel_new_product');
 
 
 });

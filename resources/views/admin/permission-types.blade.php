@@ -21,9 +21,9 @@
                             <thead>
                             <tr>
                                 @foreach($keys as $key)
-                                    <th>{{ ucwords(str_replace("_"," ",$key)) }}</th>
+                                    <th>{{ LanguageChange(ucwords(str_replace("_"," ",$key))) }}</th>
                                 @endforeach
-                                <th>Delete</th>
+                                <th>Sil</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -33,9 +33,9 @@
                             <tfoot>
                             <tr>
                                 @foreach($keys as $key)
-                                    <th>{{ ucwords(str_replace("_"," ",$key)) }}</th>
+                                    <th>{{ LanguageChange(ucwords(str_replace("_"," ",$key))) }}</th>
                                 @endforeach
-                                <th>Delete</th>
+                                <th>Sil</th>
                             </tr>
                             </tfoot>
                         </table>

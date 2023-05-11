@@ -66,17 +66,17 @@ Route::middleware([AdminLoginControlMiddleware::class])->group(function () {
     Route::post('/admin/tag/create', [AdminApiController::class, 'insert_tag'])->name('new_tag_api');
     Route::post('/admin/tag/update', [AdminApiController::class, 'update_tag'])->name('update_tag_api');
     Route::post('/admin/tag/update-image', [AdminApiController::class, 'update_tag_image'])->name('update_tag_image_api');
+    Route::post('/admin/tag/delete', [AdminApiController::class, 'delete_tag'])->name('delete_tag_api');
 
-    /**** ADD ****/
+    Route::post('/admin/subtag/create', [AdminApiController::class, 'insert_subtag'])->name('new_subtag_api');
+    Route::post('/admin/subtag/update', [AdminApiController::class, 'update_subtag'])->name('update_subtag_api');
+    Route::post('/admin/subtag/delete', [AdminApiController::class, 'delete_subtag'])->name('delete_subtag_api');
 
-    Route::post('/add-sub-tag', [AdminApiController::class, 'addSubtag']);
-
-    /**** UPDATE ****/
-    Route::post('/update-sub-tag', [AdminApiController::class, 'updateSubtag']);
-    Route::post('/update-tags-of-sub-tag', [AdminApiController::class, 'updateTagsOfSubtag']);
+    Route::post('/admin/user/create', [AdminApiController::class, 'insert_user'])->name('new_user_api');
+    Route::post('/admin/user/update', [AdminApiController::class, 'update_user'])->name('update_user_api');
+    Route::post('/admin/user/delete', [AdminApiController::class, 'delete_user'])->name('delete_user_api');
 
 
-    /****** DELETE ******/
-    Route::post('/delete-record', [AdminApiController::class, 'deleteRecord']);
+
 
 });
