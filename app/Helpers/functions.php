@@ -91,10 +91,15 @@ function LanguageChange($value){
                     "Product Id" =>  "Ürün ID",
                     "Product Code" =>  "Stok Kodu",
                     "Product Name" =>  "Stok Adı",
-        "Unit Quantity"=> "Birim Adet",
+        "Unit Quantity"=> "Birim Miktarı",
         "Unit"=> "Birim",
-        "Main Unit Quantity"=> "Temel Birim Adet",
+        "Main Unit Quantity"=> "Temel Birim Miktarı",
         "Main Unit"=> "Temel Birim",
+        "Single Price"=> "Birim Fiyatı",
+        "Wholesale Price"=> "Toptan Fiyatı",
+        "Retail Price"=> "Parakende Fiyatı",
+        "Is New"=> 'Yeni mi',
+        "Record Id"=> "Kayıt ID",
                     );
 
     if(Session::get('admin.lang') == 'tr'){

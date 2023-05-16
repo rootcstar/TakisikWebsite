@@ -302,7 +302,7 @@
         function delete_permission_type(id) {
 
             Swal.fire({
-                title: 'Do you want to delete?',
+                title: 'Silmek istediğinizden emin misiniz?',
                 showCancelButton: true,
                 confirmButtonText: 'Yes',
                 confirmButtonColor: '#367ab2',

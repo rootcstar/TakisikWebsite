@@ -113,7 +113,7 @@
                         "data":null,
                         "className": 'text-center ',
                         mRender: function (data, type, row) {
-                            return '<a  target="_blank" href="/admin/users/update/'+row.product_id+'">' +
+                            return '<a  target="_blank" href="/admin/products/update/'+row.product_id+'">' +
                                 '<button type="button" class="btn btn-warning" >Güncelle</button>'
                             '</a>'
                         }
@@ -141,7 +141,7 @@
         function delete_user(id) {
 
             Swal.fire({
-                title: 'Do you want to delete?',
+                title: 'Silmek istediğinizden emin misiniz?',
                 showCancelButton: true,
                 confirmButtonText: 'Yes',
                 confirmButtonColor: '#367ab2',

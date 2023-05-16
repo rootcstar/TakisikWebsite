@@ -78,7 +78,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-sm-6" style="text-align: -webkit-right;">
+                            <div class="col-sm-12" style="text-align: -webkit-right; align-self: end;">
                                 <div class="btn btn-primary" id="form_submit">{{$update_button_name}}</div>
                             </div>
                         </form>

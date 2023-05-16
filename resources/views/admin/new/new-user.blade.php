@@ -66,7 +66,9 @@
                                 </div>
                             </div>
                         </form>
-                        <div class="btn btn-primary" id="form_submit">Ekle</div>
+                        <div class="col-sm-12" style="text-align: -webkit-right; align-self: end;">
+                            <div class="btn btn-primary" id="form_submit">Ekle</div>
+                        </div>
                     </div>
                 </div>
             </div>

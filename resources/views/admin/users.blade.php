@@ -5,55 +5,43 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12">
-                <!--DEAL 1 -->
-                <div class="card card-default">
+            <div class="card ">
+                <div class="card-body">
+                    <h3 class="card-title" >{{$title}}                    </h3>
+                    <h6 class="card-subtitle">Buradan yönetici silme ve ekleme işlemi yapabilirsiniz</h6>
+                    <table id="{{$table_id}}" class="table table-striped table-bordered" >
+                        <thead>
+                        <tr>
+                            <th>Güncelle</th>
+                            @foreach($keys as $key)
+                                <th>{{ LanguageChange(ucwords(str_replace("_"," ",$key))) }}</th>
+                            @endforeach
+                            <th>Sil</th>
+                        </tr>
+                        </thead>
+                        <tbody>
 
-                    <!-- /.card-header -->
-                    <div class="card-body">
-                        <h3 class="card-title" >
-                            {{$title}}
-                        </h3>
-                        <h6 class="card-subtitle">Buradan yönetici silme ve ekleme işlemi yapabilirsiniz</h6>
+                        </tbody>
 
-                        <table id="{{$table_id}}" class="table table-striped table-bordered" >
-                            <thead>
-                            <tr>
-                                <th>Güncelle</th>
-                                @foreach($keys as $key)
-                                    <th>{{ LanguageChange(ucwords(str_replace("_"," ",$key))) }}</th>
-                                @endforeach
-                                <th>Sil</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-
-                            <tfoot>
-                            <tr>
-                                <th>Güncelle</th>
-                                @foreach($keys as $key)
-                                    <th>{{ LanguageChange(ucwords(str_replace("_"," ",$key))) }}</th>
-                                @endforeach
-                                <th>Sil</th>
-                            </tr>
-                            </tfoot>
-                        </table>
-                        <div class="col-md-12 mb-3">
-                            <div class="col-md-2">
-                                <a type="button" href="{{route($new_button_route)}}" class="btn btn-primary">{{$new_button_name}}</a>
-                            </div>
+                        <tfoot>
+                        <tr>
+                            <th>Güncelle</th>
+                            @foreach($keys as $key)
+                                <th>{{ LanguageChange(ucwords(str_replace("_"," ",$key))) }}</th>
+                            @endforeach
+                            <th>Sil</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                    <div class="col-md-12 mb-3">
+                        <div class="col-md-2">
+                            <a type="button" href="{{route($new_button_route)}}" class="btn btn-primary">{{$new_button_name}}</a>
                         </div>
                     </div>
-
-
                 </div>
             </div>
 
-
         </div>
-
     </div>
 
 
@@ -67,7 +55,7 @@
         $(document).ready(function () {
 
             var table_name = "users"
-            var where = "is_active = '1'"
+            var where = "is_confirmed = 1"
             var post_or_get = "GET"
             var primary_key = 'user_id'
 
@@ -139,7 +127,7 @@
         function delete_user(id) {
 
             Swal.fire({
-                title: 'Do you want to delete?',
+                title: 'Silmek istediğinizden emin misiniz?',
                 showCancelButton: true,
                 confirmButtonText: 'Yes',
                 confirmButtonColor: '#367ab2',

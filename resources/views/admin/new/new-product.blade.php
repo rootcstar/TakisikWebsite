@@ -2,6 +2,8 @@
 
 
 @section('content')
+
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12">
@@ -9,18 +11,32 @@
                     <div class="card-body">
                         <h4 class="card-title">Yeni Ürün Oluştur</h4>
                         <h5 class="card-subtitle"> Yeni ürün oluşturabilirsiniz</h5>
-                        <form class="row g-3 needs-validation" id="form" novalidate>
-                            <div class="col-md-6 form-group">
+                        <form class="row g-3 needs-validation" id="product-form" novalidate>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+
+                                    @php $subtags_data = \App\Models\SubTag::all(); @endphp
+
+                                    <label>Ürün hangi alt kategoriye ait?</label>
+                                    <select class="select2 form-control" multiple="multiple" id="subtags-multiple" data-placeholder="En az 1 alt kategori seçiniz" style="height: 36px;width: 100%;">
+
+                                        @foreach ($subtags_data as $subtag)
+                                            <option value="{{$subtag->sub_tag_id}}" >{{$subtag->sub_tag_name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-group">
                                 <div class="form-floating">
                                     <label for="barcode">{{LanguageChange('Barkod Numarası')}}</label>
-                                    <input type="text" class="form-control input-fields" id="barcode" placeholder="Lütfen doldurunuz"  pattern="[0,9]{1,30}" required>
-                                    <div class="invalid-feedback"> Zorunlu alan. Sadece yazı, rakam ve bazı özel karakterler (.,)</div>
+                                    <input type="text" class="form-control input-fields" id="barcode" placeholder="Lütfen doldurunuz"  pattern="[0-9]{1,30}" required>
+                                    <div class="invalid-feedback"> Zorunlu alan. Sadece rakam</div>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
                                 <div class="form-floating">
                                     <label for="floatingName">{{LanguageChange('Product Code')}}</label>
-                                    <input type="text" class="form-control input-fields" id="product_code"  pattern="[a-zA-ZğüşöçĞÜŞÖÇİ]{2}[a-zA-ZğüşöçĞÜŞÖÇİ ]{1,30}"
+                                    <input type="text" class="form-control input-fields" id="product_code"  pattern="[a-zA-ZğüşöçĞÜŞÖÇİ0-9 ]{2}[a-zA-ZğüşöçĞÜŞÖÇİ0-9 ]{1,30}"
                                            placeholder="Lütfen doldurunuz" required>
                                     <div class="invalid-feedback"> Zorunlu alan. Min 3 harf</div>
                                 </div>
@@ -33,75 +49,108 @@
                                     <div class="invalid-feedback"> Zorunlu alan.. Min 3 harf</div>
                                 </div>
                             </div>
+
+
                             <div class="col-md-6 form-group">
                                 <div class="form-floating">
-                                    <label for="floatingEmail">{{LanguageChange('Unit Quantity')}}</label>
-                                    <input type="text" class="form-control input-fields" id="unit_qty" pattern="[0,9]{1,30}" placeholder="Lütfen doldurunuz" required>
+                                    <label >{{LanguageChange('Unit')}}</label>
+                                    <select id="unit" class="form-control" style="width: 100%;" >
+
+                                        @php $units = \App\Models\Unit::all(); @endphp
+                                        <option value="" selected disabled>Lütfen seçiniz</option>
+                                        @foreach($units as $unit)
+                                            <option value="{{$unit->unit_id}}" >{{$unit->unit_name}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback"> Zorunlu alan</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 form-group">
+                                <div class="form-floating">
+                                    <label>{{LanguageChange('Unit Quantity')}}</label>
+                                    <input type="text" class="form-control input-fields" id="unit_qty" pattern="[0-9]{1,30}" placeholder="Lütfen doldurunuz" required>
+                                    <div class="invalid-feedback"> Zorunlu alan</div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6 form-group">
+                                <div class="form-floating">
+                                    <label>{{LanguageChange('Main Unit')}}</label>
+
+                                    <select id="main_unit" class="form-control " style="width: 100%;">
+
+                                        @php $main_units = \App\Models\MainUnit::all(); @endphp
+                                        <option value="" selected disabled>Lütfen seçiniz</option>
+                                        @foreach($main_units as $main_unit)
+                                            <option value="{{$main_unit->main_unit_id}}" >{{$main_unit->main_unit_name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 form-group">
+                                <div class="form-floating">
+                                    <label>{{LanguageChange('Main Unit Quantity')}}</label>
+                                    <input type="text" class="form-control input-fields" id="main_unit_qty" pattern="[0-9]{1,30}" placeholder="Lütfen doldurunuz" required>
                                     <div class="invalid-feedback"> Zorunlu alan</div>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
                                 <div class="form-floating">
-                                    <label for="floatingEmail">{{LanguageChange('Unit')}}</label>
-                                    <input type="text" class="form-control input-fields" id="unit_qty" placeholder="Lütfen doldurunuz" required>
+                                    <label>{{LanguageChange('Single Price')}}</label>
+                                    <input type="text" class="form-control input-fields" id="single_price" placeholder="Lütfen doldurunuz" pattern="[0-9 .,]{1,30}"required>
                                     <div class="invalid-feedback"> Zorunlu alan</div>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
                                 <div class="form-floating">
-                                    <label for="floatingEmail">{{LanguageChange('Main Unit Quantity')}}</label>
-                                    <input type="text" class="form-control input-fields" id="unit_qty" pattern="[0,9]{1,30}" placeholder="Lütfen doldurunuz" required>
+                                    <label>{{LanguageChange('Wholesale Price')}}</label>
+                                    <input type="text" class="form-control input-fields" id="wholesale_price" placeholder="Lütfen doldurunuz" pattern="[0-9 .,]{1,30}" required>
                                     <div class="invalid-feedback"> Zorunlu alan</div>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
                                 <div class="form-floating">
-                                    <label for="floatingEmail">{{LanguageChange('Main Unit')}}</label>
-                                    <input type="text" class="form-control input-fields" id="unit_qty" placeholder="Lütfen doldurunuz" required>
+                                    <label>{{LanguageChange('Retail Price')}}</label>
+                                    <input type="text" class="form-control input-fields" id="retail_price" placeholder="Lütfen doldurunuz" pattern="[0-9 .,]{1,30}"  required>
                                     <div class="invalid-feedback"> Zorunlu alan</div>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
                                 <div class="form-floating">
-                                    <label for="floatingEmail">{{LanguageChange('Single Price')}}</label>
-                                    <input type="text" class="form-control input-fields" id="single_price" placeholder="Lütfen doldurunuz" required>
+                                    <label>{{LanguageChange('KDV')}}</label>
+                                    <input type="text" class="form-control input-fields" id="kdv" placeholder="Lütfen doldurunuz" pattern="[0-9 .,]{1,30}"  required>
                                     <div class="invalid-feedback"> Zorunlu alan</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <div class="form-floating">
-                                    <label for="phone">{{LanguageChange('Phone')}}</label>
-                                    <input type="tel" class="form-control input-fields" id="phone" placeholder="Lütfen doldurunuz" pattern="[0-9]{10,11}" required>
-                                    <div class="invalid-feedback"> Zorunlu alan. Numaranızı boşluk ve karakter olmadan sadece rakam formatında yazınız</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <div class="form-floating">
-                                    <label for="floatingPassword">{{LanguageChange('Password')}}</label>
-                                    <input type="password" class="form-control input-fields" id="password" placeholder="Lütfen doldurunuz" required>
-                                    <div class="invalid-feedback"> Zorunlu alan
-                                    </div>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Kullanıcıyı Onayla</label>
-                                    <h6 class="card-subtitle"> Kullanıcı onaylanmadığı takdirde website üzerinden alışveriş yapamaz</h6>
-                                    <select id="is_confirmed" class="form-control" style="width: 100%;">
+                                    <label>{{LanguageChange('Is Active')}}?</label>
+                                    <select id="is_active" class="form-control" style="width: 100%;">
+                                        <option value="0" selected>Hayir</option>
+                                        <option value="1" >Evet</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>{{LanguageChange('Is New')}}?</label>
+                                    <select id="is_new" class="form-control" style="width: 100%;">
                                         <option value="0" selected>Hayir</option>
                                         <option value="1" >Evet</option>
                                     </select>
                                 </div>
                             </div>
                         </form>
-                        <div class="btn btn-primary" id="form_submit">Ekle</div>
+                        <div class="btn btn-primary" id="product_form_submit">Ekle</div>
                     </div>
                 </div>
             </div>
         </div>
-
-
     </div>
+
 
 
 @endsection
@@ -110,10 +159,8 @@
     <script>
 
 
-
-
-        $('#form_submit').on('click', function () {
-            is_valid = validate_form('form');
+        $('#product_form_submit').on('click', function () {
+            is_valid = validate_form('product-form');
             if (!is_valid) {
                 return;
             }
@@ -128,10 +175,15 @@
 
 
             });
+            formData.append('is_active', $('#is_active').find(':selected').val());
+            formData.append('is_new', $('#is_new').find(':selected').val());
+            formData.append('unit_id', $('#unit').find(':selected').val());
+            formData.append('main_unit_id', $('#main_unit').find(':selected').val());
+            let tags = $("#subtags-multiple").val();
+            console.log(tags);
+            formData.append("subtags", JSON.stringify(tags));
 
-            formData.append('is_confirmed', $('#is_confirmed').find(':selected').val());
-
-            fetch('{{ route('new_user_api') }}', {
+            fetch('{{ route('new_product_api') }}', {
 
                 method: "POST",
                 body: formData
@@ -163,7 +215,7 @@
                         confirmButtonColor: '#367ab2',
                     }).then((result) => {
                         if (result.isDismissed || result.isConfirmed) {
-                            window.location = '{{route('admin_panel_users')}}';
+                            window.location = '{{route('admin_panel_products')}}';
                         }
 
                     })
@@ -180,58 +232,6 @@
 
 
         });
-
-        function display_permissions() {
-
-            var admin_user_type_id = $('#admin_user_type_id').find(':selected').val();
-            if (admin_user_type_id == '') {
-                $('#permissions').html("");
-
-                return;
-            }
-
-            show_loader();
-            let formData = new FormData();
-            formData.append('admin_user_type_id', admin_user_type_id);
-
-            fetch('{{ route('get_permissions_api') }}', {
-
-                method: "POST",
-                body: formData
-
-            })
-                .then(response => {
-                    if (response.status == 301) {
-                        window.location = '{{route('admin_panel_logout')}}';
-                        throw new Error('Logging out...');
-                    }
-                    return response.json();
-
-                })
-                .then(data => {
-                    Swal.close();
-                    if (data.result != '1') {
-                        Swal.fire({
-                            icon: 'error',
-                            title: data.msg,
-                            confirmButtonColor: '#367ab2',
-                        })
-                        return;
-                    }
-
-                    $('#permissions').html(data.html);
-                    Swal.close();
-                })
-                .catch((error) => {
-
-                    Swal.fire({
-                        icon: 'error',
-                        title: error,
-                    })
-
-                });
-        }
-
 
     </script>
 @endsection

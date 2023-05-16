@@ -48,6 +48,11 @@ return [
             'root' => public_path().'/uploads/tag_images',
 
         ],
+        'product_images' => [
+            'driver' => 'local',
+            'root' => public_path().'/uploads/product_images',
+
+        ],
 
         's3' => [
             'driver' => 's3',

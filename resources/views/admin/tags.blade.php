@@ -69,16 +69,10 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-6">
-
+                                    <div class="col-sm-12 text-right">
+                                        <img  width="20%" height="auto" class="img-fluid mb-2" id ="new_img">
                                     </div>
-                                    <div class="col-sm-6 text-right">
-                                        <img  width="50%" height="auto" class="img-fluid mb-2" id ="new_img">
-                                    </div>
-                                    <div class="col-sm-6">
-
-                                    </div>
-                                    <div class="col-sm-6" style="text-align: -webkit-right;">
+                                    <div class="col-sm-12" style="text-align: -webkit-right;">
                                         <div class="btn btn-primary" id="new_tag_form_submit">{{$new_button_name}}</div>
                                     </div>
                                 </form>
@@ -490,7 +484,7 @@
         function delete_subtag(id) {
 
             Swal.fire({
-                title: 'Do you want to delete?',
+                title: 'Silmek istediğinizden emin misiniz?',
                 showCancelButton: true,
                 confirmButtonText: 'Yes',
                 confirmButtonColor: '#367ab2',
@@ -546,7 +540,7 @@
         function delete_tag(id) {
 
             Swal.fire({
-                title: 'Do you want to delete?',
+                title: 'Silmek istediğinizden emin misiniz?',
                 showCancelButton: true,
                 confirmButtonText: 'Yes',
                 confirmButtonColor: '#367ab2',

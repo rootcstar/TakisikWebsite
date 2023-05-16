@@ -6,10 +6,14 @@ use App\Models\AdminUser;
 use App\Models\AdminUserType;
 use App\Models\AdminUserTypePermission;
 use App\Models\PermissionType;
+use App\Models\Product;
+use App\Models\ProductImage;
+use App\Models\ProductModel;
 use App\Models\TagToSubTag;
 use App\Models\SubTag;
 use App\Models\Tag;
 use App\Models\User;
+use App\Models\ProductSubTag;
 use App\Rules\CheckIfAdminUserTypeExists;
 use App\Rules\CheckIfPermissionTypeExists;
 use App\Rules\Exist_Already_Email_AdminUser;
@@ -1191,7 +1195,6 @@ class AdminApiController extends Controller
 
         }
     }
-
     public function update_user(Request $request){
         try {
             $data = $request->all();
@@ -1302,6 +1305,425 @@ class AdminApiController extends Controller
 
 
     }
+
+    public function insert_product(Request $request){
+        try {
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'barcode' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'product_code' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'product_name' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' '])
+                ],
+                'unit_id' => [
+                    "required",
+                    'integer',
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'unit_qty' => [
+                    "required",
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'main_unit_id' => [
+                    "required",
+                    'integer',
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'main_unit_qty' => [
+                    "required",
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'single_price' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'wholesale_price' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'retail_price' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'kdv' => [
+                    "required",
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'is_active' => [
+                    "required",
+                    "boolean",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'is_new' => [
+                    "required",
+                    "boolean",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'subtags' => [
+                    "required",
+                    "json",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+            ]);
+
+            if ($validator->fails()) {
+                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+            }
+
+
+            $subtags = json_decode($data['subtags']);
+            unset($data['subtags']);
+
+            // If there is no selected subtag
+            if($subtags== null || empty($subtags) || count($subtags) <= 0){
+                return response(['result' => -1, 'msg' => 'Her ürün en az bir alt kategoriye ait olmalı.'], 400);
+            }
+
+            try {
+
+                $created_product_id = Product::create($data)->product_id;
+
+            } catch (QueryException $e) {
+
+                return response(['result' => -1, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+            }
+
+            try {
+
+                foreach ($subtags as $subtag) {
+
+                    ProductSubTag::create(['product_id'=>$created_product_id,
+                                            'sub_tag_id'=>$subtag]);
+                }
+
+            } catch (QueryException $e) {
+
+                return response(['result' => -1, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+            }
+
+
+            return response(['result' => 1, 'msg' => 'Kayıt başarıyla eklendi.']);
+
+        } catch (\Exception $e) { // 'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__
+            return response(['result' => -997, 'msg' => 'Bir hata oluştu. Lütfen developer ile iletişime geçiniz.']);
+
+        }
+    }
+
+    public function update_product(Request $request){
+        try {
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'product_id' => [
+                    "required",
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'barcode' => [
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'product_code' => [
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'product_name' => [
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' '])
+                ],
+                'unit_id' => [
+                    'integer',
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'unit_qty' => [
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'main_unit_id' => [
+                    'integer',
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'main_unit_qty' => [
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'single_price' => [
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'wholesale_price' => [
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'retail_price' => [
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'kdv' => [
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'is_active' => [
+                    "boolean",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'is_new' => [
+                    "boolean",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'subtags' => [
+                    "json",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+            ]);
+
+            if ($validator->fails()) {
+                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+            }
+
+
+            $subtags = json_decode($data['subtags']);
+            unset($data['subtags']);
+
+            // If there is no selected subtag
+            if($subtags== null || empty($subtags) || count($subtags) <= 0){
+                return response(['result' => -1, 'msg' => 'Her ürün en az bir alt kategoriye ait olmalı.'], 400);
+            }
+
+            // Update product data
+            try {
+
+                Product::find($data['product_id'])->update($data);
+
+            } catch (QueryException $e) {
+
+                return response(['result' => -1, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+            }
+
+            //Delete product's subtags
+            try {
+
+                ProductSubTag::where('product_id',$data['product_id'])->delete();
+
+            } catch (QueryException $e) {
+
+                return response(['result' => -2, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+            }
+
+
+            //Update product's subtags
+            try {
+
+                foreach ($subtags as $subtag) {
+
+                    ProductSubTag::create(['product_id'=>$data['product_id'],
+                        'sub_tag_id'=>$subtag]);
+                }
+
+            } catch (QueryException $e) {
+
+                return response(['result' => -3, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+            }
+
+
+            return response(['result' => 1, 'msg' => 'Kayıt başarıyla güncellendi.']);
+
+        } catch (\Exception $e) { //  'msg' => 'Bir hata oluştu. Lütfen developer ile iletişime geçiniz.'
+            return response(['result' => -997,'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__]);
+
+        }
+    }
+
+    public function insert_product_model_and_image(Request $request){
+        try {
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'product_id' => [
+                    "required",
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'model_number' => [
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'product_image' => 'required|image|mimes:png,jpg,jpeg|max:2048',
+
+            ]);
+
+            if ($validator->fails()) {
+                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+            }
+
+            // Check model number of product
+            try{
+
+                $check_model = ProductModel::where(['product_id'=>$data['product_id'],
+                                    'model_number'=>$data['model_number']])->get();
+
+                if(count($check_model) != 0){
+
+                    return response(['result' => -1, 'msg' => 'Bu numara daha önce bu ürüne ait başka bir modelde kullanılmıştır'], 200);
+                }
+
+
+            }catch (QueryException $e){
+                return response(['result' => -2, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+            }
+
+            // Add product model to table
+            try {
+
+                ProductModel::create(['product_id'=>$data['product_id'],
+                                    'model_number'=>$data['model_number']]);
+
+
+            } catch (QueryException $e) {
+
+                return response(['result' => -3, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+            }
+
+            // Add product images with model number to table
+            if ($request->hasFile('product_image')) {
+
+                $original_file = $request->file('product_image');
+
+                $content_name_clean = preg_replace('/[^A-Za-z0-9\-]/', '', $original_file->getClientOriginalName());
+
+                if (strlen($content_name_clean) > 30) {
+                    $content_name_clean = substr($content_name_clean, 0, 10);
+                }
+
+                $date = date("Y-m-d");
+                $time = date("h-i-s");
+
+                $extension = $original_file->getClientOriginalExtension();
+
+                $content_filename_small = $content_name_clean . $date."-".$time."." . $extension;
+
+                $file_small = Image::make($original_file)->encode($extension);
+
+                Storage::disk('product_images')->put($content_filename_small, (string)$file_small);
+
+
+            }
+
+            try {
+                $data['product_image'] = URL::asset('uploads/product_images/' . $content_filename_small);
+
+                ProductImage::create($data);
+
+            } catch (QueryException $e) {
+
+                return response(['result' => -4, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+            }
+
+
+
+
+
+            return response(['result' => 1, 'msg' => 'Kayıt başarıyla güncellendi.']);
+
+        } catch (\Exception $e) { //  'msg' => 'Bir hata oluştu. Lütfen developer ile iletişime geçiniz.'
+            return response(['result' => -997,'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__]);
+
+        }
+    }
+
+    public function delete_product_model(Request $request)
+    {
+
+        try{
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'record_id' => [
+                    "required",
+                    "numeric",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+            ]);
+            if ($validator->fails()) {
+                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
+                return $resp;
+            }
+
+            $record_id = $data['record_id'];
+
+            // Deleting product image from table
+            try{
+                $data = ProductImage::where('record_id',$record_id)->get();
+
+                $product_id = $data[0]['product_id'];
+                $model_number = $data[0]['model_number'];
+                $product_image = $data[0]['product_image'];
+
+                ProductImage::find($record_id)->delete();
+
+            }catch (QueryException $e) {
+
+                $function_name = getcwd();
+                return response(['result' => -2, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+
+            }
+
+            // Deleting product model
+            try{
+
+                ProductModel::where(['product_id'=>$product_id,
+                                    'model_number'=>$model_number])->delete();
+            }catch (QueryException $e) {
+
+                $function_name = getcwd();
+                return response(['result' => -3, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+
+            }
+
+            // Deleting product image from file
+            try{
+
+                $img_url = $product_image;
+
+                $img = explode('uploads',$img_url);
+
+                if (File::exists(public_path('uploads/'.$img[1].''))) {
+                    File::delete(public_path('uploads/'.$img[1].''));
+                }
+
+            }catch (QueryException $e) {
+
+                $function_name = getcwd();
+                $resp = response(['result' => -2, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+                return $resp;
+            }
+
+            return response(['result' => 1, "msg" => "Kayıt başarıyla silindi"], 200);
+        } catch (\Throwable $t) {
+
+            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+
+
+        }
+
+
+    }
+
+
 
     public function fill_datatable(Request $request){
         try {

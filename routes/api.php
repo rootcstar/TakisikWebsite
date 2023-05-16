@@ -76,6 +76,10 @@ Route::middleware([AdminLoginControlMiddleware::class])->group(function () {
     Route::post('/admin/user/update', [AdminApiController::class, 'update_user'])->name('update_user_api');
     Route::post('/admin/user/delete', [AdminApiController::class, 'delete_user'])->name('delete_user_api');
 
+    Route::post('/admin/product/create', [AdminApiController::class, 'insert_product'])->name('new_product_api');
+    Route::post('/admin/product/update', [AdminApiController::class, 'update_product'])->name('update_product_api');
+    Route::post('/admin/product/update/model', [AdminApiController::class, 'insert_product_model_and_image'])->name('new_product_model_and_image_api');
+    Route::post('/admin/product/delete/model', [AdminApiController::class, 'delete_product_model'])->name('delete_product_model_api');
 
 
 

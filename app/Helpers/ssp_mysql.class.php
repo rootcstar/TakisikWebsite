@@ -246,7 +246,7 @@ class SSP_MYSQL {
      *  @param  array $columns Column information array
      *  @return array          Server-side processing response array
      */
-    static function simple ( $request, $conn, $table, $primaryKey, $columns )
+    static function simple ( $request, $conn, $table, $primaryKey, $columns,$where_clause = '' )
     {
         $bindings = array();
         $db = self::db( $conn );
@@ -256,11 +256,34 @@ class SSP_MYSQL {
         $order = self::order( $request, $columns );
         $where = self::filter( $request, $columns, $bindings );
 
+
+        $total_where_string = '';
+        if($where == "" && $where_clause == ''){ // BEN DUZELTTIM BURAYI -- SERAP
+
+            $total_where_string = '';
+
+        }
+        if($where == "" && $where_clause != ''){ // BEN DUZELTTIM BURAYI -- SERAP
+
+            $total_where_string = " where ".$where_clause;
+
+        }
+        if($where != "" && $where_clause == ''){ // BEN DUZELTTIM BURAYI -- SERAP
+
+            $total_where_string =   $where ;
+
+        }
+        if($where != "" && $where_clause != ''){ // BEN DUZELTTIM BURAYI -- SERAP
+
+            $total_where_string =   $where.' and '.$where_clause ;
+
+
+        }
         // Main query to actually get the data
         $data = self::sql_exec( $db, $bindings,
             "SELECT `".implode("`, `", self::pluck($columns, 'db'))."`
 			 FROM `$table`
-			 $where
+			 $total_where_string
 			 $order
 			 $limit"
         );

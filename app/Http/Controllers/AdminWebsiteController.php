@@ -8,6 +8,7 @@ use App\Models\PermissionType;
 use App\Models\SubTag;
 use App\Models\User;
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tag;
@@ -235,6 +236,34 @@ class AdminWebsiteController extends Controller
 
     public function get_new_product(){
         return view('admin.new.new-product');
+    }
+
+    public function get_update_product($pri_id){
+
+        $prod_data = Product::where('product_id',$pri_id)->first();
+
+
+        $keys = [
+            'record_id',
+            'product_id',
+            'model_number',
+            'product_image',
+        ];
+
+
+        $data =  ProductImage::select($keys)->get();
+
+
+        return view('admin.update.update-product')
+                        ->with('prod_data',$prod_data)
+                        ->with('title','Ürün Güncelle')
+                        ->with('update_button_name','Güncelle')
+                        ->with('table_id', 'product_images')
+                        ->with('keys', $keys)
+                        ->with('data', $data);
+
+
+
     }
 
 }
