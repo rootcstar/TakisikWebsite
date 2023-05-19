@@ -265,10 +265,10 @@
 
         $(document).ready(function () {
 
-            var table_name = "product_images"
+            var table_name = "v_products_models_and_images"
             var where = "product_id = {{$prod_data['product_id']}}"
             var post_or_get = "GET"
-            var primary_key = 'record_id'
+            var primary_key = 'model_number'
 
             var query_string = "table="+table_name+"&&"+
                 "where="+where+"&&"+
@@ -299,7 +299,7 @@
                 ], "searching": true,
                 'fnCreatedRow': function (nRow, aData, iDataIndex) {
 
-                    $(nRow).attr('id', '{{$table_id}}_' + aData.record_id); // or whatever you choose to set as the id
+                    $(nRow).attr('id', '{{$table_id}}_' + aData.model_record_id); // or whatever you choose to set as the id
                 },
                 "ajax": "{{route('fill_datatable_api')}}?" +query_string+ "",
                 "columnDefs": [{
@@ -308,7 +308,8 @@
                 }],
                 "columns": [
 
-                    {"data": "record_id"},
+                    {"data": "model_record_id"},
+                    {"data": "image_record_id"},
                     {"data": "product_id"},
                     {"data": "model_number"},
                     {"data": "product_image",
@@ -320,7 +321,7 @@
                         "data":null,
                         "className": 'text-center ',
                         mRender: function (data, type, row) {
-                            return '<button type="button" class="btn btn-danger" onclick="delete_model('+row.record_id+')"><i class="fas fa-trash"></i></button>'
+                            return '<button type="button" class="btn btn-danger" onclick="delete_model('+row.model_record_id+','+row.image_record_id+')"><i class="fas fa-trash"></i></button>'
                         }
                     },
 
@@ -468,7 +469,7 @@
 
         });
 
-        function delete_model(id) {
+        function delete_model(model_id,image_id) {
 
             Swal.fire({
                 title: 'Silmek istediğinizden emin misiniz?',
@@ -480,7 +481,8 @@
                     show_loader();
 
                     let formData = new FormData();
-                    formData.append('record_id', id);
+                    formData.append('model_id', model_id);
+                    formData.append('image_id', image_id);
 
                     fetch('{{ route('delete_product_model_api') }}', {
                         method: "POST",

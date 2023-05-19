@@ -20,7 +20,7 @@
                     <div class="slick-track" role="listbox" style="opacity: 1;">
 
                         <div class="slick-slide slick-cloned" data-slick-index="0" aria-hidden="true" tabindex="-1" style="">
-                            <img src="{{ $product->product_image }}" alt="" id="prd-img-1">
+                            <img src="{{ $product->product_image[0] }}" alt="" id="prd-img-1">
                         </div>
                     </div>
                 </div>
@@ -33,7 +33,7 @@
                     <div class="tt-product-vertical-layout">
                         <div class="tt-product-single-img">
                             <div>
-                                <img class="zoom-product" src="{{ $product->product_image }}" data-zoom-image="{{ $product->product_image }}" alt="" id="prd-img-2">
+                                <img class="zoom-product" src="{{ $product->product_image[0] }}" data-zoom-image="{{ $product->product_image[0] }}" alt="" id="prd-img-2">
                                 <button class="tt-btn-zomm tt-top-right"><i class="icon-f-86"></i></button>
                             </div>
                         </div>
@@ -41,11 +41,14 @@
                             <ul id="smallGallery" class="tt-slick-button-vertical slick-animated-show-js slick-initialized slick-slider slick-vertical">
                                 <div aria-live="polite" class="slick-list draggable" style="height: 605px;">
                                     <div class="slick-track" role="listbox" style="opacity: 1; height: 121px; transform: translate3d(0px, 0px, 0px);">
-                                        <li class="slick-slide slick-current slick-active" data-slick-index="0" aria-hidden="false" tabindex="-1" role="option" aria-describedby="slick-slide20" style="width: 81px;">
-                                            <a class="zoomGalleryActive" href="#" data-image="{{ $product->product_image }}" data-zoom-image="{{ $product->product_image }}" tabindex="0"  id="prd-img-3">
-                                                <img src="{{ $product->product_image }}" alt="" class="loading" data-was-processed="true"  id="prd-img-4">
-                                            </a>
-                                        </li>
+                                        @foreach($product->product_image as $image)
+                                            <li class="slick-slide slick-current slick-active" data-slick-index="0" aria-hidden="false" tabindex="-1" role="option" aria-describedby="slick-slide20" style="width: 81px;">
+                                                <a class="zoomGalleryActive" href="#" data-image="{{ $image }}" data-zoom-image="{{ $image }}" tabindex="0"  id="prd-img-3">
+                                                    <img src="{{ $image }}" alt="" class="loading" data-was-processed="true"  id="prd-img-4">
+                                                </a>
+                                            </li>
+
+                                        @endforeach
                                     </div>
                                 </div>
                             </ul>
@@ -81,7 +84,7 @@
                                     @foreach($product_models as $key=>$model)
                                         <div class="col-3 col-md-2 pt-3" >
                                             <a onclick="GetModel('{{ fiki_encrypt($model->model_record_id) }}',{{$key}})">
-                                                <img src="{{ $model->product_image }}" alt="" class="loading" data-was-processed="true">
+                                                <img src="{{ $model->product_image[0] }}" alt="" class="loading" data-was-processed="true">
                                             </a>
                                         </div>
                                     @endforeach

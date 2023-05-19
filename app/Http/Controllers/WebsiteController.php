@@ -3,11 +3,83 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\ProductModel;
+use App\Models\ProductModelAndImage;
 use Illuminate\Support\Facades\DB;
 use Session;
 
 class WebsiteController extends Controller
 {
+
+    public function get_product($product_code, $mri = ''){
+
+        if($mri != ''){
+
+            $product_data = DB::select("SELECT * FROM v_shop_products_with_tags WHERE product_code = '".$product_code."' ORDER BY model_number  asc");
+
+            //Finding how many models
+            $product_models = ProductModel::where('product_id',$product_data[0]->product_id)->get();
+
+            $products = array();
+            foreach ($product_models as $product_model) {
+
+                $product = DB::select("SELECT * FROM v_shop_products_with_tags WHERE product_code = '".$product_code."' AND  model_number = '".$product_model->model_number."' ");
+                ProductModelAndImage::where(['product_code'=>$product_code,'model_number'=>($product_model->model_number)])->get();
+                array_push($products,$product[0]);
+            }
+
+
+            $models = ProductModelAndImage::where('product_code',$product_code)->get();
+
+            // Finding product models
+            foreach ($products as $product) {
+                $product->product_image =array();
+            }
+
+            foreach ($models as $model) {
+                foreach ($products as $product) {
+                    if($product->model_number == $model->model_number){
+                        array_push($product->product_image, $model->product_image);
+
+                    }
+                }
+            }
+        }
+
+
+        $product_data = DB::select("SELECT * FROM v_shop_products_with_tags WHERE product_code = '".$product_code."' ORDER BY model_number  asc");
+
+        //Finding how many models
+        $product_models = ProductModel::where('product_id',$product_data[0]->product_id)->get();
+
+        $products = array();
+        foreach ($product_models as $product_model) {
+
+            $product = DB::select("SELECT * FROM v_shop_products_with_tags WHERE product_code = '".$product_code."' AND  model_number = '".$mri."' ");
+            ProductModelAndImage::where(['product_code'=>$product_code,'model_number'=>($product_model->model_number)])->get();
+            array_push($products,$product[0]);
+        }
+
+
+        $models = ProductModelAndImage::where('product_code',$product_code)->get();
+
+        // Finding product models
+        foreach ($products as $product) {
+            $product->product_image =array();
+        }
+
+        foreach ($models as $model) {
+            foreach ($products as $product) {
+                if($product->model_number == $model->model_number){
+                    array_push($product->product_image, $model->product_image);
+
+                }
+            }
+        }
+
+
+        return $products;
+    }
     public function get_test(){
         return view('test');
     }
@@ -51,18 +123,15 @@ class WebsiteController extends Controller
 
     public function get_product_detail_page($product_name,$product_code){ // ACCORDING TO PRODUCTS THAT HAS MODEL NUMBER 1
 
-      //  $model_record_id = fiki_decrypt($enc_model_record_id);
+        $products = $this->get_product($product_code);
 
-        $product_models_data = DB::select("SELECT * FROM v_shop_products_with_tags WHERE product_code = '".$product_code."' ORDER BY model_number  asc");
-
-        $product_data = $product_models_data;
-
-        $cart_search_result = array_search($product_data[0]->model_record_id, array_column(Session::get('shopping_cart.products'), 'model_record_id')); // Gives false or index of the product in the arra
-        $fav_search_result = array_search($product_data[0]->model_record_id, array_column(Session::get('user.favorites'), 'model_record_id'));
+        $cart_search_result = array_search($products[0]->model_record_id, array_column(Session::get('shopping_cart.products'), 'model_record_id')); // Gives false or index of the product in the arra
+        $fav_search_result = array_search($products[0]->model_record_id, array_column(Session::get('user.favorites'), 'model_record_id'));
 
 
-        return view('urun-detay')->with('product',$product_data[0])
-                                ->with('product_models',$product_models_data)
+
+        return view('urun-detay')->with('product',$products[0])
+                                ->with('product_models',$products)
                                         ->with('qty',($cart_search_result !== false) ? Session::get('shopping_cart.products')[$cart_search_result]->quantity : 0 )
                                         ->with('tag_name',( isset($product_data[0]->tag_name)) ? $product_data[0]->tag_name : "ERROR" )
                                         ->with('sub_tag_name',(isset($product_data[0]->sub_tag_name)) ? $product_data[0]->sub_tag_name : "ERROR" )

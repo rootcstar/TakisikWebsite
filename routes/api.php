@@ -82,5 +82,8 @@ Route::middleware([AdminLoginControlMiddleware::class])->group(function () {
     Route::post('/admin/product/delete/model', [AdminApiController::class, 'delete_product_model'])->name('delete_product_model_api');
 
 
+    Route::post('/admin/import-excel', [AdminApiController::class, 'upload_product_excel'])->name('importExcel');
+
+
 
 });

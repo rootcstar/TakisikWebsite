@@ -13,6 +13,20 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Unit extends Model
 {
+    public static function boot()
+    {
+
+        parent::boot();
+        self::creating(function ($model) {
+            $model->unit_name    = strtoupper($model->unit_name );
+
+        });
+        self::updating(function ($model) {
+            $model->unit_name    = strtoupper($model->unit_name );
+
+        });
+
+    }
     use HasFactory;
     protected $table = 'units';
 

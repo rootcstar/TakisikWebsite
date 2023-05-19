@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AdminUser;
 use App\Models\AdminUserType;
 use App\Models\PermissionType;
+use App\Models\ProductModelAndImage;
 use App\Models\SubTag;
 use App\Models\User;
 use App\Models\Product;
@@ -244,14 +245,15 @@ class AdminWebsiteController extends Controller
 
 
         $keys = [
-            'record_id',
+            'model_record_id',
+            'image_record_id',
             'product_id',
             'model_number',
             'product_image',
         ];
 
 
-        $data =  ProductImage::select($keys)->get();
+        $data =  ProductModelAndImage::select($keys)->get();
 
 
         return view('admin.update.update-product')

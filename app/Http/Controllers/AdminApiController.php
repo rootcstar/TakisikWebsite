@@ -25,6 +25,10 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Input;
+use App\Imports\ImportProducts;
+
 use Illuminate\Support\Str;
 use Session;
 
@@ -762,9 +766,9 @@ class AdminApiController extends Controller
                 $tag_id = $data['tag_id'];
                 unset($data['tag_id']);
                 Tag::find($tag_id)->update(["tag_name"=>$data['tag_name'],
-                                            "is_active"=>$data['is_active'],
-                                            "display_name"=>$data['display_name']
-                                         ]);
+                    "is_active"=>$data['is_active'],
+                    "display_name"=>$data['display_name']
+                ]);
 
             } catch (QueryException $e) {
 
@@ -964,8 +968,8 @@ class AdminApiController extends Controller
 
             } catch (QueryException $e) {
 
-                    return response(['result' => -2, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
-                }
+                return response(['result' => -2, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+            }
 
             // Insert tags of the subtags
             try {
@@ -1001,7 +1005,7 @@ class AdminApiController extends Controller
             $validator = Validator::make($data, [
                 'sub_tag_id' => [
                     "required",
-                   'integer',
+                    'integer',
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                 ],
                 'sub_tag_name' => [
@@ -1047,8 +1051,8 @@ class AdminApiController extends Controller
 
             } catch (QueryException $e) {
 
-                    return response(['result' => -2, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
-                }
+                return response(['result' => -2, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+            }
 
             // Delete all tags of the subtags
             try {
@@ -1195,6 +1199,7 @@ class AdminApiController extends Controller
 
         }
     }
+
     public function update_user(Request $request){
         try {
             $data = $request->all();
@@ -1409,7 +1414,7 @@ class AdminApiController extends Controller
                 foreach ($subtags as $subtag) {
 
                     ProductSubTag::create(['product_id'=>$created_product_id,
-                                            'sub_tag_id'=>$subtag]);
+                        'sub_tag_id'=>$subtag]);
                 }
 
             } catch (QueryException $e) {
@@ -1575,31 +1580,28 @@ class AdminApiController extends Controller
             try{
 
                 $check_model = ProductModel::where(['product_id'=>$data['product_id'],
-                                    'model_number'=>$data['model_number']])->get();
-
-                if(count($check_model) != 0){
-
-                    return response(['result' => -1, 'msg' => 'Bu numara daha önce bu ürüne ait başka bir modelde kullanılmıştır'], 200);
-                }
-
+                    'model_number'=>$data['model_number']])->get();
 
             }catch (QueryException $e){
                 return response(['result' => -2, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
             }
 
-            // Add product model to table
-            try {
+            // If model number is new => Add product model to table
+            if(count($check_model) == 0){
 
-                ProductModel::create(['product_id'=>$data['product_id'],
-                                    'model_number'=>$data['model_number']]);
+                try {
+
+                    ProductModel::create(['product_id'=>$data['product_id'],
+                        'model_number'=>$data['model_number']]);
 
 
-            } catch (QueryException $e) {
+                } catch (QueryException $e) {
 
-                return response(['result' => -3, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                    return response(['result' => -3, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                }
             }
 
-            // Add product images with model number to table
+            // Save product's image
             if ($request->hasFile('product_image')) {
 
                 $original_file = $request->file('product_image');
@@ -1624,6 +1626,7 @@ class AdminApiController extends Controller
 
             }
 
+            // Add product images with model number to table
             try {
                 $data['product_image'] = URL::asset('uploads/product_images/' . $content_filename_small);
 
@@ -1652,9 +1655,14 @@ class AdminApiController extends Controller
         try{
             $data = $request->all();
             $validator = Validator::make($data, [
-                'record_id' => [
+                'model_id' => [
                     "required",
-                    "numeric",
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'image_id' => [
+                    "required",
+                    "integer",
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                 ],
             ]);
@@ -1663,17 +1671,18 @@ class AdminApiController extends Controller
                 return $resp;
             }
 
-            $record_id = $data['record_id'];
+            $model_record_id = $data['model_id'];
+            $image_record_id = $data['image_id'];
 
             // Deleting product image from table
             try{
-                $data = ProductImage::where('record_id',$record_id)->get();
+                $data = ProductImage::where('record_id',$image_record_id)->get();
 
+                $product_image = $data[0]['product_image'];
                 $product_id = $data[0]['product_id'];
                 $model_number = $data[0]['model_number'];
-                $product_image = $data[0]['product_image'];
 
-                ProductImage::find($record_id)->delete();
+                ProductImage::find($image_record_id)->delete();
 
             }catch (QueryException $e) {
 
@@ -1682,17 +1691,6 @@ class AdminApiController extends Controller
 
             }
 
-            // Deleting product model
-            try{
-
-                ProductModel::where(['product_id'=>$product_id,
-                                    'model_number'=>$model_number])->delete();
-            }catch (QueryException $e) {
-
-                $function_name = getcwd();
-                return response(['result' => -3, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
-
-            }
 
             // Deleting product image from file
             try{
@@ -1708,8 +1706,39 @@ class AdminApiController extends Controller
             }catch (QueryException $e) {
 
                 $function_name = getcwd();
-                $resp = response(['result' => -2, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+                $resp = response(['result' => -5, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
                 return $resp;
+            }
+
+
+            // Checking last image
+            $last_image = false;
+            try{
+                $img_data = ProductImage::where(['product_id'=>$product_id,'model_number'=>$model_number])->get();
+
+                if(count($img_data) == 0){
+                    $last_image = true;
+                }
+            }catch (QueryException $e) {
+
+                $function_name = getcwd();
+                return response(['result' => -3, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+
+            }
+
+
+            // Deleting product model
+            if($last_image == true){
+                try{
+                    ProductModel::find($model_record_id)->delete();
+
+                }catch (QueryException $e) {
+
+                    $function_name = getcwd();
+                    return response(['result' => -4, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+
+                }
+
             }
 
             return response(['result' => 1, "msg" => "Kayıt başarıyla silindi"], 200);
@@ -1723,6 +1752,80 @@ class AdminApiController extends Controller
 
     }
 
+    public function upload_product_excel(Request $request)
+    {
+        try{
+            ini_set('max_execution_time', '0');
+
+            $data = $request->all();
+            $validator = Validator::make($data, [
+
+                'import_file' => 'required',
+            ]);
+
+            // process the form
+            if ($validator->fails()) {
+                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
+            }
+            if ($request->hasFile('import_file')) {
+
+
+                $original_file = $request->file('import_file');
+
+                $content_name_clean = preg_replace('/[^A-Za-z0-9\-]/', '', $original_file->getClientOriginalName());
+
+                if (strlen($content_name_clean) > 30) {
+                    $content_name_clean = substr($content_name_clean, 0, 10);
+                }
+
+                $date = date("Y-m-d");
+                $time = date("h-i-s");
+
+                $extension = $original_file->getClientOriginalExtension();
+
+                $content_filename_small = $content_name_clean . $date."-".$time."." . $extension;
+
+
+                Storage::disk('product_excel_files')->put($content_filename_small, file_get_contents($original_file));
+
+                if(!(Storage::disk('product_excel_files')->exists($content_filename_small))){
+
+                    return '1111';
+
+                }
+                Excel::import(new ImportProducts,  request()->file('import_file'));
+                return 'here';
+                if (!empty($data) && $data != null) {
+
+                    foreach ($data as $key => $value) {
+                        return '111';
+                        if (!empty($value)) {
+
+                            foreach ($value as $v) {
+                                return $v;
+                                //$insert[] = ['title' => $v['title'], 'description' => $v['description']];
+
+                            }
+                        }
+                    }
+
+                    if (!empty($insert)) {
+                        //  Item::insert($insert);
+                        return back()->with('success', 'Insert Record successfully.');
+                    }
+                }
+
+            }
+            return back()->with('error','Please Check your file, Something is wrong there.');
+
+        }catch (\Throwable $t) {
+
+            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+
+
+        }
+
+    }
 
 
     public function fill_datatable(Request $request){
@@ -1787,7 +1890,7 @@ class AdminApiController extends Controller
                 $ssp = new \SSP_MYSQL();
                 return
                     $ssp::simple( $request, $sql_details, $table, $primary_key, $columns,$where)
-                ;
+                    ;
             }
             if(env('DB_TYPE') == 'pgsql'){
                 $ssp = new \SSP_PGSQL();

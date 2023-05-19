@@ -13,6 +13,21 @@ use Illuminate\Database\Eloquent\Model;
  */
 class MainUnit extends Model
 {
+
+    public static function boot()
+    {
+
+        parent::boot();
+        self::creating(function ($model) {
+            $model->main_unit_name    = strtoupper($model->main_unit_name );
+
+        });
+        self::updating(function ($model) {
+            $model->main_unit_name    = strtoupper($model->main_unit_name );
+
+        });
+
+    }
     use HasFactory;
     protected $table = 'main_units';
 

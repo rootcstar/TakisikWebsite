@@ -53,6 +53,11 @@ return [
             'root' => public_path().'/uploads/product_images',
 
         ],
+        'product_excel_files' => [
+            'driver' => 'local',
+            'root' => public_path().'/uploads/product_excel_files',
+
+        ],
 
         's3' => [
             'driver' => 's3',
