@@ -1,186 +1,141 @@
-
 @extends('admin.layouts.app')
 
-
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <div class="card ">
-                <div class="card-body">
-                    <h3 class="card-title" >{{$title}}                    </h3>
-                    <h6 class="card-subtitle">Buradan yönetici silme ve ekleme işlemi yapabilirsiniz</h6>
-                    <table id="{{$table_id}}" class="table table-striped table-bordered" >
-                        <thead>
-                        <tr>
-                            <th>Güncelle</th>
-                            @foreach($keys as $key)
-                                <th>{{ LanguageChange(ucwords(str_replace("_"," ",$key))) }}</th>
-                            @endforeach
-                            <th>Sil</th>
-                        </tr>
-                        </thead>
-                        <tbody>
 
-                        </tbody>
-
-                        <tfoot>
-                        <tr>
-                            <th>Güncelle</th>
-                            @foreach($keys as $key)
-                                <th>{{ LanguageChange(ucwords(str_replace("_"," ",$key))) }}</th>
-                            @endforeach
-                            <th>Sil</th>
-                        </tr>
-                        </tfoot>
-                    </table>
-                    <div class="col-md-12 mb-3">
-                        <div class="col-md-2">
-                            <a type="button" href="{{route($new_button_route)}}" class="btn btn-primary">{{$new_button_name}}</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+    <div class="card-header p-0">
+        <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="info-tab" data-toggle="pill"
+                   href="#infotab" role="tab" aria-controls="info"
+                   aria-selected="true">Müşteriler</a>
+            </li>
+        </ul>
     </div>
 
+    <div class="card card-default">
+        <div class="card-body">
+            <div class="tab-content" id="custom-tabs-above-tabContent">
+                <div class="tab-pane fade show active" id="infotab" role="tabpanel" aria-labelledby="info-tab">
+
+                    <div class="card-body" id="table-content">
 
 
+                        <table id="{{ $admin_table_data['table_id'] }}" class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                @php
+                                    $not_to_show = array(   'admin_users'=>array('created_date','last_updated','password')                                   );
+
+                                @endphp
+                                @foreach($admin_table_data['table_fields'] as $field)
+                                    @if(isset($not_to_show[$admin_table_data['table_name']]) && in_array($field,$not_to_show[$admin_table_data['table_name']]))
+                                        @continue;
+
+                                    @endif
+                                    <th>{{ LanguageChange(FixName($field)) }}</th>
+                                @endforeach
+                                <th>Sil</th>
+                            </tr>
+                            </thead>
+
+
+                            <tfoot>
+
+                            </tfoot>
+                        </table>
+
+
+                        <script>
+
+                            $(document).ready(function () {
+                                $('#<?php echo $admin_table_data['table_id']; ?>').DataTable({
+                                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]], "serverSide": true,
+                                    "processing": true,
+                                    "responsive": true,
+                                    "paging": true,
+                                    "dom": '<"top"B<"clear">>rt<"bottom"iflp<"clear">>',
+                                    "buttons": [
+                                        //'csvHtml5'
+                                        {
+                                            "extend": 'csvHtml5',
+                                            "exportOptions": {
+                                                "modifer": {
+                                                    "page": "all",
+                                                    "search": "none"
+                                                }
+                                            }
+                                        },
+                                    ], "searching": true,
+                                    'fnCreatedRow': function (nRow, aData, iDataIndex) {
+                                        $(nRow).attr('id', '<?php echo $admin_table_data['table_id']; ?>-' + aData.<?php echo $admin_table_data['table_fields'][0]; ?>); // or whatever you choose to set as the id
+                                    },
+                                    "ajax": "/api/fill-datatable?datatable_name=<?php echo $admin_table_data['table_id']; ?>&&primary_key=<?php echo $admin_table_data['table_fields'][0]; ?>&&cols=<?php echo fiki_encrypt(json_encode($admin_table_data['table_fields']));?>",
+                                    "columnDefs": [{
+                                        "defaultContent": "-",
+                                        "targets": "_all"
+                                    }],
+
+                                    "columns": [
+                                        {
+                                            "className": 'text-center',
+                                            mRender: function (data, type, row) {
+                                                return '<span class="right badge badge-warning update-button action-button action-details"><a href="/admin/<?php echo $admin_table_data['table_id']; ?>/detay/' + row.<?php echo $admin_table_data['table_fields'][0]; ?> + '" class="white" target="_blank"><?php echo LanguageChange('Düzenle'); ?></span></a> '
+                                            }
+                                        },
+
+                                            <?php
+
+                                            foreach($admin_table_data['table_fields'] as $field){
+                                                if(isset($not_to_show[$admin_table_data['table_name']]) && in_array($field,$not_to_show[$admin_table_data['table_name']])){
+                                                    continue;
+                                                }
+
+
+                                                if(str_contains($field,'foto') || str_contains($field,'resim') || str_contains($field,'resmi') | str_contains($field,'image') ){
+                                                    echo '{
+                                                        mRender: function (data, type, row) {
+                                                            return "<img src="+row.'.$field.'+" style=\"width:10%; height:auto\">";
+                                                        }
+                                                    },';
+                                                } else if(str_contains($field,'active')){
+                                                    echo '{
+                                                        mRender: function (data, type, row) {
+                                                            if(row.'.$field.'){
+                                                             return "Evet";
+
+                                                            } else {
+
+                                                             return "Hayir";
+                                                            }
+                                                        }
+                                                    },';
+                                                } else {
+                                                    echo '{"data": "'.$field.'"},';
+                                                }
+
+
+                                            }
+                                            ?>
+                                        {
+                                            "className": ' text-center badge-danger',
+                                            mRender: function (data, type, row) {
+                                                return '<i class="fas fa-trash action-delete" onclick="DeleteRecordModal(\'<?php echo $admin_table_data['table_name']; ?>\',\''+row.<?php echo $admin_table_data['table_fields'][0]; ?>+'\')" data-toggle="modal" data-target="#modal-delete" type="button"></i> ';
+                                            }
+                                        },
+
+                                    ]
+                                });
+                            });
+                        </script>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
 @endsection
-@section('scripts')
 
 
-    <script>
-
-        $(document).ready(function () {
-
-            var table_name = "users"
-            var where = "is_confirmed = 1"
-            var post_or_get = "GET"
-            var primary_key = 'user_id'
-
-            var query_string = "table="+table_name+"&&"+
-                "where="+where+"&&"+
-                "post_or_get="+post_or_get+"&&"+
-                "primary_key="+primary_key;
-
-            $('#{{$table_id}}').DataTable({
-                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-                "serverSide": true,
-                "processing": true,
-                "responsive": true,
-                "paging": true,
-
-                "dom": '<"top"B<"clear">>rt<"bottom"iflp<"clear">>',
-                "buttons": [
-                    //'csvHtml5'
-                    {
-                        "extend": 'csvHtml5',
-                        "exportOptions": {
-
-                            "modifer": {
-                                "page": "all",
-                                "search": "none"
-                            }
-                        }
-                    },
-
-                ], "searching": true,
-                'fnCreatedRow': function (nRow, aData, iDataIndex) {
-
-                    $(nRow).attr('id', '{{$table_id}}_' + aData.user_id); // or whatever you choose to set as the id
-                },
-                "ajax": "{{route('fill_datatable_api')}}?" +query_string+ "",
-                "columnDefs": [{
-                    "defaultContent": "-",
-                    "targets": "_all"
-                }],
-                "columns": [
-
-                    {
-                        "data":null,
-                        "className": 'text-center ',
-                        mRender: function (data, type, row) {
-                            return '<a  target="_blank" href="/admin/users/update/'+row.user_id+'">' +
-                                '<button type="button" class="btn btn-warning" >Güncelle</button>'
-                            '</a>'
-                        }
-                    },
-                    {"data": "user_id"},
-                    {"data": "company_name"},
-                    {"data": "email"},
-                    {"data": "phone"},
-                    {
-                        "data":null,
-                        "className": 'text-center ',
-                        mRender: function (data, type, row) {
-                            return '<button type="button" class="btn btn-danger" onclick="delete_user('+row.user_id+')"><i class="fas fa-trash"></i></button>'
-                        }
-                    },
-
-
-                ]
-            });
-        });
-
-
-        function delete_user(id) {
-
-            Swal.fire({
-                title: 'Silmek istediğinizden emin misiniz?',
-                showCancelButton: true,
-                confirmButtonText: 'Yes',
-                confirmButtonColor: '#367ab2',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    show_loader();
-
-                    let formData = new FormData();
-                    formData.append('user_id', id);
-
-                    fetch('{{ route('delete_user_api') }}', {
-                        method: "POST",
-                        body: formData
-                    })
-                        .then(response => {
-                            if (response.status == 301) {
-                                window.location = '{{route('admin_panel_logout')}}';
-                                throw new Error('Logging out...');
-                            }
-                            return response.json();
-
-                        })
-                        .then(data => {
-
-                            if (data.result != '1') {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: data.msg,
-                                    confirmButtonColor: '#367ab2',
-                                })
-                                return;
-                            }
-                            Swal.fire({
-                                icon: 'success',
-                                title: data.msg,
-                                confirmButtonColor: '#367ab2',
-                            })
-                            window.location.reload();
-
-                        })
-                        .catch((error) => {
-
-                            Swal.fire({
-                                icon: 'error',
-                                title: error,
-                            })
-                        });
-
-                }
-            })
-        }
-
-    </script>
-
-
-@endsection

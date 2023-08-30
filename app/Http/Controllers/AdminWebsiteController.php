@@ -43,6 +43,8 @@ class AdminWebsiteController extends Controller
         ];
         $data = AdminUser::select($keys)->get();
 
+
+
         return view('admin.admin-users')
             ->with('table_id', 'admin_users')
             ->with('title', 'Yöneticiler')
@@ -61,6 +63,10 @@ class AdminWebsiteController extends Controller
     public function get_update_admin_user($pri_id){
 
         $data = AdminUser::where('admin_id',$pri_id)->first();
+
+        if($data == null || empty($data)){
+            return view('admin.errors.404');
+        }
 
         return view('admin.update.update-admin-user')->with('data',$data);
     }
@@ -159,6 +165,9 @@ class AdminWebsiteController extends Controller
 
         $data = Tag::where('tag_id',$pri_id)->first();
 
+        if($data == null || empty($data)){
+            return view('admin.errors.404');
+        }
         return view('admin.update.update-tag')
             ->with('data',$data)
             ->with('title','Kategori Güncelle')
@@ -169,13 +178,16 @@ class AdminWebsiteController extends Controller
 
         $data = SubTag::where('sub_tag_id',$pri_id)->first();
 
+        if($data == null || empty($data)){
+            return view('admin.errors.404');
+        }
         return view('admin.update.update-subtag')
             ->with('data',$data)
             ->with('title','Alt Kategori Güncelle')
             ->with('update_button_name','Güncelle');
     }
 
-    public function get_users(){
+    public function get_customers(){
 
         $keys = [
             'user_id',
@@ -186,7 +198,7 @@ class AdminWebsiteController extends Controller
         $data = User::select($keys)->get();
 
 
-        return view('admin.users')
+        return view('admin.customers')
             ->with('table_id', 'users')
             ->with('title', 'Müşteriler')
             ->with('keys', $keys)
@@ -205,6 +217,9 @@ class AdminWebsiteController extends Controller
 
         $data = User::where('user_id',$pri_id)->first();
 
+        if($data == null || empty($data)){
+            return view('admin.errors.404');
+        }
         return view('admin.update.update-user')
             ->with('data',$data)
             ->with('title','Kullanıcı Güncelle')
@@ -243,6 +258,10 @@ class AdminWebsiteController extends Controller
 
         $prod_data = Product::where('product_id',$pri_id)->first();
 
+        if($prod_data == null || empty($prod_data)){
+            return view('admin.errors.404');
+        }
+
 
         $keys = [
             'model_record_id',
@@ -266,6 +285,10 @@ class AdminWebsiteController extends Controller
 
 
 
+    }
+
+    public function get_insert_products_with_excel(){
+        return view('admin.new.new-product-excel');
     }
 
 }

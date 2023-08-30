@@ -35,7 +35,7 @@ class ApiController extends Controller
 
         if (!Session::has('website.selected_tag')) {
 
-            $default_products = DB::select("SELECT * FROM v_shop_products_with_tags WHERE tag_id='" . $tags[0]->tag_id . "' AND model_number ='1'  ORDER BY product_id ASC LIMIT 9");
+            $default_products = DB::select("SELECT * FROM v_shop_products_with_tags WHERE tag_id='" . $tags[0]->tag_id . "' AND model_number ='1'  GROUP BY product_code ORDER BY product_id ASC LIMIT 9");
             Session::put('website.selected_tag', $tags[0]->tag_id);
 
             $data_sub_tags = DB::select("SELECT * FROM v_tag_to_sub_tags WHERE tag_id = '" . $tags[0]->tag_id . "'");
@@ -43,7 +43,7 @@ class ApiController extends Controller
 
         } else {
 
-            $default_products = DB::select("SELECT * FROM v_shop_products_with_tags WHERE tag_id='" . Session::get('website.selected_tag') . "'  AND model_number ='1'  ORDER BY product_id ASC LIMIT 9");
+            $default_products = DB::select("SELECT * FROM v_shop_products_with_tags WHERE tag_id='" . Session::get('website.selected_tag') . "'  AND model_number ='1' GROUP BY product_code ORDER BY product_id ASC LIMIT 9");
 
             $data_sub_tags = DB::select("SELECT * FROM v_tag_to_sub_tags WHERE tag_id = '" . Session::get('website.selected_tag') . "'");
             Session::put('website.sub_tag_filter_bar', $data_sub_tags);
@@ -397,7 +397,7 @@ class ApiController extends Controller
             }
 
 
-            $data_products = DB::select("SELECT * FROM v_shop_products_with_tags WHERE tag_id = '" . $data['tag_id'] . "' AND model_number = 1 ORDER BY product_id ASC LIMIT 9");
+            $data_products = DB::select("SELECT * FROM v_shop_products_with_tags WHERE tag_id = '" . $data['tag_id'] . "' AND model_number = 1 GROUP BY product_code ORDER BY product_id ASC LIMIT 9");
 
             $data_sub_tags = DB::select("SELECT * FROM v_tag_to_sub_tags WHERE tag_id = '" . $data['tag_id'] . "'");
             //return response(['result'=>-56,"msg"=>$data_sub_tag_ids[0]->sub_tag_display_name],200);
@@ -468,10 +468,10 @@ class ApiController extends Controller
             }
 
             if ($data['sub_tag_id'] == 0) {
-                $data_products = DB::select("SELECT * FROM v_shop_products_with_tags WHERE tag_id = '" . $data['tag_id'] . "'   AND model_number = 1  ORDER BY product_id ASC LIMIT 9");
+                $data_products = DB::select("SELECT * FROM v_shop_products_with_tags WHERE tag_id = '" . $data['tag_id'] . "'   AND model_number = 1  GROUP BY product_code  ORDER BY product_id ASC LIMIT 9");
 
             } else {
-                $data_products = DB::select("SELECT * FROM v_shop_products_with_tags WHERE tag_id = '" . $data['tag_id'] . "' AND sub_tag_id = '" . $data['sub_tag_id'] . "'  AND model_number = 1  ORDER BY product_id ASC LIMIT 9");
+                $data_products = DB::select("SELECT * FROM v_shop_products_with_tags WHERE tag_id = '" . $data['tag_id'] . "' AND sub_tag_id = '" . $data['sub_tag_id'] . "'  AND model_number = 1  GROUP BY product_code  ORDER BY product_id ASC LIMIT 9");
 
             }
 
@@ -539,13 +539,14 @@ class ApiController extends Controller
 
             }
 
+
             if ($data['sub_tag_id'] != 0) {
-                $data_products = DB::select("SELECT * FROM v_shop_products_with_tags WHERE sub_tag_id = '" . $data['sub_tag_id'] . "' AND sub_tag_is_active ='1' and product_is_active = '1'  ORDER BY product_id ASC LIMIT " . $data['start'] . ",9");
-                $count = count(DB::select("SELECT * FROM v_shop_products_with_tags WHERE sub_tag_id = '" . $data['sub_tag_id'] . "' AND sub_tag_is_active ='1' and product_is_active = '1'"));
+                $data_products = DB::select("SELECT * FROM v_shop_products_with_tags WHERE sub_tag_id = '" . $data['sub_tag_id'] . "' AND sub_tag_is_active ='1' and product_is_active = '1' GROUP BY product_code ORDER BY product_id ASC LIMIT 9 OFFSET ".$data['start']."");
+                $count = count(DB::select("SELECT * FROM v_shop_products_with_tags WHERE sub_tag_id = '" . $data['sub_tag_id'] . "' AND sub_tag_is_active ='1' and product_is_active = '1' GROUP BY product_code"));
 
             } else {
-                $data_products = DB::select("SELECT * FROM v_shop_products_with_tags WHERE tag_id = '" . $data['tag_id'] . "' AND tag_is_active  ='1' AND sub_tag_is_active ='1' and product_is_active = '1'  ORDER BY product_id ASC LIMIT " . $data['start'] . ",9");
-                $count = count(DB::select("SELECT * FROM v_shop_products_with_tags WHERE tag_id = '" . $data['tag_id'] . "' AND tag_is_active  ='1' AND sub_tag_is_active ='1' and product_is_active = '1'"));
+                $data_products = DB::select("SELECT * FROM v_shop_products_with_tags WHERE tag_id = '" . $data['tag_id'] . "' AND tag_is_active  ='1' AND sub_tag_is_active ='1' and product_is_active = '1'  GROUP BY product_code ORDER BY product_id ASC LIMIT 9 OFFSET ".$data['start']."");
+                $count = count(DB::select("SELECT * FROM v_shop_products_with_tags WHERE tag_id = '" . $data['tag_id'] . "' AND tag_is_active  ='1' AND sub_tag_is_active ='1' and product_is_active = '1' GROUP BY product_code"));
 
             }
 
@@ -578,7 +579,7 @@ class ApiController extends Controller
 
                 } else {
 
-                    $load_more = '<a href="#" class="btn btn-border" onclick="LoadMore(\'' . fiki_encrypt($data['tag_id']) . '\',\'' . fiki_encrypt($data['sub_tag_id']) . '\',\'' . fiki_encrypt(9) . '\')">LOAD MORE</a>
+                    $load_more = '<a href="#" class="btn btn-border" onclick="LoadMore(\'' . fiki_encrypt($data['tag_id']) . '\',\'' . fiki_encrypt($data['sub_tag_id']) . '\',\'' . fiki_encrypt($new_start) . '\')">LOAD MORE</a>
             <div class="tt_item_all_js">
                 <a href="" class="btn btn-border01">NO MORE ITEM TO SHOW</a>
             </div>';
@@ -1099,14 +1100,26 @@ class ApiController extends Controller
 
             $check_favs_result = array_search($model_record_id, array_column($user_fav_products, 'model_record_id')); // Gives false or index of the product in the array
 
+            if(count($data_product)>1){
+                $product_images = array();
+                foreach ($data_product as $product) {
+                        array_push($product_images, $product->product_image);
+                }
+                $data_product[0]->product_image = $product_images;
+            }
+
             $data_product = $data_product[0];
             $product_code_model_number =  $data_product->product_code.'-'. $data_product->model_number ;
             $product_price = number_format(CalculateProductPrice($data_product->wholesale_price,$data_product->kdv,Session::get('website.user.user_discount')),2,'.','').' TL';
             $enc_model_record_id = fiki_encrypt($data_product->model_record_id);
 
+            $product_div = view('partials.product-image',['product_images' => $data_product->product_image])->render();
+            $product_div_mobile = view('partials.product-image-mobile')->with('product_images',$data_product->product_image)->render();
+
             return response(['result' => 1, "qty"=>($check_cart_result !== false) ? $shopping_cart_products[$check_cart_result]->quantity: 0,
                                             "prd-nm"=>$data_product->product_name,
-                                            "prd-img"=>$data_product->product_image,
+                                            "product_image_div"=>$product_div,
+                                            "product_image_mobile_div"=>$product_div_mobile,
                                             "prd-pr"=>$product_price,
                 "prd-cm"=>$product_code_model_number,
                                             "enc-mri"=>$enc_model_record_id,

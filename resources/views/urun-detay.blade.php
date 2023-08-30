@@ -14,46 +14,14 @@
     </div>
 
     <div class="container-indent">
-        <div class="tt-mobile-product-layout visible-xs">
-            <div class="tt-mobile-product-slider arrow-location-center slick-animated-show-js slick-initialized slick-slider">
-                <div aria-live="polite" class="slick-list draggable" style="">
-                    <div class="slick-track" role="listbox" style="opacity: 1;">
-
-                        <div class="slick-slide slick-cloned" data-slick-index="0" aria-hidden="true" tabindex="-1" style="">
-                            <img src="{{ $product->product_image[0] }}" alt="" id="prd-img-1">
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="tt-mobile-product-layout visible-xs" id="image-part-mobile">
+            @include('partials.product-image-mobile')
         </div>
 
         <div class="container container-fluid-mobile" id="product-detail">
             <div class="row">
-                <div class="col-6 hidden-xs">
-                    <div class="tt-product-vertical-layout">
-                        <div class="tt-product-single-img">
-                            <div>
-                                <img class="zoom-product" src="{{ $product->product_image[0] }}" data-zoom-image="{{ $product->product_image[0] }}" alt="" id="prd-img-2">
-                                <button class="tt-btn-zomm tt-top-right"><i class="icon-f-86"></i></button>
-                            </div>
-                        </div>
-                        <div class="tt-product-single-carousel-vertical">
-                            <ul id="smallGallery" class="tt-slick-button-vertical slick-animated-show-js slick-initialized slick-slider slick-vertical">
-                                <div aria-live="polite" class="slick-list draggable" style="height: 605px;">
-                                    <div class="slick-track" role="listbox" style="opacity: 1; height: 121px; transform: translate3d(0px, 0px, 0px);">
-                                        @foreach($product->product_image as $image)
-                                            <li class="slick-slide slick-current slick-active" data-slick-index="0" aria-hidden="false" tabindex="-1" role="option" aria-describedby="slick-slide20" style="width: 81px;">
-                                                <a class="zoomGalleryActive" href="#" data-image="{{ $image }}" data-zoom-image="{{ $image }}" tabindex="0"  id="prd-img-3">
-                                                    <img src="{{ $image }}" alt="" class="loading" data-was-processed="true"  id="prd-img-4">
-                                                </a>
-                                            </li>
-
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </ul>
-                        </div>
-                    </div>
+                <div class="col-6 hidden-xs" id="image-part">
+                    @include('partials.product-image')
                 </div>
                 <div class="col-6">
                     <div class="tt-product-single-info">

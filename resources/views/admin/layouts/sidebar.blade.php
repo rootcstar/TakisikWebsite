@@ -108,9 +108,15 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link "  href="{{route('admin_panel_users')}}" {{ Request::is('users') ? 'active' : '' }}>
+                    <a class="sidebar-link "  href="{{route('admin_panel_customers')}}" {{ Request::is('users') ? 'active' : '' }}>
                         <i class="mdi mdi-account-circle"></i>
-                        <span>{{LanguageChange('Users')}}</span>
+                        <span>{{LanguageChange('Customers')}}</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link "  href="{{route('admin_panel_excel_upload')}}" {{ Request::is('product-upload-with-excel') ? 'active' : '' }}>
+                        <i class="mdi mdi-file-excel"></i>
+                        <span>{{LanguageChange('Toplu Ürün Ekleme (Excel)')}}</span>
                     </a>
                 </li>
                 <li class="sidebar-item">

@@ -1,9 +1,6 @@
 <?php
 
-    $test =  array();
-    array_push($test,'fsdf');
-    print_r($test);
-die();
+
 ?>
 <div class="container">
     <div class="panel panel-primary">

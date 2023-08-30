@@ -536,9 +536,6 @@ class AdminApiController extends Controller
             $admin_user_type_id_array = json_decode($data['admin_user_type_id_array'],true);
             foreach ($admin_user_type_id_array as $admin_user_type_id){
 
-
-
-
                 try{
                     $create_data = [
                         'admin_user_type_id' => $admin_user_type_id,
@@ -1758,6 +1755,7 @@ class AdminApiController extends Controller
             ini_set('max_execution_time', '0');
 
             $data = $request->all();
+
             $validator = Validator::make($data, [
 
                 'import_file' => 'required',
@@ -1765,8 +1763,10 @@ class AdminApiController extends Controller
 
             // process the form
             if ($validator->fails()) {
-                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
-            }
+                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
+                return $resp;
+            } return response(['result' => -1, 'msg'=>'here error', "data" => $data], 200);
+
             if ($request->hasFile('import_file')) {
 
 

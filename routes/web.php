@@ -64,13 +64,15 @@ Route::middleware([AdminLoginControlMiddleware::class])->group(function() {
 
     Route::get('/admin/subtags/update/{pri_id}', [AdminWebsiteController::class, 'get_update_subtag']);
 
-    Route::get('/admin/users', [AdminWebsiteController::class, 'get_users'])->name('admin_panel_users');
+    Route::get('/admin/customers', [AdminWebsiteController::class, 'get_customers'])->name('admin_panel_customers');
     Route::get('/admin/users/new', [AdminWebsiteController::class, 'get_new_user'])->name('admin_panel_new_user');
     Route::get('/admin/users/update/{pri_id}', [AdminWebsiteController::class, 'get_update_user']);
 
     Route::get('/admin/products', [AdminWebsiteController::class, 'get_products'])->name('admin_panel_products');
     Route::get('/admin/products/new', [AdminWebsiteController::class, 'get_new_product'])->name('admin_panel_new_product');
     Route::get('/admin/products/update/{pri_id}', [AdminWebsiteController::class, 'get_update_product']);
+
+    Route::get('/admin/product-upload-with-excel', [AdminWebsiteController::class, 'get_insert_products_with_excel'])->name('admin_panel_excel_upload');
 
 
 });

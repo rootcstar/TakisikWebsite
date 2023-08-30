@@ -2,6 +2,7 @@
 $route_name = str_replace("admin_panel_"," ",Route::currentRouteName());
 $fix_route_name = ucwords(str_replace("_"," ",$route_name));
 
+
 ?>
 <div class="page-breadcrumb">
     <div class="row">

@@ -22,7 +22,7 @@
                             <div class="form-floating">
                                 <label for="floatingName">{{LanguageChange('Last Name')}}</label>
                                 <input type="text" class="form-control input-fields" id="last_name" pattern="[a-zA-ZğüşöçĞÜŞÖÇİ]{2}[a-zA-ZğüşöçĞÜŞÖÇİ ]{1,30}"
-                                       value="{{$data['first_name']}}" required>
+                                       value="{{$data['last_name']}}" required>
                                 <div class="invalid-feedback"> Zorunlu alan.. Min 3 harf</div>
                             </div>
                         </div>

@@ -758,10 +758,10 @@
 
                     $('#loader').addClass('hidden');
                     document.getElementById("prd-cm").innerText = response['prd-cm'];
-                    document.getElementById("prd-img-1").src = response['prd-img'];
-                    document.getElementById("prd-img-2").src = response['prd-img'];
-                    document.getElementById("prd-img-3").src = response['prd-img'];
-                    document.getElementById("prd-img-4").src = response['prd-img'];
+                    $('#image-part').text('');
+                    $('#image-part').append(response['product_image_div']);
+                    $('#image-part-mobile').text('');
+                    $('#image-part-mobile').append(response['product_image_mobile_div']);
                     document.getElementById("prd-pr").innerText = response['prd-pr'];
                     document.getElementById("prd-nm").innerText = response['prd-nm'];
                     document.getElementById("counter-input").value = response['qty'];

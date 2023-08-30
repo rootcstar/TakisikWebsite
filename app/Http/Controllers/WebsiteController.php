@@ -12,8 +12,7 @@ class WebsiteController extends Controller
 {
 
     public function get_product($product_code, $mri = ''){
-
-        if($mri != ''){
+        if(empty($mri)){
 
             $product_data = DB::select("SELECT * FROM v_shop_products_with_tags WHERE product_code = '".$product_code."' ORDER BY model_number  asc");
 
@@ -24,6 +23,7 @@ class WebsiteController extends Controller
             foreach ($product_models as $product_model) {
 
                 $product = DB::select("SELECT * FROM v_shop_products_with_tags WHERE product_code = '".$product_code."' AND  model_number = '".$product_model->model_number."' ");
+
                 ProductModelAndImage::where(['product_code'=>$product_code,'model_number'=>($product_model->model_number)])->get();
                 array_push($products,$product[0]);
             }
@@ -44,6 +44,7 @@ class WebsiteController extends Controller
                     }
                 }
             }
+            return $products;
         }
 
 
@@ -132,6 +133,7 @@ class WebsiteController extends Controller
 
         return view('urun-detay')->with('product',$products[0])
                                 ->with('product_models',$products)
+                                ->with('product_images',$products[0]->product_image)
                                         ->with('qty',($cart_search_result !== false) ? Session::get('shopping_cart.products')[$cart_search_result]->quantity : 0 )
                                         ->with('tag_name',( isset($product_data[0]->tag_name)) ? $product_data[0]->tag_name : "ERROR" )
                                         ->with('sub_tag_name',(isset($product_data[0]->sub_tag_name)) ? $product_data[0]->sub_tag_name : "ERROR" )

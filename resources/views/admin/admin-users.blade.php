@@ -6,10 +6,8 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <!--DEAL 1 -->
                 <div class="card card-default">
 
-                    <!-- /.card-header -->
                     <div class="card-body">
                         <h3 class="card-title" >
                             {{$title}}

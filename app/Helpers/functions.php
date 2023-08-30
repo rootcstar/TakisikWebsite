@@ -56,7 +56,7 @@ function LanguageChange($value){
                     "Sub Tag Id" => "Alt Kategori ID",
                     "Sub Tag Name" => "Alt Kategori Adı",
                     "Is Active" => "Sayfada Gösterilsin Mi?",
-                    'Users' => 'Müşteriler',
+                    'Customers' => 'Müşteriler',
                     'Admin Users' => 'Yöneticiler',
                     "User Id" => "Kullanıcı ID",
                     'First Name' => 'Adı',
@@ -98,8 +98,8 @@ function LanguageChange($value){
         "Single Price"=> "Birim Fiyatı",
         "Wholesale Price"=> "Toptan Fiyatı",
         "Retail Price"=> "Parakende Fiyatı",
-        "Is New"=> 'Yeni mi',
         "Record Id"=> "Kayıt ID",
+        "Products"=> "Ürünler",
                     );
 
     if(Session::get('admin.lang') == 'tr'){
