@@ -9,7 +9,7 @@
                     <div class="card-body">
                         <h4 class="card-title">Yeni Ürün Listesi Ekle</h4>
                         <h5 class="card-subtitle"> Yeni ürün listenizi excel dosyası olarak ekleyebilirsiniz</h5>
-                        <form class="row g-3 needs-validation" enctype="multipart/form-data" id="form" novalidate>
+                        <form class="row g-3 needs-validation"  id="form" novalidate>
                             <div class="col-md-6 form-group">
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input input-fields"   id="import_file">
@@ -17,10 +17,8 @@
                                     <label class="custom-file-label" >Choose file</label>
                                 </div>
                             </div>
-
-
-                            <button class="btn btn-primary" id="excel_form_submit">Import CSV or Excel File</button>
                         </form>
+                        <button class="btn btn-primary" id="excel_form_submit">Import CSV or Excel File</button>
                     </div>
                 </div>
             </div>
@@ -39,6 +37,7 @@
 
 
         $('#excel_form_submit').on('click', function () {
+
             is_valid = validate_form('form');
             if (!is_valid) {
                 return;

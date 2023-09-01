@@ -54,7 +54,16 @@ class AdminApiController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
 
@@ -85,16 +94,29 @@ class AdminApiController extends Controller
                 }
 
             } catch (QueryException $e) {
-
-                return response(['result' => -3, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
 
 
 
-        } catch (\Exception $e) { // 'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__
-            return response(['result' => -997, 'msg' => 'Bir hata oluştu. Lütfen developer ile iletişime geçiniz.']);
-
+        } catch (\Throwable $t) {
+            $resp = response(['result'=>-5050,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
         }
     }
 
@@ -111,8 +133,16 @@ class AdminApiController extends Controller
                 ],
             ]);
             if ($validator->fails()) {
-                $resp = response(['result'=>-1,"msg"=>$validator->errors()->first(),'error' => $validator->errors() ,"function"=>__FUNCTION__,"data"=>$data],400);
-                return $resp;
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
 
@@ -125,17 +155,21 @@ class AdminApiController extends Controller
 
             return response(['result'=>1,"msg"=>"Success","html"=>view('admin.partials.permissions')->with('permissions',$permission_types)->render()],200);
         } catch (\Throwable $t) {
-
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
-
-
+            $resp = response(['result'=>-5050,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
         }
 
     }
 
     public function get_admin_user_types(Request $request){
-
-
 
         try{
             $data = $request->all();
@@ -148,8 +182,16 @@ class AdminApiController extends Controller
                 ],
             ]);
             if ($validator->fails()) {
-                $resp = response(['result'=>-1,"msg"=>$validator->errors()->first(),'error' => $validator->errors() ,"function"=>__FUNCTION__,"data"=>$data],400);
-                return $resp;
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
             $admin_user_types = AdminUserType::all();
@@ -168,10 +210,16 @@ class AdminApiController extends Controller
 
             return response(['result'=>1,"msg"=>"Success","html"=>view('admin.partials.admin_user_types')->with('admin_user_types',$admin_user_types)->render()],200);
         } catch (\Throwable $t) {
-
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
-
-
+            $resp = response(['result'=>-5050,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
         }
 
 
@@ -226,9 +274,17 @@ class AdminApiController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
-
 
 
             try {
@@ -236,16 +292,29 @@ class AdminApiController extends Controller
                 AdminUser::create($data);
 
             } catch (QueryException $e) {
-
-                return response(['result' => -1, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
 
             return response(['result' => 1, 'msg' => 'Kayıt başarıyla eklendi.']);
 
-        } catch (\Exception $e) { // 'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__
-            return response(['result' => -997, 'msg' => 'Bir hata oluştu. Lütfen developer ile iletişime geçiniz.']);
-
+        } catch (\Throwable $t) {
+            $resp = response(['result'=>-5050,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
         }
     }
 
@@ -298,7 +367,16 @@ class AdminApiController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
 
@@ -310,22 +388,34 @@ class AdminApiController extends Controller
 
 
             } catch (QueryException $e) {
-
-                return response(['result' => -1, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
 
             return response(['result' => 1, 'msg' => 'Kayıt başarıyla güncellendi.']);
 
-        } catch (\Exception $e) { // 'msg' => 'Bir hata oluştu. Lütfen developer ile iletişime geçiniz.'
-            return response(['result' => -997, 'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__]);
-
+        } catch (\Throwable $t) {
+            $resp = response(['result'=>-5050,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
         }
     }
 
     public function delete_admin_user(Request $request)
     {
-
         try{
             $data = $request->all();
             $validator = Validator::make($data, [
@@ -336,29 +426,44 @@ class AdminApiController extends Controller
                 ],
             ]);
             if ($validator->fails()) {
-                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
-                return $resp;
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
             try{
                 AdminUser::where('admin_id',$data['admin_id'])->delete();
 
             }catch (QueryException $e) {
-
-                $function_name = getcwd();
-                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
-                return $resp;
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
             return response(['result' => 1, "msg" => "Kayıt başarıyla silindi"], 200);
         } catch (\Throwable $t) {
-
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
-
-
+            $resp = response(['result'=>-5050,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
         }
-
-
     }
 
     public function insert_permission_type(Request $request)
@@ -385,8 +490,16 @@ class AdminApiController extends Controller
 
             ]);
             if ($validator->fails()) {
-                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
-                return $resp;
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
             $admin_user_type_id_array = json_decode($data['admin_user_type_id_array'],true);
@@ -413,10 +526,13 @@ class AdminApiController extends Controller
                 $created_permission_id = PermissionType::create($create_data)->permission_id;
 
             } catch (QueryException $e) {
-
-                $function_name = getcwd();
-                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
-                return $resp;
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
 
@@ -424,8 +540,6 @@ class AdminApiController extends Controller
 
             if(!empty($admin_user_type_id_array)){
                 foreach ($admin_user_type_id_array as $admin_user_type_id){
-
-
                     try{
                         $create_data = [
                             'admin_user_type_id' => $admin_user_type_id,
@@ -440,22 +554,32 @@ class AdminApiController extends Controller
                         foreach ($created_admin_user_type_permissions as $created_admin_user_type_permission){
                             AdminUserTypePermission::where('record_id',$created_admin_user_type_permission)->delete();
                         }
-
-
-                        $function_name = getcwd();
-                        $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
-                        return $resp;
+                        $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                        $request = new Request();
+                        $request['log_type'] = 'Takisik_Admin_query_error';
+                        $request['data'] = $response->getContent();
+                        $maintenance_controller = new GeneralController();
+                        $maintenance_controller->send_data_to_maintenance($request);
+                        return $response;
                     }
                 }
 
-
             }
-
 
             return response(['result' => 1, "msg" => "Success"], 200);
         } catch (\Throwable $t) {
 
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController();
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
 
 
         }
@@ -464,7 +588,6 @@ class AdminApiController extends Controller
 
     public function delete_permission_type(Request $request)
     {
-
         try{
             $data = $request->all();
             $validator = Validator::make($data, [
@@ -476,8 +599,16 @@ class AdminApiController extends Controller
                 ],
             ]);
             if ($validator->fails()) {
-                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
-                return $resp;
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
             $check_if_already_assigned = AdminUserTypePermission::where('permission_id',$data['permission_id'])->count();
@@ -488,21 +619,28 @@ class AdminApiController extends Controller
             try {
                 PermissionType::where('permission_id',$data['permission_id'])->delete();
                 AdminUserTypePermission::where('permission_id',$data['permission_id'])->delete();
-            } catch (QueryException $e) {
-
-                $function_name = getcwd();
-                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
-                return $resp;
+            } catch (QueryException $e) {      $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
             return response(['result' => 1, "msg" => "Success"], 200);
         } catch (\Throwable $t) {
-
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
-
-
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController();
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
         }
-
 
     }
 
@@ -525,8 +663,16 @@ class AdminApiController extends Controller
 
             ]);
             if ($validator->fails()) {
-                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
-                return $resp;
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
 
@@ -550,22 +696,29 @@ class AdminApiController extends Controller
                     foreach ($created_admin_user_type_permissions as $created_admin_user_type_permission){
                         AdminUserTypePermission::where('record_id',$created_admin_user_type_permission)->delete();
                     }
-
-
-                    $function_name = getcwd();
-                    $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
-                    return $resp;
+                    $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                    $request = new Request();
+                    $request['log_type'] = 'Takisik_Admin_query_error';
+                    $request['data'] = $response->getContent();
+                    $maintenance_controller = new GeneralController();
+                    $maintenance_controller->send_data_to_maintenance($request);
+                    return $response;
                 }
             }
 
 
-
-
             return response(['result' => 1, "msg" => "Success"], 200);
         } catch (\Throwable $t) {
-
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
-
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController();
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
 
         }
 
@@ -573,7 +726,6 @@ class AdminApiController extends Controller
 
     public function insert_admin_user_type(Request $request)
     {
-
         try{
             $data = $request->all();
             $validator = Validator::make($data, [
@@ -584,8 +736,16 @@ class AdminApiController extends Controller
                 ],
             ]);
             if ($validator->fails()) {
-                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
-                return $resp;
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
             try{
@@ -593,21 +753,32 @@ class AdminApiController extends Controller
                 $created_record_id = AdminUserType::create($data)->admin_user_type_id;
 
             }catch (QueryException $e) {
-
-                $function_name = getcwd();
-                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
-                return $resp;
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
             return response(['result' => 1, "msg" => "Kayıt başarıyla eklendi"], 200);
         } catch (\Throwable $t) {
 
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController();
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
 
 
         }
-
-
 
     }
 
@@ -623,8 +794,16 @@ class AdminApiController extends Controller
                 ],
             ]);
             if ($validator->fails()) {
-                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
-                return $resp;
+               $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
             try{
@@ -632,16 +811,29 @@ class AdminApiController extends Controller
                 AdminUserTypePermission::where('admin_user_type_id',$data['admin_user_type_id'])->delete();
 
             }catch (QueryException $e) {
-
-                $function_name = getcwd();
-                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
-                return $resp;
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
             return response(['result' => 1, "msg" => "Kayıt başarıyla silindi"], 200);
         } catch (\Throwable $t) {
 
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController();
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
 
 
         }
@@ -673,8 +865,16 @@ class AdminApiController extends Controller
                 'tag_image' => 'required|image|mimes:png,jpg,jpeg|max:2048|dimensions:ratio=1',
             ]);
             if ($validator->fails()) {
-                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
-                return $resp;
+               $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
 
@@ -709,21 +909,31 @@ class AdminApiController extends Controller
                 Tag::create($data);
 
             } catch (QueryException $e) {
-
-                return response(['result' => -2, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
 
             return response(['result' => 1, 'msg' => 'Kayıt başarıyla eklendi.'],200);
 
         } catch (\Throwable $t) {
-
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
-
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController();
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
 
         }
-
-
 
     }
 
@@ -754,7 +964,16 @@ class AdminApiController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
 
@@ -768,18 +987,28 @@ class AdminApiController extends Controller
                 ]);
 
             } catch (QueryException $e) {
-
-                return response(['result' => -2, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
-
-
-
 
             return response(['result' => 1, 'msg' => 'Kayıt başarıyla güncellendi.']);
 
-        } catch (\Exception $e) { // 'msg' =>'Bir hata oluştu. Lütfen developer ile iletişime geçiniz.']
-            return response(['result' => -997, 'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__], 403);
-
+        }  catch (\Throwable $t) {
+            $resp = response(['result'=>-5050,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
         }
     }
 
@@ -796,7 +1025,16 @@ class AdminApiController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
 
@@ -834,8 +1072,13 @@ class AdminApiController extends Controller
                 Tag::find($tag_id)->update(["tag_image"=>$data['tag_image']]);
 
             } catch (QueryException $e) {
-
-                return response(['result' => -2, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
 
@@ -843,9 +1086,17 @@ class AdminApiController extends Controller
 
             return response(['result' => 1, 'msg' => 'Kayıt başarıyla güncellendi.']);
 
-        } catch (\Exception $e) { // 'msg' =>'Bir hata oluştu. Lütfen developer ile iletişime geçiniz.']
-            return response(['result' => -997, 'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__], 403);
-
+        } catch (\Throwable $t) {
+            $resp = response(['result'=>-5050,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
         }
     }
 
@@ -862,8 +1113,16 @@ class AdminApiController extends Controller
                 ],
             ]);
             if ($validator->fails()) {
-                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
-                return $resp;
+               $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
             // Deleting tag
@@ -875,9 +1134,13 @@ class AdminApiController extends Controller
 
             }catch (QueryException $e) {
 
-                $function_name = getcwd();
-                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
-                return $resp;
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
             // Deleting tag image
             try{
@@ -892,9 +1155,13 @@ class AdminApiController extends Controller
 
             }catch (QueryException $e) {
 
-                $function_name = getcwd();
-                $resp = response(['result' => -2, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
-                return $resp;
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
             // Deleting tag from tag to subtags
@@ -902,16 +1169,27 @@ class AdminApiController extends Controller
                 TagToSubTag::where('tag_id',$data['tag_id'])->delete();
 
             }catch (QueryException $e) {
-
-                $function_name = getcwd();
-                $resp = response(['result' => -3, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
-                return $resp;
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
             return response(['result' => 1, "msg" => "Kayıt başarıyla silindi"], 200);
         } catch (\Throwable $t) {
-
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController();
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
 
 
         }
@@ -947,8 +1225,16 @@ class AdminApiController extends Controller
                 ],
             ]);
             if ($validator->fails()) {
-                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
-                return $resp;
+               $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
             $tags = json_decode($data['tags']);
@@ -965,7 +1251,13 @@ class AdminApiController extends Controller
 
             } catch (QueryException $e) {
 
-                return response(['result' => -2, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
             // Insert tags of the subtags
@@ -978,14 +1270,30 @@ class AdminApiController extends Controller
             } catch (QueryException $e) {
 
                 SubTag::where('sub_tag_id',$created_subtag_id)->delete();
-                return response(['result' => -3, 'msg' => 'Query Error=>' . $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__], 400);
+
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
             return response(['result' => 1, 'msg' => 'Kayıt başarıyla eklendi.'],200);
 
         } catch (\Throwable $t) {
 
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController();
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
 
 
         }
@@ -1027,8 +1335,16 @@ class AdminApiController extends Controller
                 ],
             ]);
             if ($validator->fails()) {
-                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
-                return $resp;
+               $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
             $tags = json_decode($data['tags']);
@@ -1047,8 +1363,13 @@ class AdminApiController extends Controller
                 SubTag::find($subtag_id)->update($data);
 
             } catch (QueryException $e) {
-
-                return response(['result' => -2, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
             // Delete all tags of the subtags
@@ -1057,8 +1378,13 @@ class AdminApiController extends Controller
                 TagToSubTag::where('sub_tag_id',$subtag_id)->delete();
 
             } catch (QueryException $e) {
-
-                return response(['result' => -3, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
             // Update tags of the subtags
@@ -1072,25 +1398,36 @@ class AdminApiController extends Controller
             } catch (QueryException $e) {
 
                 SubTag::where('sub_tag_id',$subtag_id)->delete();
-                return response(['result' => -4, 'msg' => 'Query Error=>' . $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
             return response(['result' => 1, 'msg' => 'Kayıt başarıyla eklendi.'],200);
 
         } catch (\Throwable $t) {
 
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
-
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController();
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
 
         }
-
-
 
     }
 
     public function delete_subtag(Request $request)
     {
-
         try{
             $data = $request->all();
             $validator = Validator::make($data, [
@@ -1101,38 +1438,59 @@ class AdminApiController extends Controller
                 ],
             ]);
             if ($validator->fails()) {
-                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
-                return $resp;
+               $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
             try{
                 SubTag::where('sub_tag_id',$data['sub_tag_id'])->delete();
 
             }catch (QueryException $e) {
-
-                $function_name = getcwd();
-                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
-                return $resp;
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
             try{
                 TagToSubTag::where('sub_tag_id',$data['sub_tag_id'])->delete();
 
             }catch (QueryException $e) {
-
-                $function_name = getcwd();
-                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
-                return $resp;
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
             return response(['result' => 1, "msg" => "Kayıt başarıyla silindi"], 200);
+
         } catch (\Throwable $t) {
-
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
-
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController();
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
 
         }
-
 
     }
 
@@ -1174,26 +1532,46 @@ class AdminApiController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
-
-
 
             try {
 
                 User::create($data);
 
             } catch (QueryException $e) {
-
-                return response(['result' => -1, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
 
             return response(['result' => 1, 'msg' => 'Kayıt başarıyla eklendi.']);
 
-        } catch (\Exception $e) { // 'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__
-            return response(['result' => -997, 'msg' => 'Bir hata oluştu. Lütfen developer ile iletişime geçiniz.']);
-
+        } catch (\Throwable $t) {
+            $resp = response(['result'=>-5050,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
         }
     }
 
@@ -1245,7 +1623,16 @@ class AdminApiController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
 
@@ -1257,16 +1644,29 @@ class AdminApiController extends Controller
 
 
             } catch (QueryException $e) {
-
-                return response(['result' => -1, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
 
             return response(['result' => 1, 'msg' => 'Kayıt başarıyla güncellendi.']);
 
-        } catch (\Exception $e) { // 'msg' => 'Bir hata oluştu. Lütfen developer ile iletişime geçiniz.'
-            return response(['result' => -997, 'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__]);
-
+        } catch (\Throwable $t) {
+            $resp = response(['result'=>-5050,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
         }
     }
 
@@ -1283,8 +1683,16 @@ class AdminApiController extends Controller
                 ],
             ]);
             if ($validator->fails()) {
-                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
-                return $resp;
+               $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
             try{
@@ -1292,20 +1700,29 @@ class AdminApiController extends Controller
 
             }catch (QueryException $e) {
 
-                $function_name = getcwd();
-                $resp = response(['result' => -1, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
-                return $resp;
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
             return response(['result' => 1, "msg" => "Kayıt başarıyla silindi"], 200);
+
         } catch (\Throwable $t) {
-
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
-
-
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController();
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
         }
-
-
     }
 
     public function insert_product(Request $request){
@@ -1385,7 +1802,16 @@ class AdminApiController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
 
@@ -1402,8 +1828,14 @@ class AdminApiController extends Controller
                 $created_product_id = Product::create($data)->product_id;
 
             } catch (QueryException $e) {
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
 
-                return response(['result' => -1, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
             }
 
             try {
@@ -1415,16 +1847,30 @@ class AdminApiController extends Controller
                 }
 
             } catch (QueryException $e) {
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
 
-                return response(['result' => -1, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
             }
 
 
             return response(['result' => 1, 'msg' => 'Kayıt başarıyla eklendi.']);
 
-        } catch (\Exception $e) { // 'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__
-            return response(['result' => -997, 'msg' => 'Bir hata oluştu. Lütfen developer ile iletişime geçiniz.']);
-
+        }  catch (\Throwable $t) {
+            $resp = response(['result'=>-5050,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
         }
     }
 
@@ -1496,7 +1942,16 @@ class AdminApiController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
 
@@ -1514,8 +1969,13 @@ class AdminApiController extends Controller
                 Product::find($data['product_id'])->update($data);
 
             } catch (QueryException $e) {
-
-                return response(['result' => -1, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
             //Delete product's subtags
@@ -1524,8 +1984,13 @@ class AdminApiController extends Controller
                 ProductSubTag::where('product_id',$data['product_id'])->delete();
 
             } catch (QueryException $e) {
-
-                return response(['result' => -2, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
 
@@ -1539,16 +2004,29 @@ class AdminApiController extends Controller
                 }
 
             } catch (QueryException $e) {
-
-                return response(['result' => -3, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
 
             return response(['result' => 1, 'msg' => 'Kayıt başarıyla güncellendi.']);
 
-        } catch (\Exception $e) { //  'msg' => 'Bir hata oluştu. Lütfen developer ile iletişime geçiniz.'
-            return response(['result' => -997,'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__]);
-
+        }  catch (\Throwable $t) {
+            $resp = response(['result'=>-5050,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
         }
     }
 
@@ -1570,7 +2048,16 @@ class AdminApiController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
             // Check model number of product
@@ -1580,7 +2067,13 @@ class AdminApiController extends Controller
                     'model_number'=>$data['model_number']])->get();
 
             }catch (QueryException $e){
-                return response(['result' => -2, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
             // If model number is new => Add product model to table
@@ -1593,8 +2086,13 @@ class AdminApiController extends Controller
 
 
                 } catch (QueryException $e) {
-
-                    return response(['result' => -3, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                    $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                    $request = new Request();
+                    $request['log_type'] = 'Takisik_Admin_query_error';
+                    $request['data'] = $response->getContent();
+                    $maintenance_controller = new GeneralController();
+                    $maintenance_controller->send_data_to_maintenance($request);
+                    return $response;
                 }
             }
 
@@ -1630,25 +2128,33 @@ class AdminApiController extends Controller
                 ProductImage::create($data);
 
             } catch (QueryException $e) {
-
-                return response(['result' => -4, 'msg' => 'Query Error=>' . $e->getMessage()], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
-
-
-
-
 
             return response(['result' => 1, 'msg' => 'Kayıt başarıyla güncellendi.']);
 
-        } catch (\Exception $e) { //  'msg' => 'Bir hata oluştu. Lütfen developer ile iletişime geçiniz.'
-            return response(['result' => -997,'msg' => $e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function"=>__FUNCTION__]);
-
+        } catch (\Throwable $t) {
+            $resp = response(['result'=>-5050,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
         }
     }
 
     public function delete_product_model(Request $request)
     {
-
         try{
             $data = $request->all();
             $validator = Validator::make($data, [
@@ -1664,8 +2170,16 @@ class AdminApiController extends Controller
                 ],
             ]);
             if ($validator->fails()) {
-                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
-                return $resp;
+               $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
             $model_record_id = $data['model_id'];
@@ -1682,9 +2196,13 @@ class AdminApiController extends Controller
                 ProductImage::find($image_record_id)->delete();
 
             }catch (QueryException $e) {
-
-                $function_name = getcwd();
-                return response(['result' => -2, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
 
             }
 
@@ -1701,10 +2219,13 @@ class AdminApiController extends Controller
                 }
 
             }catch (QueryException $e) {
-
-                $function_name = getcwd();
-                $resp = response(['result' => -5, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
-                return $resp;
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
             }
 
 
@@ -1717,9 +2238,13 @@ class AdminApiController extends Controller
                     $last_image = true;
                 }
             }catch (QueryException $e) {
-
-                $function_name = getcwd();
-                return response(['result' => -3, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
 
             }
 
@@ -1730,22 +2255,34 @@ class AdminApiController extends Controller
                     ProductModel::find($model_record_id)->delete();
 
                 }catch (QueryException $e) {
-
-                    $function_name = getcwd();
-                    return response(['result' => -4, 'msg' => $function_name . ' - Query Error=>' . $e->getMessage()], 400);
+                    $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                    $request = new Request();
+                    $request['log_type'] = 'Takisik_Admin_query_error';
+                    $request['data'] = $response->getContent();
+                    $maintenance_controller = new GeneralController();
+                    $maintenance_controller->send_data_to_maintenance($request);
+                    return $response;
 
                 }
 
             }
 
             return response(['result' => 1, "msg" => "Kayıt başarıyla silindi"], 200);
-        } catch (\Throwable $t) {
 
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+        } catch (\Throwable $t) {
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController();
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
 
 
         }
-
 
     }
 
@@ -1757,15 +2294,26 @@ class AdminApiController extends Controller
             $data = $request->all();
 
             $validator = Validator::make($data, [
-
-                'import_file' => 'required',
+                'import_file' => [
+                    "required",
+                    "mimes:xlsx, csv, xls",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
             ]);
 
             // process the form
             if ($validator->fails()) {
-                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
-                return $resp;
-            } return response(['result' => -1, 'msg'=>'here error', "data" => $data], 200);
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'production'){
+                    return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
+                }
+                return $response;
+            }
 
             if ($request->hasFile('import_file')) {
 
@@ -1794,33 +2342,22 @@ class AdminApiController extends Controller
 
                 }
                 Excel::import(new ImportProducts,  request()->file('import_file'));
-                return 'here';
-                if (!empty($data) && $data != null) {
 
-                    foreach ($data as $key => $value) {
-                        return '111';
-                        if (!empty($value)) {
-
-                            foreach ($value as $v) {
-                                return $v;
-                                //$insert[] = ['title' => $v['title'], 'description' => $v['description']];
-
-                            }
-                        }
-                    }
-
-                    if (!empty($insert)) {
-                        //  Item::insert($insert);
-                        return back()->with('success', 'Insert Record successfully.');
-                    }
-                }
 
             }
             return back()->with('error','Please Check your file, Something is wrong there.');
 
         }catch (\Throwable $t) {
-
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController();
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
 
 
         }
@@ -1858,11 +2395,17 @@ class AdminApiController extends Controller
 
             ]);
 
-
-
             if($validator->fails()){
-                $resp = response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 400);
-                return $resp;
+               $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
             }
 
 
@@ -1904,7 +2447,16 @@ class AdminApiController extends Controller
         }
         catch (\Throwable $t) {
 
-            return response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__,"data"=>$data],500);
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController();
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
 
 
         }

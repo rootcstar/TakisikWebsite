@@ -137,7 +137,7 @@
                         confirmButtonColor: '#367ab2',
                     }).then((result) => {
                         if (result.isDismissed || result.isConfirmed) {
-                            window.location = '{{route('admin_panel_users')}}';
+                            window.location = '{{route('admin_panel_customers')}}';
                         }
 
                     })
