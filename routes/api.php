@@ -42,6 +42,7 @@ use App\Http\Middleware\AdminLoginControlMiddleware;
     Route::post('/api-add-to-fav', [ApiController::class, 'add_to_fav']);
     Route::post('/api-get-product-model', [ApiController::class, 'get_product_model']);
     Route::post('/api-get-category', [ApiController::class, 'get_category']);
+    Route::post('/api-empty-cart', [ApiController::class, 'get_empty_cart']);
 
 /**** LOGS ****/
 Route::post('/admin-login', [AdminApiController::class, 'admin_login'])->name('admin_login_api');

@@ -9,3 +9,15 @@
     background-color: #ff0080 !important;
     border: none !important;
 }
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link{
+    font-weight: 500;
+}
+.nav-tabs .nav-link{
+    color: #000000;
+}
+#main-wrapper[data-layout="vertical"] .topbar .navbar-collapse[data-navbarbg="skin5"], #main-wrapper[data-layout="vertical"] .topbar[data-navbarbg="skin5"], #main-wrapper[data-layout="horizontal"] .topbar .navbar-collapse[data-navbarbg="skin5"], #main-wrapper[data-layout="horizontal"] .topbar[data-navbarbg="skin5"]{
+    background: #262626 !important;
+}
+#main-wrapper[data-layout=vertical] .topbar .top-navbar .navbar-header[data-logobg=skin5], #main-wrapper[data-layout=horizontal] .topbar .top-navbar .navbar-header[data-logobg=skin5]{
+    background: #262626 !important;
+}

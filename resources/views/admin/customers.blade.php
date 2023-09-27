@@ -102,7 +102,7 @@
                         "data":null,
                         "className": 'text-center ',
                         mRender: function (data, type, row) {
-                            return '<a  target="_blank" href="/admin/users/update/'+row.user_id+'">' +
+                            return '<a  target="_blank" href="/admin/customers/update/'+row.user_id+'">' +
                                 '<button type="button" class="btn btn-warning" >Güncelle</button>'
                             '</a>'
                         }

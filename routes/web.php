@@ -32,6 +32,9 @@ Route::middleware([LoginControlMiddleware::class])->group(function() {
     Route::get('/sepetim', [WebsiteController::class, 'get_shopping_cart_page']);
     Route::get('/favorilerim', [WebsiteController::class, 'get_favs_page']);
     Route::get('/kategoriler', [WebsiteController::class, 'get_categories_page']);
+    Route::get('/hesabim', [WebsiteController::class, 'get_my_account_page']);
+    Route::get('/hesabim/kullanici-bilgileri', [WebsiteController::class, 'get_account_info_page']);
+    Route::get('/hesabim/adres-bilgileri', [WebsiteController::class, 'get_address_info_page']);
 });
 
     Route::get('/', [WebsiteController::class, 'get_index']);
@@ -65,8 +68,8 @@ Route::middleware([AdminLoginControlMiddleware::class])->group(function() {
     Route::get('/admin/subtags/update/{pri_id}', [AdminWebsiteController::class, 'get_update_subtag']);
 
     Route::get('/admin/customers', [AdminWebsiteController::class, 'get_customers'])->name('admin_panel_customers');
-    Route::get('/admin/users/new', [AdminWebsiteController::class, 'get_new_user'])->name('admin_panel_new_user');
-    Route::get('/admin/users/update/{pri_id}', [AdminWebsiteController::class, 'get_update_user']);
+    Route::get('/admin/customers/new', [AdminWebsiteController::class, 'get_new_user'])->name('admin_panel_new_user');
+    Route::get('/admin/customers/update/{pri_id}', [AdminWebsiteController::class, 'get_update_customer']);
 
     Route::get('/admin/products', [AdminWebsiteController::class, 'get_products'])->name('admin_panel_products');
     Route::get('/admin/products/new', [AdminWebsiteController::class, 'get_new_product'])->name('admin_panel_new_product');

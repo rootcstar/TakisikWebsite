@@ -1134,6 +1134,7 @@ class ApiController extends Controller
 
         }
     }
+
     public function get_category(Request $request){
         try {
             $data = $request->all();
@@ -1158,6 +1159,50 @@ class ApiController extends Controller
             Session::put('website.sub_tag_filter_bar', $data_sub_tags);
 
             return response(['result' => 1], 200);
+
+        } catch (\Exception $e) {
+
+            return response(['result' => -500, "msg" => $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine(), "function" => __FUNCTION__], 500);
+
+        }
+    }
+
+    public function get_empty_cart(Request $request){  // DELETE 1 ITEM --> qty=1
+        try {
+            $shopping_cart_products = Session::get('shopping_cart.products');
+
+            if(count($shopping_cart_products) == 0){
+                return response(['result' => -1, "msg" => "Sepetinizde boşaltılacak ürün bulunmamaktadır."],200);
+            }
+
+            Session::forget('shopping_cart');
+            Session::put('shopping_cart.products', array());
+
+
+            $shopping_cart_products = Session::get('shopping_cart.products');
+
+            $cart_total_qty = 0;
+            $total_price = 0;
+            //  return response(['result'=>-58,"msg"=>json_encode($shopping_cart_products)],200);
+            for ($i = 0; $i < count($shopping_cart_products); $i++) {
+                $cart_total_qty += $shopping_cart_products[$i]->quantity;
+
+                $total_price += ($shopping_cart_products[$i]->new_price) * ($shopping_cart_products[$i]->quantity);
+                $total_price = number_format($total_price, 2, '.', '');
+
+            }
+
+
+            Session::put('shopping_cart.total_qty', $cart_total_qty);
+            Session::put('shopping_cart.total_price', $total_price);
+
+            $shopping_cart_header_div = view('partials.shopping-cart-header')->render();
+
+
+            $empty_cart = true;
+
+
+            return response(['result' => 1, "shopping_cart" => $shopping_cart_header_div,   "empty_cart"=>$empty_cart], 200);
 
         } catch (\Exception $e) {
 

@@ -82,6 +82,11 @@ class WebsiteController extends Controller
         return $products;
     }
     public function get_test(){
+
+
+
+        return  Session::get('user.0')->first_name;
+
         return view('test');
     }
 
@@ -159,5 +164,17 @@ class WebsiteController extends Controller
 
       //  return $tags;
         return view('kategoriler')->with('categories',$tags);
+    }
+    public function get_my_account_page(){
+
+        return view('kullanici-bilgilerim');
+    }
+    public function get_account_info_page(){
+
+        return view('kullanici-bilgilerim');
+    }
+    public function get_address_info_page(){
+
+        return view('adres-bilgilerim');
     }
 }

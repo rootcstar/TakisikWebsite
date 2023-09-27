@@ -148,6 +148,152 @@
     </div>
 </div>
 
+<!-- modal (EmptyCartModal) -->
+<div class="modal  fade"  id="EmptyCartModal" tabindex="-1" role="dialog" aria-label="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="close-empty-cart-modal"><span class="icon icon-clear"></span></button>
+            </div>
+            <div class="modal-body" id="empty-cart-body">
+                <div class="tt-modal-addtocart empty-cart desctope">
+                    <div class="row">
+                        <div class="col-12 col-lg-12">
+                            <div class="empty-cart-modal-text" id="empty-cart-modal-text"></div>
+                            </a>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <a href="#" class="btn btn-border btn-close-popup" data-toggle="modal" data-target="ModalDeleteSuccess" id="empty-cart">SİL</a>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <a  class="btn btn-border" data-dismiss="modal">VAZGEÇ</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal (NewAddressModal) -->
+<div class="modal  fade"  id="NewAddressModal" tabindex="-1" role="dialog" aria-label="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog modal-md">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="close-empty-cart-modal"><span class="icon icon-clear"></span></button>
+            </div>
+            <div class="modal-body" id="empty-cart-body"><div class="tt-wrapper">
+                    <h6 class="tt-title">ADD A NEW ADDRESS</h6>
+                    <div class="form-default">
+                        <form  class="form-default needs-validation" id="new_address_form">
+                            @csrf
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label">ADRES TÜRÜ *</label>
+                                    <select class="form-control" id="address_type">
+                                        <option>Kargo Adresi</option>
+                                        <option>Fatura Adresi</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Ülke</label>
+                                    <select id="country" name="country" class="form-control input-fields afm-grey" required>
+                                        <option value="TR">Türkiye</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Adres</label>
+                                    <input type="text" id="address_line_1" class="form-control input-fields" pattern="[a-zA-Z]{2}[a-zA-Z .,]{1,50}" placeholder="Adresinizi giriniz" required>
+                                    <div class="invalid-feedback"> Zorunlu alan. Yalnizca harf, boşluk ve bazı özel karakterleri (.,) kullanabilirsiniz.</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Adres 2</label>
+                                    <input type="text" id="address_line_2" class="form-control input-fields" pattern="[a-zA-Z]{2}[a-zA-Z .,]{1,50}" placeholder="Adresinizi giriniz" >
+                                    <div class="invalid-feedback"> Zorunlu alan. Yalnizca harf, boşluk ve bazı özel karakterleri (.,) kullanabilirsiniz.</div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="shopInputLastName" class="control-label">LAST NAME *</label>
+                                    <input type="text" class="form-control" id="shopInputLastName">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="shopInputFirstName" class="control-label">FIRST NAME *</label>
+                                <input type="text" class="form-control" id="shopInputFirstName">
+                            </div>
+                            <div class="form-group">
+                                <label for="shopInputLastName" class="control-label">LAST NAME *</label>
+                                <input type="text" class="form-control" id="shopInputLastName">
+                            </div>
+                            <div class="form-group">
+                                <label for="shopCompanyName" class="control-label">COMPANY NAME</label>
+                                <input type="text" class="form-control" id="shopCompanyName">
+                            </div>
+                            <div class="form-group">
+                                <label for="shopCompanyName" class="control-label">COUNTRY *</label>
+                                <select class="form-control">
+                                    <option>Country</option>
+                                    <option>Country 02</option>
+                                    <option>Country 03</option>
+                                    <option>Country 04</option>
+                                    <option>Country 05</option>
+                                    <option>Country 06</option>
+                                    <option>Country 07</option>
+                                    <option>Country 08</option>
+                                    <option>Country 09</option>
+                                    <option>Country 10</option>
+                                    <option>Country 11</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="shopAddress" class="control-label">ADDRESS *</label>
+                                <input type="text" class="form-control" id="shopAddress">
+                            </div>
+                            <div class="form-group">
+                                <label for="shopTown" class="control-label">TOWN / CITY *</label>
+                                <input type="text" class="form-control" id="shopTown">
+                            </div>
+                            <div class="form-group">
+                                <label for="shopState" class="control-label">STATE / COUNTY *</label>
+                                <input type="text" class="form-control" id="shopState">
+                            </div>
+                            <div class="form-group">
+                                <label for="shopPostCode" class="control-label">POSTCODE / ZIP *</label>
+                                <input type="text" class="form-control" id="shopPostCode">
+                            </div>
+                            <div class="form-group">
+                                <label for="shopPhone" class="control-label">PHONE</label>
+                                <input type="text" class="form-control" id="shopPhone">
+                            </div>
+                            <div class="form-group">
+                                <label for="shopEmail" class="control-label">EMAIL ADDRESS *</label>
+                                <input type="text" class="form-control" id="shopEmail">
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="checkBox11" name="checkbox">
+                                <label for="checkBox11">
+                                    <span class="check"></span>
+                                    <span class="box"></span>
+                                    Set as deafult address?
+                                </label>
+                            </div>
+                            <div class="row tt-offset-21">
+                                <div class="col-auto">
+                                    <button type="submit" class="btn">ADD  ADDRESS</button>
+                                </div>
+                                <div class="col-auto align-self-center">
+                                    or	<a href="#" class="tt-link">Cancel</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- modal (ModalDeleteSuccess) -->
 <div class="modal  fade"  id="ModalDeleteSuccess" tabindex="-1" role="dialog" aria-label="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md modal-sm">

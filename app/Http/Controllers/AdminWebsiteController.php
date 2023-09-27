@@ -209,18 +209,54 @@ class AdminWebsiteController extends Controller
 
     }
 
-    public function get_new_user(){
-        return view('admin.new.new-user');
+    public function get_new_customer(){
+        return view('admin.new.new-customer');
     }
 
-    public function get_update_user($pri_id){
+    public function get_update_customer($pri_id){
 
         $data = User::where('user_id',$pri_id)->first();
+        $shipping_address_keys = [
+            'record_id',
+            'user_id',
+            'address_line_1',
+            'address_line_2',
+            'country',
+            'city',
+            'zip'
+        ];
+        $shipping_address_table_name = 'user_shipping_addresses';
+
+        $billing_address_keys = [
+            'record_id',
+            'user_id',
+            'billing_address_line_1',
+            'billing_address_line_2',
+            'country',
+            'city',
+            'zip'
+        ];
+        $billing_address_table_name = 'user_billing_addresses';
+
+        $user_cards_keys = [
+            'record_id',
+            'name_on_card',
+            'card_type',
+            'last_four_digit',
+            'is_active',
+        ];
+        $user_cards_table_name = 'user_cards';
 
         if($data == null || empty($data)){
             return view('admin.errors.404');
         }
-        return view('admin.update.update-user')
+        return view('admin.update.update-customer')
+            ->with('shipping_address_table_name',$shipping_address_table_name)
+            ->with('shipping_address_keys',$shipping_address_keys)
+            ->with('billing_address_table_name',$billing_address_table_name)
+            ->with('billing_address_keys',$billing_address_keys)
+            ->with('user_cards_table_name',$user_cards_table_name)
+            ->with('user_cards_keys',$user_cards_keys)
             ->with('data',$data)
             ->with('title','Kullanıcı Güncelle')
             ->with('update_button_name','Güncelle');

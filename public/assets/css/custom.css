@@ -240,3 +240,61 @@ header .tt-cart .tt-cart-layout .tt-cart-content .tt-cart-list .tt-item-close .t
     border-radius: 8px 8px 0px 0px;
     height: 70px;
 }
+.btn-link, .btn-link:focus {
+    border: none !important;
+    cursor: pointer !important;
+}
+.tt-account-card-title{
+    font-size: 16px !important;
+    line-height: 26px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.03em;
+    padding: 0 20px 13px 0 !important;
+    cursor: pointer;
+    color: #191919;
+    border-bottom: 1px solid #e9e7e7;
+}
+.tt-account-card{
+    border: 1px solid #c9c9c9;
+    border-radius: 8px;
+    padding: 15px;
+}
+.border-secondary {
+    border-color: #6c757d !important;
+}
+.text-secondary {
+    color: #6c757d !important;
+}
+.card {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 0.25rem;
+}
+.card-header {
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 0;
+    background-color: rgba(0,0,0,.03);
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+.card-header:first-child {
+    border-radius: calc(0.25rem - 1px) calc(0.25rem - 1px) 0 0;
+}
+.card-body {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem;
+}
+.card-title {
+    margin-bottom: 0.75rem;
+}
+.card-text:last-child {
+    margin-bottom: 0;
+}

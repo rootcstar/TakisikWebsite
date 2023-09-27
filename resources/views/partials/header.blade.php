@@ -148,7 +148,7 @@
                                     </div>
                                     <div class="tt-dropdown-inner">
                                         <ul>
-                                            <li><a href="/"><i class="icon-f-94"></i>Hesabım</a></li>
+                                            <li><a href="/hesabim"><i class="icon-f-94"></i>Hesabım</a></li>
                                             <li><a href="/favorilerim"><i class="icon-n-072"></i>Favorilerim</a></li>
                                             <li><a href="/logout"><i class="icon-f-76"></i>Çıkış Yap</a></li>
                                         </ul>

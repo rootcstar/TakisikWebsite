@@ -101,7 +101,7 @@
                                     <a class="btn-link" href="/alisveris"><i class="icon-e-19"></i>ALIŞVERİŞE DEVAM ET</a>
                                 </div>
                                 <div class="col-right">
-                                    <a class="btn-link" href="#"><i class="icon-h-02"></i>SEPETİ TEMİZLE</a>
+                                    <a class="btn-link" data-toggle="modal" data-target="#EmptyCartModal" onclick="EmptyShoppingCartModal()"><i class="icon-h-02"></i>SEPETİ TEMİZLE</a>
                                 </div>
                             </div>
                         </div>
@@ -136,7 +136,7 @@
                                         </tr>
                                     </tfoot>
                                 </table>
-                                <a href="#" class="btn btn-lg"><span class="icon icon-check_circle"></span>SİPRAŞİ TAMAMLA</a>
+                                <a href="#" class="btn btn-lg"><span class="icon icon-check_circle"></span>SİPARİŞİ TAMAMLA</a>
                             </div>
                         </div>
                     </div>
@@ -146,4 +146,75 @@
         </div>
     </div>
 
+@endsection
+
+@section('external_js')
+    <script>
+        function EmptyShoppingCartModal(){
+
+            $("#empty-cart").attr("onclick","EmptyShoppingCart()");
+            $('#empty-cart-modal-text').text("Sepeti boşaltmak istediğinize emin misiniz?");
+        }
+
+
+        function EmptyShoppingCart(){
+
+            $('#loader').removeClass('hidden');
+
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+
+                if (this.readyState == 4 && this.status == 200) {
+
+                    let response = JSON.parse(this.responseText);
+
+                    if(response['result'] == 1){
+
+
+                        $('#shopping-cart-desktop').html('');
+                        $('#shopping-cart-desktop').append(response['shopping_cart']);
+
+                        $( "#product-detail" ).load(window.location.href + " #product-detail" );
+
+                        if(response['empty_cart'] == true){
+                            $( "#shopping-cart-page" ).load(window.location.href + " #shopping-cart-page" );
+                        }else{
+
+                            $( "#shopping-cart-table" ).load(window.location.href + " #shopping-cart-table" );
+                            $( "#shopping-cart-totals" ).load(window.location.href + " #shopping-cart-totals" );
+                        }
+
+                        $("#close-empty-cart-modal").click();
+                        $('#loader').addClass("hidden");
+
+                    }else{
+
+                        $("#close-empty-cart-modal").click();
+                        $('#loader').addClass("hidden");
+                        Swal.fire(response['msg']);
+                    }
+                } else if (this.status >= 400 && this.status < 500) {
+                    let response = JSON.parse(this.responseText);
+                    $("#close-empty-cart-modal").click();
+                    $('#loader').addClass("hidden");
+                    Swal.fire(response['msg']);
+                } else if (this.status >= 500) {
+                    let response = JSON.parse(this.responseText);
+                    $("#close-empty-cart-modal").click();
+                    $('#loader').addClass('hidden');
+                    Swal.fire(response['msg']);
+
+                }
+                xhttp.onerror = function onError(e) {
+
+                    alert('con error:'+e);
+                }
+            };
+
+            xhttp.open("POST", "/api/api-empty-cart", true);
+            xhttp.setRequestHeader("Content-Type", "application/json");
+            xhttp.send();
+
+        }
+    </script>
 @endsection

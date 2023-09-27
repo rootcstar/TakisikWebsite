@@ -15,6 +15,7 @@
     <link href="{{asset('admin-assets/extra-libs/jvector/jquery-jvectormap-2.0.2.css')}}" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="{{asset('dist/css/style.css')}}" rel="stylesheet">
+    <link href="{{asset('dist/css/style.min.css')}}" rel="stylesheet">
     <link href="{{asset('admin-assets/css/custom.css')}}" rel="stylesheet">
     <!-- Multiple Select CSS -->
     <link rel="stylesheet" type="text/css" href="{{asset('admin-assets/libs/select2/dist/css/select2.min.css')}}">
