@@ -13,6 +13,7 @@
                                     <div class="tt-wrapper mt-0">
                                         <div class="tt-shopping-layout">
                                             <h3 class="tt-title">ADRES BİLGİLERİ</h3>
+                                            {{json_encode(Session::get('website'))}}
                                             <div class="card border-secondary  mb-3" style="max-width: 18rem;">
                                                 <h5 class="card-header card-title mb-0">Header</h5>
                                                 <div class="card-body text-secondary">

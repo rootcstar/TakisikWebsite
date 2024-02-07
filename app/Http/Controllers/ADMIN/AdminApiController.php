@@ -1,7 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ADMIN;
 
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\GeneralController;
+use App\Imports\ImportProducts;
 use App\Models\AdminUser;
 use App\Models\AdminUserType;
 use App\Models\AdminUserTypePermission;
@@ -9,11 +12,11 @@ use App\Models\PermissionType;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductModel;
-use App\Models\TagToSubTag;
+use App\Models\ProductSubTag;
 use App\Models\SubTag;
 use App\Models\Tag;
+use App\Models\TagToSubTag;
 use App\Models\User;
-use App\Models\ProductSubTag;
 use App\Rules\CheckIfAdminUserTypeExists;
 use App\Rules\CheckIfPermissionTypeExists;
 use App\Rules\Exist_Already_Email_AdminUser;
@@ -21,19 +24,15 @@ use App\Rules\OnlyLetterRule;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\Input;
-use App\Imports\ImportProducts;
-
-use Illuminate\Support\Str;
-use Session;
-
 use Intervention\Image\Facades\Image;
-use Illuminate\Support\Facades\File;
+use Maatwebsite\Excel\Facades\Excel;
+use Session;
 
 class AdminApiController extends Controller
 {
@@ -68,7 +67,7 @@ class AdminApiController extends Controller
 
 
             try {
-                $check_db =  DB::table('admin_users')->where(['email'=>$data['email']])->get();
+                $check_db =  AdminUser::where(['email'=>$data['email'],'is_active'=>true])->get();
 
                 if(count($check_db) == 1){
 
@@ -89,9 +88,10 @@ class AdminApiController extends Controller
                         return response(['result' => -1, 'msg' => 'Yanlış email ya da şifre girdiniz, lütfen tekrar deneyiniz.'], 200);
                     }
 
-                }else{
-                    return response(['result' => -2, 'msg' => 'Yanlış email ya da şifre girdiniz, lütfen tekrar deneyiniz.'], 200);
                 }
+
+                return response(['result' => -2, 'msg' => 'Bu email adresine ait bir kullanıcı bulunmamaktadır.'], 200);
+
 
             } catch (QueryException $e) {
                 $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
@@ -2367,8 +2367,6 @@ class AdminApiController extends Controller
 
     public function fill_datatable(Request $request){
         try {
-
-
             $data = $request->all();
 
             $validator = Validator::make($data,[

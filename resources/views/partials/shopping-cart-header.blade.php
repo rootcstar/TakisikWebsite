@@ -4,7 +4,7 @@
 
 
 
-@if(Session::get('shopping_cart.products') == null || count(Session::get('shopping_cart.products')) == 0)
+@if(Session::get('website.shopping_cart.products') == null || count(Session::get('website.shopping_cart.products')) == 0)
 
         <button class="tt-dropdown-toggle">
             <i class="icon-f-39"></i>
@@ -28,7 +28,7 @@
 
         <button class="tt-dropdown-toggle">
             <i class="icon-f-39"></i>
-            <span class="tt-badge-cart">{{ Session::get('shopping_cart.total_qty')  }}</span>
+            <span class="tt-badge-cart">{{ Session::get('website.shopping_cart.total_qty')  }}</span>
         </button>
         <div class="tt-dropdown-menu">
             <div class="tt-mobile-add">
@@ -40,7 +40,7 @@
                         <div class="tt-cart-list">
 
 
-                            @foreach(Session::get('shopping_cart.products') as $product)
+                            @foreach(Session::get('website.shopping_cart.products') as $product)
 
                                 <div class="tt-item">
                                     <a href="/urun-detay/{{ Str::slug($product->product_name) }}/{{ Str::slug($product->product_code) }}">
@@ -66,7 +66,7 @@
                         </div>
                         <div class="tt-cart-total-row">
                             <div class="tt-cart-total-title">ARA TOPLAM:</div>
-                            <div class="tt-cart-total-price">{{  Session::get('shopping_cart.total_price')  }} TL</div>
+                            <div class="tt-cart-total-price">{{  Session::get('website.shopping_cart.total_price')  }} TL</div>
                         </div>
                         <div class="tt-cart-btn">
                             <div class="tt-item">

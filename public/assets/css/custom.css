@@ -298,3 +298,13 @@ header .tt-cart .tt-cart-layout .tt-cart-content .tt-cart-list .tt-item-close .t
 .card-text:last-child {
     margin-bottom: 0;
 }
+.user-info-input{
+    width: 100%;
+    height: 100%;
+    border: none !important;
+}
+.user-info-input:focus-visible{
+    border: none !important;
+    outline-offset: 4px;
+    outline: 2px auto #ff00804f;
+}

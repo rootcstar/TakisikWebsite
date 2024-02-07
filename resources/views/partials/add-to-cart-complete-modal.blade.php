@@ -22,9 +22,9 @@
         </div>
         <div class="col-12 col-lg-6">
             <a href="#" class="tt-cart-total">
-                Sepetinizde toplam {{ Session::get('shopping_cart.total_qty') }} ürün var.
+                Sepetinizde toplam {{ Session::get('website.shopping_cart.total_qty') }} ürün var.
                 <div class="tt-total">
-                   SEPET TOPLAM: <span class="tt-price">{{ Session::get('shopping_cart.total_price') }} TL</span>
+                   SEPET TOPLAM: <span class="tt-price">{{ Session::get('website.shopping_cart.total_price') }} TL</span>
                 </div>
             </a>
             <a href="#" class="btn btn-border btn-close-popup">ALIŞVERIŞE DEVAM ET</a>

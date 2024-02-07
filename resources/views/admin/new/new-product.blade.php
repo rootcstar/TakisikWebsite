@@ -127,7 +127,7 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>{{LanguageChange('Is Active')}}?</label>
+                                    <label>{{LanguageChange('Is Active')}}</label>
                                     <select id="is_active" class="form-control" style="width: 100%;">
                                         <option value="0" selected>Hayir</option>
                                         <option value="1" >Evet</option>
@@ -136,7 +136,7 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>{{LanguageChange('Is New')}}?</label>
+                                    <label>{{LanguageChange('Is New')}}</label>
                                     <select id="is_new" class="form-control" style="width: 100%;">
                                         <option value="0" selected>Hayir</option>
                                         <option value="1" >Evet</option>

@@ -85,7 +85,7 @@ class WebsiteController extends Controller
 
 
 
-        return  Session::get('user.0')->first_name;
+        return  Session::get('website.user.0')->first_name;
 
         return view('test');
     }
@@ -131,15 +131,15 @@ class WebsiteController extends Controller
 
         $products = $this->get_product($product_code);
 
-        $cart_search_result = array_search($products[0]->model_record_id, array_column(Session::get('shopping_cart.products'), 'model_record_id')); // Gives false or index of the product in the arra
-        $fav_search_result = array_search($products[0]->model_record_id, array_column(Session::get('user.favorites'), 'model_record_id'));
+        $cart_search_result = array_search($products[0]->model_record_id, array_column(Session::get('website.shopping_cart.products'), 'model_record_id')); // Gives false or index of the product in the arra
+        $fav_search_result = array_search($products[0]->model_record_id, array_column(Session::get('website.user.favorites'), 'model_record_id'));
 
 
 
         return view('urun-detay')->with('product',$products[0])
                                 ->with('product_models',$products)
                                 ->with('product_images',$products[0]->product_image)
-                                        ->with('qty',($cart_search_result !== false) ? Session::get('shopping_cart.products')[$cart_search_result]->quantity : 0 )
+                                        ->with('qty',($cart_search_result !== false) ? Session::get('website.shopping_cart.products')[$cart_search_result]->quantity : 0 )
                                         ->with('tag_name',( isset($product_data[0]->tag_name)) ? $product_data[0]->tag_name : "ERROR" )
                                         ->with('sub_tag_name',(isset($product_data[0]->sub_tag_name)) ? $product_data[0]->sub_tag_name : "ERROR" )
                                         ->with('fav',($fav_search_result !== false) ? "fav" :"" )

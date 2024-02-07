@@ -1,5 +1,5 @@
 <div class="tt-wishlist-list" id="wishlist">
-    @foreach(Session::get('user.favorites') as $key=>$product)
+    @foreach(Session::get('website.user.favorites') as $key=>$product)
         <div class="tt-item">
             <div class="tt-col-description">
                 <div class="tt-img" >

@@ -12,7 +12,7 @@
                                         <a class="tt-promo-02 register-btn-01" type="button" id="register-btn-ind">
                                             <div class="tt-description tt-point-h-l">
                                                 <div class="tt-description-wrapper">
-                                                    <div class="tt-title-large">BIREYSEL</div>
+                                                    <div class="tt-title-large">BİREYSEL</div>
                                                 </div>
                                             </div>
                                         </a>

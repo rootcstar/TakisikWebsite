@@ -15,7 +15,7 @@
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#card-info" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">Kart Bilgileri</span></a> </li>
                 </ul>
                 <!-- Tab panes -->
-                <div class="tab-content tabcontent-border">
+                <div class="tab-content tab-content-border">
                     <div class="tab-pane active" id="account-info" role="tabpanel">
                         <div class="p-20">
 
@@ -62,7 +62,7 @@
                                 <div class="col-md-6 form-group">
                                     <div class="form-floating">
                                         <label for="floatingPassword">{{LanguageChange('Password')}}</label>
-                                        <input type="password" class="form-control input-fields" id="password" value="{{$data['password']}}" required>
+                                        <input type="password" class="form-control input-fields" id="password" value="{{fiki_decrypt($data['password'])}}" required>
                                         <div class="invalid-feedback"> Zorunlu alan</div>
                                     </div>
                                 </div>
@@ -84,7 +84,7 @@
                         </div>
                     </div>
                     <div class="tab-pane  p-20" id="shipping-info" role="tabpanel">
-                        <table id="{{$shipping_address_table_name}}" class="table table-striped table-bordered" >
+                        <table id="{{$shipping_address_table_name}}" class="table table-striped table-bordered w-100" >
                             <thead>
                             <tr>
                                 <th>Güncelle</th>
@@ -110,7 +110,7 @@
                         </table>
                     </div>
                     <div class="tab-pane p-20" id="billing-info" role="tabpanel">
-                        <table id="{{$billing_address_table_name}}" class="table table-striped table-bordered" >
+                        <table id="{{$billing_address_table_name}}" class="table table-striped table-bordered w-100" >
                             <thead>
                             <tr>
                                 <th>Güncelle</th>
@@ -136,7 +136,7 @@
                         </table>
                     </div>
                     <div class="tab-pane p-20" id="card-info" role="tabpanel">
-                        <table id="{{$user_cards_table_name}}" class="table table-striped table-bordered" >
+                        <table id="{{$user_cards_table_name}}" class="table table-striped table-bordered w-100" >
                             <thead>
                             <tr>
                                 <th>Güncelle</th>
@@ -153,7 +153,7 @@
                             <tfoot>
                             <tr>
                                 <th>Güncelle</th>
-                                @foreach($billing_address_keys as $user_cards_keys)
+                                @foreach($user_cards_keys as $user_cards_keys)
                                     <th>{{ LanguageChange(ucwords(str_replace("_"," ",$user_cards_key))) }}</th>
                                 @endforeach
                                 <th>Sil</th>

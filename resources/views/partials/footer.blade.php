@@ -379,7 +379,7 @@
                 alert('con error:'+e);
             }
 
-        xhttp.open("POST", "/api/api-get-tag-products", true);
+        xhttp.open("POST", "/api/get-tag-products", true);
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.send(data);
 
@@ -434,7 +434,7 @@
             alert('con error:'+e);
         }
 
-        xhttp.open("POST", "api/api-get-sub-tag-products", true);
+        xhttp.open("POST", "api/get-sub-tag-products", true);
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.send(data);
     }
@@ -480,7 +480,7 @@
             alert('con error:'+e);
         }
 
-        xhttp.open("POST", "/api/api-load-more", true);
+        xhttp.open("POST", "/api/load-more", true);
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.send(data);
 
@@ -562,7 +562,7 @@
             }
         };
 
-        xhttp.open("POST", "/api/api-add-to-cart", true);
+        xhttp.open("POST", "/api/add-to-cart", true);
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.send(data);
 
@@ -654,7 +654,7 @@
             }
         };
 
-        xhttp.open("POST", "/api/api-add-to-cart-input", true);
+        xhttp.open("POST", "/api/add-to-cart-input", true);
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.send(data);
 
@@ -715,7 +715,7 @@
             }
         };
 
-        xhttp.open("POST", "/api/api-delete-item", true);
+        xhttp.open("POST", "/api/delete-item", true);
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.send(data);
 
@@ -779,7 +779,7 @@
             }
         };
 
-        xhttp.open("POST", "/api/api-delete-items", true);
+        xhttp.open("POST", "/api/delete-items", true);
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.send(data);
 
@@ -821,7 +821,7 @@
             }
         };
 
-        xhttp.open("GET", "/api/api-quick-view/"+code+"", true);
+        xhttp.open("GET", "/api/quick-view/"+code+"", true);
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.send();
 
@@ -879,7 +879,7 @@
             }
         };
 
-        xhttp.open("POST", "/api/api-add-to-fav", true);
+        xhttp.open("POST", "/api/add-to-fav", true);
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.send(data);
     }
@@ -945,7 +945,7 @@
             }
         };
 
-        xhttp.open("POST", "/api/api-get-product-model", true);
+        xhttp.open("POST", "/api/get-product-model", true);
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.send(data);
     }

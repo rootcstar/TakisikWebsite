@@ -114,7 +114,7 @@
 
                 alert('con error');
             };
-            xhttp.open("POST", "/api/api-new-password", true);
+            xhttp.open("POST", "/api/new-password", true);
             xhttp.setRequestHeader("Content-Type", "application/json");
             xhttp.send(data);
         }

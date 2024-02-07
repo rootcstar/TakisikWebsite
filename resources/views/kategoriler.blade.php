@@ -72,7 +72,7 @@
                 alert('con error:'+e);
             }
 
-            xhttp.open("POST", "/api/api-get-category", true);
+            xhttp.open("POST", "/api/get-category", true);
             xhttp.setRequestHeader("Content-Type", "application/json");
             xhttp.send(data);
 

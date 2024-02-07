@@ -172,7 +172,7 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>{{LanguageChange('Is Active')}}?</label>
+                                    <label>{{LanguageChange('Is Active')}}</label>
                                     <select id="is_active" class="form-control" style="width: 100%;">
                                         <option  value="{{$prod_data['is_active']}}" selected="">@php echo ($prod_data['is_active'] == 1) ?  'Evet' :  'Hayır' @endphp</option>
                                         <option  value="@php echo ($prod_data['is_active'] == 1) ? 0 : 1 @endphp">@php echo ($prod_data['is_active'] == 1) ? 'Hayır' : 'Evet' @endphp</option>
@@ -181,7 +181,7 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>{{LanguageChange('Is New')}}?</label>
+                                    <label>{{LanguageChange('Is New')}}</label>
                                     <select id="is_new" class="form-control" style="width: 100%;">
                                         <option  value="{{$prod_data['is_new']}}" selected="">@php echo ($prod_data['is_new'] == 1) ?  'Evet' :  'Hayır' @endphp</option>
                                         <option  value="@php echo ($prod_data['is_new'] == 1) ? 0 : 1 @endphp">@php echo ($prod_data['is_new'] == 1) ? 'Hayır' : 'Evet' @endphp</option>

@@ -64,6 +64,7 @@
 
         $(document).ready(function () {
 
+
             var table_name = "products"
             var where = ""
             var post_or_get = "GET"
@@ -120,8 +121,6 @@
                     {"data": "barcode"},
                     {"data": "product_code"},
                     {"data": "product_name"},
-                    {"data": "is_active"},
-                    {"data": "is_new"},
                     {
                         "data":null,
                         "className": 'text-center ',

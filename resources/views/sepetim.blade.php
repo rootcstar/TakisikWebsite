@@ -6,7 +6,7 @@
         <div class="container-indent">
             <div class="container">
                 <div class="row" id="shopping-cart-page">
-                    @if(Session::get('shopping_cart.products') == null || count(Session::get('shopping_cart.products')) == 0 )
+                    @if(Session::get('website.shopping_cart.products') == null || count(Session::get('website.shopping_cart.products')) == 0 )
                         <div class="col-md-12 text-center">
                             <img width="25%" src="{{ asset('assets/img/shop-bag.png') }}">
                         </div>
@@ -23,7 +23,7 @@
 
                             <table>
                                 <tbody>
-                                    @foreach(Session::get('shopping_cart.products') as $product)
+                                    @foreach(Session::get('website.shopping_cart.products') as $product)
 
                                         <tr>
                                             <td>
@@ -122,7 +122,7 @@
                                     <tbody>
                                         <tr>
                                             <th>ARA TOPLAM</th>
-                                            <td>{{ Session::get('shopping_cart.total_price') }} TL</td>
+                                            <td>{{ Session::get('website.shopping_cart.total_price') }} TL</td>
                                         </tr>
                                         <tr>
                                             <th>KARGO</th>
@@ -132,7 +132,7 @@
                                     <tfoot>
                                         <tr>
                                             <th>TOPLAM</th>
-                                            <td>{{ Session::get('shopping_cart.total_price') }} + KARGO TL</td>
+                                            <td>{{ Session::get('website.shopping_cart.total_price') }} + KARGO TL</td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -211,7 +211,7 @@
                 }
             };
 
-            xhttp.open("POST", "/api/api-empty-cart", true);
+            xhttp.open("POST", "/api/empty-cart", true);
             xhttp.setRequestHeader("Content-Type", "application/json");
             xhttp.send();
 

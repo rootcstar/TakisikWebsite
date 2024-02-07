@@ -1,18 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ADMIN;
+
+use App\Http\Controllers\Controller;
 
 use App\Models\AdminUser;
 use App\Models\AdminUserType;
 use App\Models\PermissionType;
+use App\Models\Product;
 use App\Models\ProductModelAndImage;
 use App\Models\SubTag;
-use App\Models\User;
-use App\Models\Product;
-use App\Models\ProductImage;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Models\Tag;
+use App\Models\User;
 use Session;
 
 class AdminWebsiteController extends Controller
@@ -23,7 +22,7 @@ class AdminWebsiteController extends Controller
 
     public function admin_logout(){
 
-        Session::flush('admin');
+        Session::forget('admin');
         return redirect('admin/login');
     }
 
@@ -269,8 +268,6 @@ class AdminWebsiteController extends Controller
             'barcode',
             'product_code',
             'product_name',
-            'is_active',
-            'is_new'
         ];
         $data = Product::select($keys)->get();
 

@@ -31,7 +31,7 @@
                                             <label for="loginAcoountType">ÜYELİK *</label>
                                             <div class="tt-required">* zorunlu alanlar</div>
                                             <select class="form-control" id="account_type">
-                                                <option value="1">Bireysel</option>
+                                                <option value="1" disabled>Bireysel</option>
                                                 <option value="2">Kurumsal</option>
                                             </select>
                                         </div>
@@ -124,7 +124,7 @@
 
                 alert('con error');
             };
-            xhttp.open("POST", "api/api-signin", true);
+            xhttp.open("POST", "api/signin", true);
             xhttp.setRequestHeader("Content-Type", "application/json");
             xhttp.send(data);
 
@@ -212,7 +212,7 @@
 
                             alert('con error');
                         };
-                        xhttp.open("POST", "api/api-forget-password", true);
+                        xhttp.open("POST", "api/forget-password", true);
                         xhttp.setRequestHeader("Content-Type", "application/json");
                         xhttp.send(data);
                     }

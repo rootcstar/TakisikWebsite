@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\UserBillingAddress;
+use App\Models\UserShippingAddress;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -109,10 +113,16 @@ class ApiController extends Controller
                 return response(['result' => -2, "msg" => "Mailinizi kontrol ederek hesabınızın onaylandığından emin olunuz."], 200);
             }
 
+            $user_billing_address_data = UserBillingAddress::where('user_id',$user_data[0]->user_id)->get();
+            $user_shipping_address_data = UserShippingAddress::where('user_id',$user_data[0]->user_id)->get();
+
+            $user_data['billing_addresses'] = $user_billing_address_data;
+            $user_data['shipping_addresses'] = $user_shipping_address_data;
+
             Session::put('website.is_login', true);
-            Session::put('user', $user_data);
-            Session::put('user.favorites', $user_fav_products_data);
-            Session::put('shopping_cart.products', array());
+            Session::put('website.user', $user_data);
+            Session::put('website.user.favorites', $user_fav_products_data);
+            Session::put('website.shopping_cart.products', array());
             $this->set_sessions_for_shopping($user_data[0]->user_id);
 
 
@@ -366,7 +376,7 @@ class ApiController extends Controller
     }
 
     public function logout(){
-        Session::flush('website');
+        Session::forget('website');
         return redirect('/');
     }
 
@@ -429,7 +439,7 @@ class ApiController extends Controller
 
             }
 
-            $this->set_sessions_for_shopping(Session::get('user.user_id'));
+            $this->set_sessions_for_shopping(Session::get('website.user.user_id'));
 
             return response(['result' => 1, "products" => $products_div, "sub_tag_filter" => $sub_tag_filter, "load-more" => $load_more], 200);
 
@@ -495,7 +505,7 @@ class ApiController extends Controller
             </div>';
 
 
-            $this->set_sessions_for_shopping(Session::get('user.user_id'));
+            $this->set_sessions_for_shopping(Session::get('website.user.user_id'));
 
             return response(['result' => 1, "products" => $products_div, "sub_tag_filter" => $sub_tag_filter, "load-more" => $load_more], 200);
 
@@ -632,7 +642,7 @@ class ApiController extends Controller
             }
 
 
-            $shopping_cart_products = Session::get('shopping_cart.products');
+            $shopping_cart_products = Session::get('website.shopping_cart.products');
 
             $result = array_search($data['mri'], array_column($shopping_cart_products, 'model_record_id')); // Gives false or index of the product in the array
 
@@ -644,7 +654,7 @@ class ApiController extends Controller
                 $data_product->new_price = number_format(CalculateProductPrice($data_product->wholesale_price, $data_product->kdv, Session::get('website.user.user_discount')), 2, '.', '');
 
                 $data_product->quantity = $data['qty'];
-                Session::push('shopping_cart.products', $data_product);
+                Session::push('website.shopping_cart.products', $data_product);
 
             } else {
 
@@ -657,7 +667,7 @@ class ApiController extends Controller
                     $data_product = $shopping_cart_products[$result];
 
             }
-            $shopping_cart_products = Session::get('shopping_cart.products');
+            $shopping_cart_products = Session::get('website.shopping_cart.products');
 
             $cart_total_qty = 0;
             $total_price = 0;
@@ -671,14 +681,14 @@ class ApiController extends Controller
             }
 
 
-            Session::put('shopping_cart.total_qty', $cart_total_qty);
-            Session::put('shopping_cart.total_price', $total_price);
+            Session::put('website.shopping_cart.total_qty', $cart_total_qty);
+            Session::put('website.shopping_cart.total_price', $total_price);
 
             $add_to_cart_modal_div = view('partials.add-to-cart-complete-modal', ["product" => $data_product])->render();
 
             $shopping_cart_header_div = view('partials.shopping-cart-header')->render();
 
-            $fav_search_result = array_search($data['mri'], array_column(Session::get('user.favorites'), 'model_record_id'));
+            $fav_search_result = array_search($data['mri'], array_column(Session::get('website.user.favorites'), 'model_record_id'));
 
 
 
@@ -731,7 +741,7 @@ class ApiController extends Controller
             }
 
 
-            $shopping_cart_products = Session::get('shopping_cart.products');
+            $shopping_cart_products = Session::get('website.shopping_cart.products');
 
             $result = array_search($data['mri'], array_column($shopping_cart_products, 'model_record_id')); // Gives false or index of the product in the array
 
@@ -743,7 +753,7 @@ class ApiController extends Controller
                 $data_product->new_price = number_format(CalculateProductPrice($data_product->wholesale_price, $data_product->kdv, Session::get('website.user.user_discount')), 2, '.', '');
 
                 $data_product->quantity = $data['qty'];
-                Session::push('shopping_cart.products', $data_product);
+                Session::push('website.shopping_cart.products', $data_product);
 
             } else {
 
@@ -751,7 +761,7 @@ class ApiController extends Controller
                 $data_product = $shopping_cart_products[$result];
 
             }
-            $shopping_cart_products = Session::get('shopping_cart.products');
+            $shopping_cart_products = Session::get('website.shopping_cart.products');
 
             $cart_total_qty = 0;
             $total_price = 0;
@@ -765,14 +775,14 @@ class ApiController extends Controller
             }
 
 
-            Session::put('shopping_cart.total_qty', $cart_total_qty);
-            Session::put('shopping_cart.total_price', $total_price);
+            Session::put('website.shopping_cart.total_qty', $cart_total_qty);
+            Session::put('website.shopping_cart.total_price', $total_price);
 
             $add_to_cart_modal_div = view('partials.add-to-cart-complete-modal', ["product" => $data_product])->render();
 
             $shopping_cart_header_div = view('partials.shopping-cart-header')->render();
 
-            $fav_search_result = array_search($data['mri'], array_column(Session::get('user.favorites'), 'model_record_id'));
+            $fav_search_result = array_search($data['mri'], array_column(Session::get('website.user.favorites'), 'model_record_id'));
 
 
             $product_models_data = DB::select("SELECT * FROM v_shop_products_with_tags WHERE product_code = '".$data_product->product_code."' ORDER BY model_number  asc");
@@ -816,7 +826,7 @@ class ApiController extends Controller
             $qty = 1;
 
 
-            $shopping_cart_products = Session::get('shopping_cart.products');
+            $shopping_cart_products = Session::get('website.shopping_cart.products');
 
             $result = array_search($data['model_record_id'], array_column($shopping_cart_products, 'model_record_id')); // Gives false or index of the product in the array
 
@@ -831,7 +841,7 @@ class ApiController extends Controller
                 if ($shopping_cart_products[$result]->quantity == 1) {
 
                     array_splice($shopping_cart_products, $result, 1);
-                    Session::put('shopping_cart.products', $shopping_cart_products);
+                    Session::put('website.shopping_cart.products', $shopping_cart_products);
                     $quantity = 0;
                 } else {
 
@@ -840,7 +850,7 @@ class ApiController extends Controller
                 }
 
             }
-            $shopping_cart_products = Session::get('shopping_cart.products');
+            $shopping_cart_products = Session::get('website.shopping_cart.products');
 
             $cart_total_qty = 0;
             $total_price = 0;
@@ -854,12 +864,12 @@ class ApiController extends Controller
             }
 
 
-            Session::put('shopping_cart.total_qty', $cart_total_qty);
-            Session::put('shopping_cart.total_price', $total_price);
+            Session::put('website.shopping_cart.total_qty', $cart_total_qty);
+            Session::put('website.shopping_cart.total_price', $total_price);
 
             $shopping_cart_header_div = view('partials.shopping-cart-header')->render();
 
-            $fav_search_result = array_search($data['model_record_id'], array_column(Session::get('user.favorites'), 'model_record_id'));
+            $fav_search_result = array_search($data['model_record_id'], array_column(Session::get('website.user.favorites'), 'model_record_id'));
 
 
             $product_models_data = DB::select("SELECT * FROM v_shop_products_with_tags WHERE product_code = '".$product_data->product_code."' ORDER BY model_number  asc");
@@ -910,7 +920,7 @@ class ApiController extends Controller
             $qty = 1;
 
 
-            $shopping_cart_products = Session::get('shopping_cart.products');
+            $shopping_cart_products = Session::get('website.shopping_cart.products');
 
             $result = array_search($data['model_record_id'], array_column($shopping_cart_products, 'model_record_id')); // Gives false or index of the product in the array
 
@@ -923,10 +933,10 @@ class ApiController extends Controller
 
 
                 array_splice($shopping_cart_products, $result, 1);
-                Session::put('shopping_cart.products', $shopping_cart_products);
+                Session::put('website.shopping_cart.products', $shopping_cart_products);
 
             }
-            $shopping_cart_products = Session::get('shopping_cart.products');
+            $shopping_cart_products = Session::get('website.shopping_cart.products');
             $cart_total_qty = 0;
             if ($shopping_cart_products != null || count($shopping_cart_products) != 0) {
 
@@ -941,8 +951,8 @@ class ApiController extends Controller
                 }
 
 
-                Session::put('shopping_cart.total_qty', $cart_total_qty);
-                Session::put('shopping_cart.total_price', $total_price);
+                Session::put('website.shopping_cart.total_qty', $cart_total_qty);
+                Session::put('website.shopping_cart.total_price', $total_price);
 
                 $message = "Ürün başarıyla silindi.";
 
@@ -977,15 +987,15 @@ class ApiController extends Controller
 
             $product_data = $product_models_data;
 
-            $cart_search_result = array_search($product_data[0]->model_record_id, array_column(Session::get('shopping_cart.products'), 'model_record_id')); // Gives false or index of the product in the arra
-            $fav_search_result = array_search($product_data[0]->model_record_id, array_column(Session::get('user.favorites'), 'model_record_id'));
+            $cart_search_result = array_search($product_data[0]->model_record_id, array_column(Session::get('website.shopping_cart.products'), 'model_record_id')); // Gives false or index of the product in the arra
+            $fav_search_result = array_search($product_data[0]->model_record_id, array_column(Session::get('website.user.favorites'), 'model_record_id'));
 
 
 
 
 
             $quick_view_modal_div = view('partials.quick-view-modal', ["product" => $product_data[0],
-                                                                            "qty" => ($cart_search_result !== false) ? Session::get('shopping_cart.products')[$cart_search_result]->quantity : 0,
+                                                                            "qty" => ($cart_search_result !== false) ? Session::get('website.shopping_cart.products')[$cart_search_result]->quantity : 0,
                                                                             'product_models'=>$product_models_data,
                                                                             "fav"=>($fav_search_result !== false) ? "fav" :"" ,
                                                                             "fav_text"=>($fav_search_result !== false) ? "FAVORİLERDEN ÇIKAR" :"FAVORİLERE EKLE" ])->render();
@@ -1023,11 +1033,11 @@ class ApiController extends Controller
 
 
 
-            $user_fav_products = Session::get('user.favorites');
+            $user_fav_products = Session::get('website.user.favorites');
 
             $result = array_search($data['model_record_id'], array_column($user_fav_products, 'model_record_id')); // Gives false or index of the product in the array
 
-            $user = Session::get('user');
+            $user = Session::get('website.user');
 
             if ($result === false) { // This product not in the user fav list
                 $data_product = DB::select("SELECT * FROM v_shop_products_with_tags WHERE model_record_id = '" . $data['model_record_id'] . "' AND
@@ -1036,7 +1046,7 @@ class ApiController extends Controller
 
                 $data_product = $data_product[0];
 
-                Session::push('user.favorites',$data_product);
+                Session::push('website.user.favorites',$data_product);
 
 
                 $insert_data['user_id'] = $user[0]->user_id;
@@ -1050,7 +1060,7 @@ class ApiController extends Controller
 
 
                 array_splice($user_fav_products, $result, 1);
-                Session::put('user.favorites', $user_fav_products);
+                Session::put('website.user.favorites', $user_fav_products);
 
                 DB::table('user_fav_items')->where('user_id',$user[0]->user_id)->where('product_model_record_id',$data['model_record_id'])->delete();
                 $fav_list_div = view('partials.favorites-list-div')->render();
@@ -1090,13 +1100,13 @@ class ApiController extends Controller
                                                                                                                 product_is_active = '1' ");
 
 
-            $shopping_cart_products = Session::get('shopping_cart.products');
+            $shopping_cart_products = Session::get('website.shopping_cart.products');
 
             $check_cart_result = array_search($model_record_id, array_column($shopping_cart_products, 'model_record_id')); // Gives false or index of the product in the array
 
 
 
-            $user_fav_products = Session::get('user.favorites');
+            $user_fav_products = Session::get('website.user.favorites');
 
             $check_favs_result = array_search($model_record_id, array_column($user_fav_products, 'model_record_id')); // Gives false or index of the product in the array
 
@@ -1169,17 +1179,17 @@ class ApiController extends Controller
 
     public function get_empty_cart(Request $request){  // DELETE 1 ITEM --> qty=1
         try {
-            $shopping_cart_products = Session::get('shopping_cart.products');
+            $shopping_cart_products = Session::get('website.shopping_cart.products');
 
             if(count($shopping_cart_products) == 0){
                 return response(['result' => -1, "msg" => "Sepetinizde boşaltılacak ürün bulunmamaktadır."],200);
             }
 
-            Session::forget('shopping_cart');
-            Session::put('shopping_cart.products', array());
+            Session::forget('website.shopping_cart');
+            Session::put('website.shopping_cart.products', array());
 
 
-            $shopping_cart_products = Session::get('shopping_cart.products');
+            $shopping_cart_products = Session::get('website.shopping_cart.products');
 
             $cart_total_qty = 0;
             $total_price = 0;
@@ -1193,8 +1203,8 @@ class ApiController extends Controller
             }
 
 
-            Session::put('shopping_cart.total_qty', $cart_total_qty);
-            Session::put('shopping_cart.total_price', $total_price);
+            Session::put('website.shopping_cart.total_qty', $cart_total_qty);
+            Session::put('website.shopping_cart.total_price', $total_price);
 
             $shopping_cart_header_div = view('partials.shopping-cart-header')->render();
 
@@ -1208,6 +1218,89 @@ class ApiController extends Controller
 
             return response(['result' => -500, "msg" => $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine(), "function" => __FUNCTION__], 500);
 
+        }
+    }
+
+
+    public function update_user(Request $request){
+        try {
+            $data = $request->only(['user_id','company_name','first_name','last_name','phone']);
+            $validator = Validator::make($data, [
+                'user_id' => [
+                    "required",
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'company_name' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'first_name' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'last_name' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'phone' => [
+                    "required",
+                    'digits_between:10,11',
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+            ]);
+
+            if ($validator->fails()) {
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Website_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Hatalı giriş. Lütfen tekrar deneyin'], 403);
+            }
+
+
+            try {
+
+                $user_id = $data['user_id'];
+                unset($data['user_id']);
+                User::find($user_id)->update($data);
+
+
+            } catch (QueryException $e) {
+                $response = response(['result' => -500, 'msg' => "Hata oluştu. Lütfen daha sonra tekrar deneyin","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Website_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
+            }
+
+            $user_data =  User::find($user_id)->get();
+            Session::put('website.user',$user_data);
+
+
+            return response(['result' => 1, 'msg' => 'Başarıyla güncellendi'],200);
+
+        } catch (\Throwable $t) {
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Website_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Sistem hatası. Lütfen daha sonra tekrar deneyin veya destek ekibimize başvurun."], 500);
         }
     }
 

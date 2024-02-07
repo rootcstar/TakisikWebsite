@@ -1,11 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\WebsiteController;
+use App\Http\Controllers\ADMIN\AdminWebsiteController;
 use App\Http\Controllers\ApiController;
-use App\Http\Middleware\LoginControlMiddleware;
+use App\Http\Controllers\WebsiteController;
 use App\Http\Middleware\AdminLoginControlMiddleware;
-use App\Http\Controllers\AdminWebsiteController;
+use App\Http\Middleware\LoginControlMiddleware;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------

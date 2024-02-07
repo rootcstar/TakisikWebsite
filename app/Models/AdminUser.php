@@ -33,10 +33,6 @@ class AdminUser extends Model
 
         });
 
-        self::updated(function ($model) {
-            $model->password    = fiki_encrypt($model->password );
-
-        });
     }
 
     use HasFactory;
