@@ -1,5 +1,8 @@
 @extends('layout.app')
 
+<?php
+    $user = Session::get('website.user');
+    ?>
 @section('content')
     <div id="tt-pageContent">
         <div class="container-indent">
@@ -12,19 +15,39 @@
                                 <div class="tt-shopping-layout">
                                     <div class="tt-wrapper mt-0">
                                         <div class="tt-shopping-layout">
-                                            <h3 class="tt-title">ADRES BİLGİLERİ</h3>
-                                            {{json_encode(Session::get('website'))}}
+                                            <div class="tt-title-wrapper d-flex">
+                                                <span class="tt-title-cst">ADRES BİLGİLERİM</span>
+                                                <div class="">
+                                                    <button data-target="#NewAddressModal" data-toggle="modal" class="btn">YENİ ADRES EKLE</button><br>
+                                                </div>
+
+                                            </div>
+                                            @if(count($user['billing_addresses']) != 0)
+                                                <h3 class="tt-title-cst">FATURA ADRES BİLGİLERİ</h3>
+                                            <div class="address-grid">
+
+                                                    @foreach($user['billing_addresses'] as $billing_address)
+                                                        <div class="card  mb-3" style="max-width: 18rem;">
+                                                            <h5 class="card-header card-title mb-0">{{$billing_address->address_title}}</h5>
+                                                            <div class="card-body">
+                                                                <span class="card-text mt-0">{{$billing_address->neighbourhood}}</span>
+                                                                <span class="card-text-address mt-0">{{$billing_address->address}}</span>
+                                                                <span class="card-text mt-0">{{$billing_address->district}}/{{$billing_address->city}}</span>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                @endif
+                                            </div>
+
+
+                                            @if(count($user['shipping_addresses']) != 0)
+                                            <h3 class="tt-title">KARGO ADRES BİLGİLERİ</h3>
+                                            @endif
                                             <div class="card border-secondary  mb-3" style="max-width: 18rem;">
-                                                <h5 class="card-header card-title mb-0">Header</h5>
+                                                <h5 class="card-header card-title mb-0">ADRES BASLIK</h5>
                                                 <div class="card-body text-secondary">
                                                     <p class="card-text mt-0">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                                                 </div>
-                                            </div>
-                                            <div class="tt-wrapper">
-                                                <a data-target="#NewAddressModal" data-toggle="modal" class="btn">YENİ ADRES EKLE</a><br>
-                                                <a href="account.html" class="tt-link-back">
-                                                    <i class="icon-h-46"></i> RETURN TO ACCOUNT PAGE
-                                                </a>
                                             </div>
                                             <div class="tt-wrapper">
                                                 <h3 class="tt-title">TITLE</h3>

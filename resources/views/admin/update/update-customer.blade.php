@@ -41,7 +41,7 @@
                                     <div class="form-floating">
                                         <label for="floatingName">{{LanguageChange('Last Name')}}</label>
                                         <input type="text" class="form-control input-fields" id="last_name" pattern="[a-zA-ZğüşöçĞÜŞÖÇİ]{2}[a-zA-ZğüşöçĞÜŞÖÇİ ]{1,30}"
-                                               value="{{$data['first_name']}}" required>
+                                               value="{{$data['last_name']}}" required>
                                         <div class="invalid-feedback"> Zorunlu alan.. Min 3 harf</div>
                                     </div>
                                 </div>
@@ -115,7 +115,7 @@
                             <tr>
                                 <th>Güncelle</th>
                                 @foreach($billing_address_keys as $billing_address_key)
-                                    <th>{{ LanguageChange(ucwords(str_replace("_"," ",$shipping_address_key))) }}</th>
+                                    <th>{{ LanguageChange(ucwords(str_replace("_"," ",$billing_address_key))) }}</th>
                                 @endforeach
                                 <th>Sil</th>
                             </tr>
@@ -153,7 +153,7 @@
                             <tfoot>
                             <tr>
                                 <th>Güncelle</th>
-                                @foreach($user_cards_keys as $user_cards_keys)
+                                @foreach($user_cards_keys as $user_cards_key)
                                     <th>{{ LanguageChange(ucwords(str_replace("_"," ",$user_cards_key))) }}</th>
                                 @endforeach
                                 <th>Sil</th>
@@ -295,11 +295,8 @@
                     },
                     {"data": "record_id"},
                     {"data": "user_id"},
-                    {"data": "address_line_1"},
-                    {"data": "address_line_2"},
-                    {"data": "country"},
+                    {"data": "address_title"},
                     {"data": "city"},
-                    {"data": "zip"},
                     {
                         "data":null,
                         "className": 'text-center ',
@@ -369,11 +366,8 @@
                     },
                     {"data": "record_id"},
                     {"data": "user_id"},
-                    {"data": "billing_address_line_1"},
-                    {"data": "billing_address_line_2"},
-                    {"data": "country"},
+                    {"data": "address_title"},
                     {"data": "city"},
-                    {"data": "zip"},
                     {
                         "data":null,
                         "className": 'text-center ',

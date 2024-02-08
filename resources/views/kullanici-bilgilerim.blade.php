@@ -15,36 +15,36 @@
                                         <div class="tt-table-responsive">
                                             <table class="tt-table-shop-02">
                                                 <tbody>
-                                                @if(Session::get('website.user.0')->account_type == 2)
+                                                @if(Session::get('website.user.user_info')->account_type == 2)
                                                     <tr>
                                                         <td>ŞİRKET ADI:</td>
-                                                        <td><input class="user-info-input" id="company_name" value="{{ Session::get('website.user.0')->company_name }}"></td>
+                                                        <td><input class="user-info-input" id="company_name" value="{{ Session::get('website.user.user_info')->company_name }}"></td>
                                                     </tr>
                                                 @endif
 
                                                     <tr>
                                                         <td>AD:</td>
-                                                        <td><input class="user-info-input" id="first_name" value="{{ Session::get('website.user.0')->first_name }}"></td>
+                                                        <td><input class="user-info-input" id="first_name" value="{{ Session::get('website.user.user_info')->first_name }}"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>SOYAD:</td>
-                                                        <td><input class="user-info-input" id="last_name" value="{{ Session::get('website.user.0')->last_name }}"></td>
+                                                        <td><input class="user-info-input" id="last_name" value="{{ Session::get('website.user.user_info')->last_name }}"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>E-MAIL:</td>
-                                                        <td>{{ Session::get('website.user.0')->email }}</td>
+                                                        <td>{{ Session::get('website.user.user_info')->email }}</td>
                                                     </tr>
                                                     <tr>
                                                         <td>TELEFON:</td>
-                                                        <td><input class="user-info-input" id="phone" value="{{ Session::get('website.user.0')->phone }}"></td>
+                                                        <td><input class="user-info-input" id="phone" value="{{ Session::get('website.user.user_info')->phone }}"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>ÜYELİK TÜRÜ:</td>
-                                                        <td>@if(Session::get('website.user.0')->account_type == 2) Kurumsal @else Bireysel @endif</td>
+                                                        <td>@if(Session::get('website.user.user_info')->account_type == 2) Kurumsal @else Bireysel @endif</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
-                                            <input  id="user_id" value="{{ Session::get('website.user.0')->user_id }}" hidden disabled>
+                                            <input  id="user_id" value="{{ Session::get('website.user.user_info')->user_id }}" hidden disabled>
                                             <button class="btn " onclick="UpdateUserInformation()">GÜNCELLE</button><br>
                                         </div>
                                     </div>

@@ -85,7 +85,7 @@ class WebsiteController extends Controller
 
 
 
-        return  Session::get('website.user.0')->first_name;
+        return  Session::get('website.user.user_info')->first_name;
 
         return view('test');
     }

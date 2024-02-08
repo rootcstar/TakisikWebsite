@@ -218,22 +218,16 @@ class AdminWebsiteController extends Controller
         $shipping_address_keys = [
             'record_id',
             'user_id',
-            'address_line_1',
-            'address_line_2',
-            'country',
+            'address_title',
             'city',
-            'zip'
         ];
         $shipping_address_table_name = 'user_shipping_addresses';
 
         $billing_address_keys = [
             'record_id',
             'user_id',
-            'billing_address_line_1',
-            'billing_address_line_2',
-            'country',
+            'address_title',
             'city',
-            'zip'
         ];
         $billing_address_table_name = 'user_billing_addresses';
 

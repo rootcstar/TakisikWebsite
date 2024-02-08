@@ -116,11 +116,11 @@ class ApiController extends Controller
             $user_billing_address_data = UserBillingAddress::where('user_id',$user_data[0]->user_id)->get();
             $user_shipping_address_data = UserShippingAddress::where('user_id',$user_data[0]->user_id)->get();
 
-            $user_data['billing_addresses'] = $user_billing_address_data;
-            $user_data['shipping_addresses'] = $user_shipping_address_data;
 
             Session::put('website.is_login', true);
-            Session::put('website.user', $user_data);
+            Session::put('website.user.user_info', $user_data[0]);
+            Session::put('website.user.billing_addresses', $user_billing_address_data);
+            Session::put('website.user.shipping_addresses', $user_shipping_address_data);
             Session::put('website.user.favorites', $user_fav_products_data);
             Session::put('website.shopping_cart.products', array());
             $this->set_sessions_for_shopping($user_data[0]->user_id);
@@ -1271,7 +1271,11 @@ class ApiController extends Controller
 
                 $user_id = $data['user_id'];
                 unset($data['user_id']);
-                User::find($user_id)->update($data);
+                User::where('user_id',$user_id)->update(['company_name'=>$data['company_name'],
+                                            'first_name'=>$data['first_name'],
+                                            'last_name'=>$data['last_name'],
+                                            'phone'=>$data['phone']
+                ]);
 
 
             } catch (QueryException $e) {
@@ -1284,8 +1288,8 @@ class ApiController extends Controller
                 return $response;
             }
 
-            $user_data =  User::find($user_id)->get();
-            Session::put('website.user',$user_data);
+            $user_data =  User::where('user_id',$user_id)->get();
+            Session::put('website.user.user_info',$user_data[0]);
 
 
             return response(['result' => 1, 'msg' => 'Başarıyla güncellendi'],200);
