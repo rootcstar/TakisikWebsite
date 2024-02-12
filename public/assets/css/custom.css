@@ -279,7 +279,7 @@ header .tt-cart .tt-cart-layout .tt-cart-content .tt-cart-list .tt-item-close .t
     background-clip: border-box;
     border: 1px solid rgba(0,0,0,.125);
     border-radius: 0.25rem;
-    height: 232px;
+    height: 183px;
 }
 .card-header {
     padding: 0.75rem 1.25rem;
@@ -334,7 +334,6 @@ header .tt-cart .tt-cart-layout .tt-cart-content .tt-cart-list .tt-item-close .t
     gap: 20px;
     width: 100%;
     box-sizing: border-box;
-    margin-top: 20px;
     padding: 10px;
     border: solid 1px #e2e2e2;
     background-color: #fff;
@@ -355,4 +354,36 @@ header .tt-cart .tt-cart-layout .tt-cart-content .tt-cart-list .tt-item-close .t
     color: #191919;
     font-weight: bold;
 }
+.tt-title-child{
+    padding:15px 10px;
+}
+.tt-shop-btn{
+    justify-content: space-between !important;
+}
+.modal .modal-header{
 
+    height: 54px;
+    position: relative;
+    background-color: white;
+    border-radius: 6px 6px 0px 0px;
+    border-bottom: 1px solid #b1b1b1;
+}
+.modal .modal-body:not(.no-background){
+    border-radius: unset !important;
+}
+.form-group-address{
+    text-align: left;
+}
+.modal .modal-header .close{
+    color: #FF0080;
+}
+@media (min-width: 1025px) {
+    .modal .modal-header .close {
+        right: 0px;
+    }
+}
+@media (max-width: 992px) {
+    .address-grid{
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

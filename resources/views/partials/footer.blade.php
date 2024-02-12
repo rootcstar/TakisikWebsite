@@ -182,111 +182,57 @@
     <div class="modal-dialog modal-md">
         <div class="modal-content ">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="close-empty-cart-modal"><span class="icon icon-clear"></span></button>
+                <h3 class="tt-title">YENİ ADRES EKLE</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="close-new-address-modal"><span class="icon icon-clear"></span></button>
             </div>
             <div class="modal-body" id="empty-cart-body"><div class="tt-wrapper">
-                    <h6 class="tt-title">ADD A NEW ADDRESS</h6>
                     <div class="form-default">
-                        <form  class="form-default needs-validation" id="new_address_form">
+                        <div  class="form-default needs-validation" id="new_address_form">
                             @csrf
-                            <div class="row">
-                                <div class="form-group">
-                                    <label class="control-label">ADRES TÜRÜ *</label>
-                                    <select class="form-control" id="address_type">
-                                        <option>Kargo Adresi</option>
-                                        <option>Fatura Adresi</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="">Ülke</label>
-                                    <select id="country" name="country" class="form-control input-fields afm-grey" required>
-                                        <option value="TR">Türkiye</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="">Adres</label>
-                                    <input type="text" id="address_line_1" class="form-control input-fields" pattern="[a-zA-Z]{2}[a-zA-Z .,]{1,50}" placeholder="Adresinizi giriniz" required>
-                                    <div class="invalid-feedback"> Zorunlu alan. Yalnizca harf, boşluk ve bazı özel karakterleri (.,) kullanabilirsiniz.</div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="">Adres 2</label>
-                                    <input type="text" id="address_line_2" class="form-control input-fields" pattern="[a-zA-Z]{2}[a-zA-Z .,]{1,50}" placeholder="Adresinizi giriniz" >
-                                    <div class="invalid-feedback"> Zorunlu alan. Yalnizca harf, boşluk ve bazı özel karakterleri (.,) kullanabilirsiniz.</div>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="shopInputLastName" class="control-label">LAST NAME *</label>
-                                    <input type="text" class="form-control" id="shopInputLastName">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="shopInputFirstName" class="control-label">FIRST NAME *</label>
-                                <input type="text" class="form-control" id="shopInputFirstName">
-                            </div>
-                            <div class="form-group">
-                                <label for="shopInputLastName" class="control-label">LAST NAME *</label>
-                                <input type="text" class="form-control" id="shopInputLastName">
-                            </div>
-                            <div class="form-group">
-                                <label for="shopCompanyName" class="control-label">COMPANY NAME</label>
-                                <input type="text" class="form-control" id="shopCompanyName">
-                            </div>
-                            <div class="form-group">
-                                <label for="shopCompanyName" class="control-label">COUNTRY *</label>
-                                <select class="form-control">
-                                    <option>Country</option>
-                                    <option>Country 02</option>
-                                    <option>Country 03</option>
-                                    <option>Country 04</option>
-                                    <option>Country 05</option>
-                                    <option>Country 06</option>
-                                    <option>Country 07</option>
-                                    <option>Country 08</option>
-                                    <option>Country 09</option>
-                                    <option>Country 10</option>
-                                    <option>Country 11</option>
+                            <div class="form-group form-group-address">
+                                <label class="control-label">ADRES TÜRÜ*</label>
+                                <select class="form-control form-new-address-fields" id="address_type" name="address_type" required>
+                                    <option value="1">Kargo Adresi</option>
+                                    <option value="2">Fatura Adresi</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label for="shopAddress" class="control-label">ADDRESS *</label>
-                                <input type="text" class="form-control" id="shopAddress">
+                            <div class="form-group form-group-address">
+                                <label for="address_title" class="control-label">ADRES BAŞLIĞI*</label>
+                                <input type="text" class="form-control form-new-address-fields" id="address_title"   name="address_title"  pattern="[a-zA-Z]{3}[a-zA-Z ]{1,30}" required>
                             </div>
-                            <div class="form-group">
-                                <label for="shopTown" class="control-label">TOWN / CITY *</label>
-                                <input type="text" class="form-control" id="shopTown">
-                            </div>
-                            <div class="form-group">
-                                <label for="shopState" class="control-label">STATE / COUNTY *</label>
-                                <input type="text" class="form-control" id="shopState">
-                            </div>
-                            <div class="form-group">
-                                <label for="shopPostCode" class="control-label">POSTCODE / ZIP *</label>
-                                <input type="text" class="form-control" id="shopPostCode">
-                            </div>
-                            <div class="form-group">
-                                <label for="shopPhone" class="control-label">PHONE</label>
-                                <input type="text" class="form-control" id="shopPhone">
-                            </div>
-                            <div class="form-group">
-                                <label for="shopEmail" class="control-label">EMAIL ADDRESS *</label>
-                                <input type="text" class="form-control" id="shopEmail">
-                            </div>
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="checkBox11" name="checkbox">
-                                <label for="checkBox11">
-                                    <span class="check"></span>
-                                    <span class="box"></span>
-                                    Set as deafult address?
-                                </label>
-                            </div>
-                            <div class="row tt-offset-21">
-                                <div class="col-auto">
-                                    <button type="submit" class="btn">ADD  ADDRESS</button>
+                            <div class="row">
+                                <div class="form-group form-group-address col-md-6">
+                                    <label for="city" class="control-label">İL*</label>
+                                    <select class="form-control form-new-address-fields" id="city" name="city" required>
+                                        <option value="" >Seçiniz</option>
+                                    </select>
                                 </div>
-                                <div class="col-auto align-self-center">
-                                    or	<a href="#" class="tt-link">Cancel</a>
+                                <div class="form-group form-group-address col-md-6">
+                                    <label for="district" class="control-label">İLÇE*</label>
+                                    <select class="form-control form-new-address-fields" id="district"  name="district" disabled="disabled" required>
+                                        <option value="" >Seçiniz</option>
+                                    </select>
                                 </div>
                             </div>
-                        </form>
+                            <div class="row">
+                                <div class="form-group form-group-address col-md-6">
+                                    <label for="neighbourhood" class="control-label">MAHALLE*</label>
+                                    <select class="form-control form-new-address-fields" id="neighbourhood" name="neighbourhood" disabled="disabled" required>
+                                        <option value="" >Seçiniz</option>
+                                    </select>
+                                </div>
+                                <div class="form-group form-group-address col-md-6">
+                                    <label for="zip" class="control-label">ZIP*</label>
+                                    <input type="text" class="form-control form-new-address-fields" id="zip" name="zip" required>
+                                </div>
+                            </div>
+                            <div class="form-group form-group-address">
+                                <label for="address" class="control-label">ADRES*</label>
+                                <input type="text" class="form-control form-new-address-fields" id="address" name="address" required>
+                            </div>
+                            <input type="text" class=" form-new-address-fields" value="{{Session::get('website.user.user_id')}}" id="user_id" name="user_id" required hidden>
+                            <button  class="btn w-100" onclick="AddNewAddress()">ADRES EKLE</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -950,7 +896,70 @@
         xhttp.send(data);
     }
 
+    function AddNewAddress(){
+        is_valid = validate_form('new_address_form');
+        if (!is_valid) {
+            return;
+        }
+        $('#loader').removeClass('hidden');
 
+        let formData = new FormData();
+
+        $('.form-new-address-fields').each(function () {
+
+                formData.append($(this).attr('name'),$(this).val());
+
+        });
+        formData.append('address_type', $('#city').find(':selected').val());
+        formData.append('city', $('#city').find(':selected').val());
+        formData.append('district', $('#district').find(':selected').val());
+        formData.append('neighbourhood', $('#neighbourhood').find(':selected').val());
+
+
+        fetch('{{route('add_new_address')}}', {
+
+            method: "POST",
+            body: formData
+
+        })
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                if (data.result == '1') {
+
+                    $('#loader').addClass('hidden');
+                    Swal.fire({
+                        icon: 'success',
+                        title: data.msg,
+                        showConfirmButton: false,
+                        outsideClick: false,
+                    })
+
+                  //  window.location.reload();
+                }else{
+
+                    $('#loader').addClass('hidden');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ups!',
+                        text: data.msg
+                    })
+                }
+
+
+
+            })
+            .catch((error) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: error,
+                })
+            });
+
+
+
+    }
 
 
 </script>

@@ -43,3 +43,8 @@ use Illuminate\Support\Facades\Route;
 
     /** USER  */
     Route::post('/update-user', [ApiController::class, 'update_user']);
+    Route::post('/add-new-address', [ApiController::class, 'insert_address'])->name('add_new_address');
+
+    Route::post('/get-city', [ApiController::class, 'get_city']);
+    Route::post('/get-district', [ApiController::class, 'get_district']);
+    Route::post('/get-neighbourhood', [ApiController::class, 'get_neighbourhood']);

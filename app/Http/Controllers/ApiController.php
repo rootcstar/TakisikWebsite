@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\City;
+use App\Models\District;
+use App\Models\Neighbourhood;
 use App\Models\User;
 use App\Models\UserBillingAddress;
 use App\Models\UserShippingAddress;
@@ -1306,6 +1309,193 @@ class ApiController extends Controller
             }
             return response(['result' => -500, 'msg' => "Sistem hatası. Lütfen daha sonra tekrar deneyin veya destek ekibimize başvurun."], 500);
         }
+    }
+
+    public function insert_address(Request $request){
+        try {
+            $data = $request->only(['user_id','company_name','first_name','last_name','phone']);
+            $validator = Validator::make($data, [
+                'user_id' => [
+                    "required",
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'address_type' => [
+                    "required",
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'address_title' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'address' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'city' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'district' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'neighbourhood' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'zip' => [
+                    "required",
+                    'integer',
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+            ]);
+
+            if ($validator->fails()) {
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Website_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Hatalı giriş. Lütfen tekrar deneyin'], 403);
+            }
+
+
+            if($data['address_type'] == 1){ //SHIPPING ADDRESS
+                try {
+                    UserShippingAddress::create($data);
+
+                } catch (QueryException $e) {
+                    $response = response(['result' => -500, 'msg' => "Hata oluştu. Lütfen daha sonra tekrar deneyin","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                    $request = new Request();
+                    $request['log_type'] = 'Takisik_Website_query_error';
+                    $request['data'] = $response->getContent();
+                    $maintenance_controller = new GeneralController();
+                    $maintenance_controller->send_data_to_maintenance($request);
+                    return $response;
+                }
+            }
+
+            if($data['address_type'] == 2){ //SHIPPING ADDRESS
+                try {
+                    UserBillingAddress::create($data);
+
+                } catch (QueryException $e) {
+                    $response = response(['result' => -500, 'msg' => "Hata oluştu. Lütfen daha sonra tekrar deneyin","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                    $request = new Request();
+                    $request['log_type'] = 'Takisik_Website_query_error';
+                    $request['data'] = $response->getContent();
+                    $maintenance_controller = new GeneralController();
+                    $maintenance_controller->send_data_to_maintenance($request);
+                    return $response;
+                }
+            }
+
+
+            return response(['result' => 1, 'msg' => 'Adres eklendi'],200);
+
+        } catch (\Throwable $t) {
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Website_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Sistem hatası. Lütfen daha sonra tekrar deneyin veya destek ekibimize başvurun."], 500);
+        }
+    }
+
+
+    public function get_city(Request $request)
+    {
+        try {
+
+            $cities_data = City::all();
+
+
+            return response(['result' => 1, "data" => $cities_data], 200);
+
+        } catch (\Exception $e) {
+
+            return response(['result' => -500, "msg" => $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine(), "function" => __FUNCTION__], 500);
+
+        }
+
+    }
+
+    public function get_neighbourhood(Request $request)
+    {
+        try {
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'district_id' => [
+                    "integer",
+                    "required",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+            ]);
+
+            if ($validator->fails()) {
+
+                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+
+            }
+
+            $hood_data = Neighbourhood::where('district_id',$data['district_id'])->orderBy('neighbourhood_name_uppercase','ASC')->get();
+
+
+            return response(['result' => 1, "data" => $hood_data], 200);
+
+        } catch (\Exception $e) {
+
+            return response(['result' => -500, "msg" => $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine(), "function" => __FUNCTION__], 500);
+
+        }
+
+    }
+    public function get_district(Request $request)
+    {
+        try {
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'city_id' => [
+                    "integer",
+                    "required",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+            ]);
+
+            if ($validator->fails()) {
+
+                return response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors()], 403);
+
+            }
+
+            $district_data = District::where('city_id',$data['city_id'])->orderBy('district_name_uppercase','ASC')->get();
+
+
+
+            return response(['result' => 1, "data" => $district_data ], 200);
+
+        } catch (\Exception $e) {
+
+            return response(['result' => -500, "msg" => $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine(), "function" => __FUNCTION__], 500);
+
+        }
+
     }
 
 }
