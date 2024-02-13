@@ -36,7 +36,7 @@ $(document).ready(function() {
     span.onclick = function() {
         modal.style.display = "none";
         // Clear form inputs
-        $('#NewAddressModal input[type="text"],#NewAddressModal select').val('');
+        $('#NewAddressModal input[type="text"]').val('');
         $('#district').attr("disabled", true).html("<option value=''>Seçiniz</option>");
         $('#neighbourhood').attr("disabled", true).html("<option value=''>Seçiniz</option>");
     }
@@ -46,7 +46,7 @@ $(document).ready(function() {
         if (event.target == modal) {
             modal.style.display = "none";
             // Clear form inputs
-            $('#NewAddressModal input[type="text"], #NewAddressModal select').val('');
+            $('#NewAddressModal input[type="text"]').val('');
             $('#district').attr("disabled", true).html("<option value=''>Seçiniz</option>");
             $('#neighbourhood').attr("disabled", true).html("<option value=''>Seçiniz</option>");
         }

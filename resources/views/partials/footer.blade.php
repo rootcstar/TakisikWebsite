@@ -192,7 +192,7 @@
                             <div class="form-group form-group-address">
                                 <label class="control-label">ADRES TÜRÜ*</label>
                                 <select class="form-control form-new-address-fields" id="address_type" name="address_type" required>
-                                    <option value="1">Kargo Adresi</option>
+                                    <option value="1" selected>Kargo Adresi</option>
                                     <option value="2">Fatura Adresi</option>
                                 </select>
                             </div>
@@ -230,7 +230,7 @@
                                 <label for="address" class="control-label">ADRES*</label>
                                 <input type="text" class="form-control form-new-address-fields" id="address" name="address" required>
                             </div>
-                            <input type="text" class=" form-new-address-fields" value="{{Session::get('website.user.user_id')}}" id="user_id" name="user_id" required hidden>
+                            <input type="text" class=" form-new-address-fields" value="{{Session::get('website.user.user_info')->user_id}}" id="user_id" name="user_id" required hidden>
                             <button  class="btn w-100" onclick="AddNewAddress()">ADRES EKLE</button>
                         </div>
                     </div>
@@ -240,6 +240,49 @@
     </div>
 </div>
 
+<!-- modal (UpdateAddressModal) -->
+<div class="modal  fade"  id="UpdateAddressModal" tabindex="-1" role="dialog" aria-label="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h3 class="tt-title">ADRES DÜZENLE</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="icon icon-clear"></span></button>
+            </div>
+
+            <div class="modal-body"  id="update-address-body" >
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- modal (DeleteAddressModal) -->
+<div class="modal  fade"  id="DeleteAddressModal" tabindex="-1" role="dialog" aria-label="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="close-delete-modal"><span class="icon icon-clear"></span></button>
+            </div>
+            <div class="modal-body" id="delete-item-body">
+                <div class="tt-modal-addtocart delete-address desctope">
+                    <div class="row">
+                        <div class="col-12 col-lg-12">
+                            <div class="delete-address-modal-text" id="delete-address-modal-text"></div>
+                            </a>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <a href="#" class="btn btn-border btn-close-popup" data-toggle="modal" data-target="ModalDeleteSuccess" id="delete-address">SİL</a>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <a  class="btn btn-border" data-dismiss="modal">VAZGEÇ</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- modal (ModalDeleteSuccess) -->
 <div class="modal  fade"  id="ModalDeleteSuccess" tabindex="-1" role="dialog" aria-label="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md modal-sm">
@@ -907,13 +950,14 @@
 
         $('.form-new-address-fields').each(function () {
 
-                formData.append($(this).attr('name'),$(this).val());
+            formData.append($(this).attr('name'),$(this).val());
 
         });
-        formData.append('address_type', $('#city').find(':selected').val());
+        formData.append('address_type', $('#address_type').find(':selected').val());
         formData.append('city', $('#city').find(':selected').val());
         formData.append('district', $('#district').find(':selected').val());
         formData.append('neighbourhood', $('#neighbourhood').find(':selected').val());
+
 
 
         fetch('{{route('add_new_address')}}', {
@@ -936,7 +980,69 @@
                         outsideClick: false,
                     })
 
-                  //  window.location.reload();
+                    window.location.reload();
+                }else{
+
+                    $('#loader').addClass('hidden');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ups!',
+                        text: data.msg
+                    })
+                }
+
+
+
+            })
+            .catch((error) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: error,
+                })
+            });
+
+
+
+    }
+
+    function DeleteAddressModal(address_type,record_id){
+
+        $("#delete-address").attr("onclick","DeleteAddress('"+address_type+"','"+record_id+"')");
+        $('#delete-address-modal-text').text("Adresi silmek istediğinize emin misiniz?");
+    }
+
+    function DeleteAddress(type,id){
+
+        $('#loader').removeClass('hidden');
+
+        let formData = new FormData();
+
+        formData.append('address_type', type);
+        formData.append('record_id', id);
+
+
+
+        fetch('{{route('delete_address')}}', {
+
+            method: "POST",
+            body: formData
+
+        })
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                if (data.result == '1') {
+
+                    $('#loader').addClass('hidden');
+                    Swal.fire({
+                        icon: 'success',
+                        title: data.msg,
+                        showConfirmButton: false,
+                        outsideClick: false,
+                    })
+
+                    window.location.reload();
                 }else{
 
                     $('#loader').addClass('hidden');
@@ -962,6 +1068,113 @@
     }
 
 
+    function UpdateAddressModal(type,id){
+        $('#update-address-body').html('');
+        $('#update-address-body').append('<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>');
+
+         var data = '{"address_type":"' + type + '","record_id":"' + id + '"}';
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+
+            if (this.readyState == 4 && this.status == 200) {
+                let response = JSON.parse(this.responseText);
+
+                if(response['result'] == 1){
+
+                    $('#update-address-body').html('');
+                    $('#update-address-body').append(response['modal']);
+
+                }else{
+                    Swal.fire(response['msg']);
+                }
+            } else if (this.status >= 400 && this.status < 500) {
+                let response = JSON.parse(this.responseText);
+                $('#loader').addClass("hidden");
+                Swal.fire(response['msg']);
+            } else if (this.status >= 500) {
+                let response = JSON.parse(this.responseText);
+                $('#loader').addClass('hidden');
+                Swal.fire(response['msg']);
+
+            }
+            xhttp.onerror = function onError(e) {
+
+                alert('con error:'+e);
+            }
+        };
+
+        xhttp.open("POST", "/api/update-address-modal", true);
+        xhttp.setRequestHeader("Content-Type", "application/json");
+        xhttp.send(data);
+
+    }
+
+    function UpdateAddress(){
+        is_valid = validate_form('update_address_form');
+        if (!is_valid) {
+            return;
+        }
+        $('#loader').removeClass('hidden');
+
+        let formData = new FormData();
+
+        $('.form-update-address-fields').each(function () {
+
+            formData.append($(this).attr('name'),$(this).val());
+
+        });
+        formData.append('address_type', $('#address_type').find(':selected').val());
+        formData.append('city', $('#city').find(':selected').val());
+        formData.append('district', $('#district').find(':selected').val());
+        formData.append('neighbourhood', $('#neighbourhood').find(':selected').val());
+
+
+
+        fetch('{{route('update_address')}}', {
+
+            method: "POST",
+            body: formData
+
+        })
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                if (data.result == '1') {
+
+                    $('#loader').addClass('hidden');
+                    Swal.fire({
+                        icon: 'success',
+                        title: data.msg,
+                        showConfirmButton: false,
+                        outsideClick: false,
+                    })
+
+                    window.location.reload();
+                }else{
+
+                    $('#loader').addClass('hidden');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ups!',
+                        text: data.msg
+                    })
+                }
+
+
+
+            })
+            .catch((error) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: error,
+                })
+            });
+
+
+
+    }
 </script>
 
 

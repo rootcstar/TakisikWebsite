@@ -15,5 +15,5 @@ class City extends Model
     const CREATED_AT = 'created_date';
     const UPDATED_AT = 'last_updated';
 
-    protected $fillable = ['license_plate_number', 'city_name_upper_case','city_name','city_name_lowercase'];
+    protected $fillable = ['license_plate_number', 'city_name_uppercase','city_name','city_name_lowercase'];
 }

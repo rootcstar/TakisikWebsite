@@ -337,8 +337,9 @@ header .tt-cart .tt-cart-layout .tt-cart-content .tt-cart-list .tt-item-close .t
     padding: 10px;
     border: solid 1px #e2e2e2;
     background-color: #fff;
-    min-height: 460px;
+   /* min-height: 460px; */
     border-radius: 6px;
+    height: auto;
 }
 .tt-title-wrapper{
     border: solid 1px #e2e2e2;

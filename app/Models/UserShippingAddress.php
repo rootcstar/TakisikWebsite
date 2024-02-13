@@ -14,5 +14,5 @@ class UserShippingAddress extends Model
     const CREATED_AT = 'created_date';
     const UPDATED_AT = 'last_updated';
 
-    protected $fillable = ['user_id', 'address_line_1', 'address_line_2', 'city', 'zip','country'];
+    protected $fillable = ['user_id', 'address_title', 'address', 'city','district','neighbourhood','zip'];
 }
