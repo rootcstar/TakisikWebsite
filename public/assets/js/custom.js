@@ -135,7 +135,7 @@ $(document).ready(function() {
 });
 
 function checkCheckbox() {
-    var checkbox = document.getElementById("check_adr");
+    var checkbox = document.getElementById("check_billing_address");
     if (checkbox.checked) {
         $('#form-group-billing-address').addClass('hide');
         $('#billing_address').prop('disabled','disabled');

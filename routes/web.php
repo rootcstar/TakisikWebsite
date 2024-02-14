@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ADMIN\AdminWebsiteController;
+use App\Http\Controllers\ADMIN\AdminPanelWebsiteController;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\WebsiteController;
 use App\Http\Middleware\AdminLoginControlMiddleware;
@@ -44,41 +44,41 @@ Route::middleware([LoginControlMiddleware::class])->group(function() {
 
 
     // ADMIN LOGS
-    Route::get('/admin/login', [AdminWebsiteController::class, 'get_login'])->name('admin-login');
-    Route::get('/admin/logout', [AdminWebsiteController::class, 'admin_logout'])->name('admin_panel_logout');
+    Route::get('/admin/login', [AdminPanelWebsiteController::class, 'get_login'])->name('admin-login');
+    Route::get('/admin/logout', [AdminPanelWebsiteController::class, 'admin_logout'])->name('admin_panel_logout');
 
 //ADMIN URLS
 Route::middleware([AdminLoginControlMiddleware::class])->group(function() {
 
-    Route::get('/admin', [AdminWebsiteController::class, 'get_admin_dashboard'])->name('admin_panel_dashboard');
+    Route::get('/admin', [AdminPanelWebsiteController::class, 'get_admin_dashboard'])->name('admin_panel_dashboard');
 
-    Route::get('/admin/admin-users', [AdminWebsiteController::class, 'get_admin_users'])->name('admin_panel_admin_users');
-    Route::get('/admin/admin-users/update/{pri_id}', [AdminWebsiteController::class, 'get_update_admin_user']);
-    Route::get('/admin/admin-users/new', [AdminWebsiteController::class, 'get_new_admin_user'])->name('admin_panel_new_admin_user');
+    Route::get('/admin/admin-users', [AdminPanelWebsiteController::class, 'get_admin_users'])->name('admin_panel_admin_users');
+    Route::get('/admin/admin-users/update/{pri_id}', [AdminPanelWebsiteController::class, 'get_update_admin_user']);
+    Route::get('/admin/admin-users/new', [AdminPanelWebsiteController::class, 'get_new_admin_user'])->name('admin_panel_new_admin_user');
 
-    Route::get('/admin/permission-types', [AdminWebsiteController::class, 'get_permission_types'])->name('admin_panel_permission_types');
-    Route::get('/admin/permission-types/new', [AdminWebsiteController::class, 'get_new_permission_type'])->name('admin_panel_new_permission_type');
+    Route::get('/admin/permission-types', [AdminPanelWebsiteController::class, 'get_permission_types'])->name('admin_panel_permission_types');
+    Route::get('/admin/permission-types/new', [AdminPanelWebsiteController::class, 'get_new_permission_type'])->name('admin_panel_new_permission_type');
 
-    Route::get('/admin/admin-user-types', [AdminWebsiteController::class, 'get_admin_user_types'])->name('admin_panel_admin_user_types');
-    Route::get('/admin/admin-user-types/new', [AdminWebsiteController::class, 'get_new_admin_user_type'])->name('admin_panel_new_admin_user_type');
+    Route::get('/admin/admin-user-types', [AdminPanelWebsiteController::class, 'get_admin_user_types'])->name('admin_panel_admin_user_types');
+    Route::get('/admin/admin-user-types/new', [AdminPanelWebsiteController::class, 'get_new_admin_user_type'])->name('admin_panel_new_admin_user_type');
 
-    Route::get('/admin/tags', [AdminWebsiteController::class, 'get_tags'])->name('admin_panel_tags');
-    Route::get('/admin/tags/update/{pri_id}', [AdminWebsiteController::class, 'get_update_tag']);
+    Route::get('/admin/tags', [AdminPanelWebsiteController::class, 'get_tags'])->name('admin_panel_tags');
+    Route::get('/admin/tags/update/{pri_id}', [AdminPanelWebsiteController::class, 'get_update_tag']);
 
-    Route::get('/admin/subtags/update/{pri_id}', [AdminWebsiteController::class, 'get_update_subtag']);
+    Route::get('/admin/subtags/update/{pri_id}', [AdminPanelWebsiteController::class, 'get_update_subtag']);
 
-    Route::get('/admin/customers', [AdminWebsiteController::class, 'get_customers'])->name('admin_panel_customers');
-    Route::get('/admin/customers/new', [AdminWebsiteController::class, 'get_new_user'])->name('admin_panel_new_user');
-    Route::get('/admin/customers/update/{pri_id}', [AdminWebsiteController::class, 'get_update_customer']);
+    Route::get('/admin/customers', [AdminPanelWebsiteController::class, 'get_customers'])->name('admin_panel_customers');
+    Route::get('/admin/customers/new', [AdminPanelWebsiteController::class, 'get_new_user'])->name('admin_panel_new_user');
+    Route::get('/admin/customers/update/{pri_id}', [AdminPanelWebsiteController::class, 'get_update_customer']);
 
-    Route::get('/admin/customers/shipping-address/update/{pri_id}', [AdminWebsiteController::class, 'get_update_customer_shipping_address']);
-    Route::get('/admin/customers/billing-address/update/{pri_id}', [AdminWebsiteController::class, 'get_update_customer_billing_address']);
+    Route::get('/admin/customers/shipping-address/update/{pri_id}', [AdminPanelWebsiteController::class, 'get_update_customer_shipping_address']);
+    Route::get('/admin/customers/billing-address/update/{pri_id}', [AdminPanelWebsiteController::class, 'get_update_customer_billing_address']);
 
-    Route::get('/admin/products', [AdminWebsiteController::class, 'get_products'])->name('admin_panel_products');
-    Route::get('/admin/products/new', [AdminWebsiteController::class, 'get_new_product'])->name('admin_panel_new_product');
-    Route::get('/admin/products/update/{pri_id}', [AdminWebsiteController::class, 'get_update_product']);
+    Route::get('/admin/products', [AdminPanelWebsiteController::class, 'get_products'])->name('admin_panel_products');
+    Route::get('/admin/products/new', [AdminPanelWebsiteController::class, 'get_new_product'])->name('admin_panel_new_product');
+    Route::get('/admin/products/update/{pri_id}', [AdminPanelWebsiteController::class, 'get_update_product']);
 
-    Route::get('/admin/product-upload-with-excel', [AdminWebsiteController::class, 'get_insert_products_with_excel'])->name('admin_panel_excel_upload');
+    Route::get('/admin/product-upload-with-excel', [AdminPanelWebsiteController::class, 'get_insert_products_with_excel'])->name('admin_panel_excel_upload');
 
 
 });

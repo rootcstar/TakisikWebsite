@@ -145,13 +145,13 @@
 
 
                                     </div>
-                                    <input type="checkbox" id="check_adr" onclick="checkCheckbox()" checked> Faturamı aynı adrese gönder.</input>
+                                    <input type="checkbox" id="check_billing_address" onclick="checkCheckbox()" checked> Faturamı aynı adrese gönder.</input>
                                     <hr>
                                     <h4 class="tt-title">
                                         NOT
                                     </h4>
                                     <p>Siparişiniz ile ilgili eklemek istediklerinizi aşağıya ekleyibilirsiniz.</p>
-                                    <textarea class="form-control" rows="7"></textarea>
+                                    <textarea class="form-control" rows="7" id="note"></textarea>
                                 </div>
                             </div>
                             <div class="tt-shopcart-box tt-border-large">
@@ -256,33 +256,60 @@
 
         function PlaceOrder(){
 
-            var billing_address = document.getElementById('billing_address');
-            if(!billing_address){
+            var shipping_address = document.getElementById('shipping_address');
+            if(!shipping_address){
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Lütfen bir fatura adresi ekleyiniz',
+                    title: 'Lütfen bir teslimat adresi ekleyiniz',
                     showConfirmButton: false,
                 })
                 return;
             }
-            if($('#billing_address').find(':selected').val() == null || $('#billing_address').find(':selected').val() == undefined || $('#billing_address').find(':selected').val() == ''){
+            if(!$('#shipping_address').find(':selected').val()){
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Lütfen fatura adresini seçiniz',
+                    title: 'Lütfen teslimat adresini seçiniz',
                     showConfirmButton: false,
                 })
                 return;
             }
+
+            var check_billing_address = false;
+            var checkbox = document.getElementById("check_billing_address");
+            if (checkbox.checked) {
+                 check_billing_address = true;
+            }else{
+                var billing_address = document.getElementById('billing_address');
+                if(!billing_address){
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Lütfen bir fatura adresi ekleyiniz',
+                        showConfirmButton: false,
+                    })
+                    return;
+                }
+                if(!$('#billing_address').find(':selected').val()){
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Lütfen fatura adresini seçiniz',
+                        showConfirmButton: false,
+                    })
+                    return;
+                }
+            }
+
             $('#loader').removeClass('hidden');
             let formData = new FormData();
 
-alert('STOP');
-return;
 
-            formData.append('shipping_address', $('#address_type').find(':selected').val());
-            formData.append('city', $('#city').find(':selected').val());
-            formData.append('district', $('#district').find(':selected').val());
-            formData.append('neighbourhood', $('#neighbourhood').find(':selected').val());
+            formData.append('shipping_address', $('#shipping_address').find(':selected').val());
+            formData.append('billing_address', $('#billing_address').find(':selected').val());
+            formData.append('check_billing_address', check_billing_address);
+            formData.append('note', $('#note').val());
+
+
+            alert('STOP');
+            return;
             fetch('{{route('add_new_address')}}', {
 
                 method: "POST",

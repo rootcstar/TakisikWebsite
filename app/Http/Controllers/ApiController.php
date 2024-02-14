@@ -77,7 +77,6 @@ class ApiController extends Controller
 
 
     }
-
     public function signin(Request $request)
     {
         try {
@@ -146,7 +145,6 @@ class ApiController extends Controller
 
 
     }
-
     public function forget_password(Request $request)
     {
         try {
@@ -192,7 +190,6 @@ class ApiController extends Controller
 
         }
     }
-
     public function new_password(Request $request)
     {
         try {
@@ -247,7 +244,6 @@ class ApiController extends Controller
 
         }
     }
-
     public function register(Request $request)
     {
         try {
@@ -339,7 +335,6 @@ class ApiController extends Controller
 
         return response(['result' => -1, "msg" => 'Lütfen bekleyiniz.'], 200);
     }
-
     public function get_register_form(Request $request)
     {
         try {
@@ -380,7 +375,6 @@ class ApiController extends Controller
         }
 
     }
-
     public function logout(){
         Session::forget('website');
         return redirect('/');
@@ -456,7 +450,6 @@ class ApiController extends Controller
         }
 
     }
-
     public function get_sub_tag_products(Request $request)
     {
         try {
@@ -522,7 +515,6 @@ class ApiController extends Controller
         }
 
     }
-
     public function load_more(Request $request)
     {
         try {
@@ -715,7 +707,6 @@ class ApiController extends Controller
 
         }
     }
-
     public function add_to_cart_input(Request $request) // FOR PRODUCT DETAIL PAGE ADD BUTTON
     {
         try {
@@ -810,7 +801,6 @@ class ApiController extends Controller
 
         }
     }
-
     public function delete_item(Request $request){  // DELETE 1 ITEM --> qty=1
         try {
             $data = $request->all();
@@ -903,7 +893,6 @@ class ApiController extends Controller
 
         }
     }
-
     public function delete_items_from_cart(Request $request)
     {   // DELETE 1 ITEM --> qty = ALL
         try {
@@ -985,7 +974,6 @@ class ApiController extends Controller
 
         }
     }
-
     public function quick_view($product_code){
         try{
             $product_code = fiki_decrypt($product_code);
@@ -1016,7 +1004,6 @@ class ApiController extends Controller
 
         }
     }
-
     public function add_to_fav(Request $request)
     {
         try {
@@ -1150,7 +1137,6 @@ class ApiController extends Controller
 
         }
     }
-
     public function get_category(Request $request){
         try {
             $data = $request->all();
@@ -1182,7 +1168,6 @@ class ApiController extends Controller
 
         }
     }
-
     public function get_empty_cart(Request $request){  // DELETE 1 ITEM --> qty=1
         try {
             $shopping_cart_products = Session::get('website.shopping_cart.products');
@@ -1313,7 +1298,6 @@ class ApiController extends Controller
             return response(['result' => -500, 'msg' => "Sistem hatası. Lütfen daha sonra tekrar deneyin veya destek ekibimize başvurun."], 500);
         }
     }
-
     public function insert_address(Request $request){
         try {
             $data = $request->only(['user_id','address_type','address_title','address','city','district','neighbourhood','zip']);
@@ -1441,7 +1425,6 @@ class ApiController extends Controller
             return response(['result' => -500, 'msg' => "Sistem hatası. Lütfen daha sonra tekrar deneyin veya destek ekibimize başvurun."], 500);
         }
     }
-
     public function delete_address(Request $request){
         try {
             $data = $request->only(['address_type','record_id']);
@@ -1545,7 +1528,6 @@ class ApiController extends Controller
         }
 
     }
-
     public function get_neighbourhood(Request $request)
     {
         try {

@@ -19,7 +19,7 @@ use App\Models\UserBillingAddress;
 use App\Models\UserShippingAddress;
 use Session;
 
-class AdminWebsiteController extends Controller
+class AdminPanelWebsiteController extends Controller
 {
     public function get_login(){
         return view('admin.partials.login');

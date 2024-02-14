@@ -40,7 +40,7 @@ use Intervention\Image\Facades\Image;
 use Maatwebsite\Excel\Facades\Excel;
 use Session;
 
-class AdminApiController extends Controller
+class AdminPanelApiController extends Controller
 {
     public function admin_login(Request $request){
         try {
