@@ -21,6 +21,7 @@ use App\Models\Tag;
 use App\Models\TagToSubTag;
 use App\Models\User;
 use App\Models\UserBillingAddress;
+use App\Models\UserDiscount;
 use App\Models\UserShippingAddress;
 use App\Rules\CheckIfAdminUserTypeExists;
 use App\Rules\CheckIfPermissionTypeExists;
@@ -2369,7 +2370,6 @@ class AdminApiController extends Controller
 
     }
 
-
     public function update_user_shipping_address(Request $request){
         try {
             $data = $request->all();
@@ -2470,6 +2470,7 @@ class AdminApiController extends Controller
             return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
         }
     }
+
     public function update_user_billing_address(Request $request){
         try {
             $data = $request->all();
@@ -2571,6 +2572,138 @@ class AdminApiController extends Controller
         }
     }
 
+
+    public function insert_user_discount(Request $request){
+        try {
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'user_id' => [
+                    "required",
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'discount_percentage' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+            ]);
+
+            if ($validator->fails()) {
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
+            }
+
+            try {
+
+                UserDiscount::where('user_id',$data['user_id'])->update(['is_deleted'=>true]);
+
+            } catch (QueryException $e) {
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
+            }
+
+            try {
+                UserDiscount::create($data);
+
+            } catch (QueryException $e) {
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
+            }
+
+
+            return response(['result' => 1, 'msg' => 'Kayıt başarıyla eklendi.']);
+
+        } catch (\Throwable $t) {
+            $resp = response(['result'=>-5050,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
+        }
+    }
+
+    public function delete_user_discount(Request $request)
+    {
+        try{
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'user_id' => [
+                    "required",
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'record_id' => [
+                    "required",
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+            ]);
+            if ($validator->fails()) {
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
+            }
+
+            try{
+                UserDiscount::where(['record_id'=>$data['record_id'],'user_id'=>$data['user_id']])->update(['is_deleted'=>true]);
+
+            }catch (QueryException $e) {
+
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
+            }
+
+            return response(['result' => 1, "msg" => "Kayıt başarıyla silindi"], 200);
+
+        } catch (\Throwable $t) {
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController();
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
+        }
+    }
 
     public function fill_datatable(Request $request){
         try {

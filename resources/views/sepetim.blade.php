@@ -112,33 +112,38 @@
                                 <div class="form-default">
                                     <div class="form-group" id="form-group-shipping-address">
                                         <h5 class="control-label pb-1">Teslimat Adresi</h5>
-                                        <select class="form-control" id="shipping_address" name="shipping_address" required="">
-                                            <option value="" >Seçiniz</option>
                                             <?php
                                                 $user = Session::get('website.user');
                                             ?>
                                             @if(count($user['shipping_addresses']) != 0)
-                                                @foreach($user['shipping_addresses'] as $shipping_address)
-                                                    <option class="text-truncate" value="{{$shipping_address->record_id}}">{{$shipping_address->address_title}} ({{$shipping_address->address}})</option>
-                                                @endforeach
+                                                <select class="form-control" id="shipping_address" name="shipping_address" required="">
+                                                    <option value="" >Seçiniz</option>
+                                                    @foreach($user['shipping_addresses'] as $shipping_address)
+                                                        <option class="text-truncate" value="{{$shipping_address->record_id}}">{{$shipping_address->address_title}} ({{$shipping_address->address}})</option>
+                                                    @endforeach
+                                                </select>
+                                            @else
+                                                <button data-target="#NewAddressModal" data-toggle="modal" class="btn btn-border">YENİ ADRES EKLE</button>
                                             @endif
 
-                                        </select>
                                     </div>
                                     <div class="form-group  hide" id="form-group-billing-address">
                                         <h5 class="control-label pb-1">Fatura Adresi</h5>
-                                        <select class="form-control " id="billing_address" name="billing_address" disabled>
-                                            <option value="" >Seçiniz</option>
                                             <?php
                                                 $user = Session::get('website.user');
                                             ?>
                                             @if(count($user['billing_addresses']) != 0)
+                                            <select class="form-control " id="billing_address" name="billing_address" disabled>
+                                                <option value="" >Seçiniz</option>
                                                 @foreach($user['billing_addresses'] as $billing_address)
                                                     <option class="text-truncate"  value="{{$billing_address->record_id}}">{{$billing_address->address_title}} ({{$billing_address->address}})</option>
                                                 @endforeach
+                                            </select>
+                                            @else
+                                                <button data-target="#NewAddressModal" data-toggle="modal" class="btn btn-border">YENİ ADRES EKLE</button>
                                             @endif
 
-                                        </select>
+
                                     </div>
                                     <input type="checkbox" id="check_adr" onclick="checkCheckbox()" checked> Faturamı aynı adrese gönder.</input>
                                     <hr>
@@ -149,7 +154,7 @@
                                     <textarea class="form-control" rows="7"></textarea>
                                 </div>
                             </div>
-                            <div class="tt-shopcart-box tt-boredr-large">
+                            <div class="tt-shopcart-box tt-border-large">
                                 <table class="tt-shopcart-table01" id="shopping-cart-totals">
                                     <tbody>
                                         <tr>
@@ -168,7 +173,7 @@
                                         </tr>
                                     </tfoot>
                                 </table>
-                                <a href="#" class="btn btn-lg"><span class="icon icon-check_circle"></span>SİPARİŞİ TAMAMLA</a>
+                                <a  onclick="PlaceOrder()" class="btn btn-lg"><span class="icon icon-check_circle"></span>SİPARİŞİ TAMAMLA</a>
                             </div>
                         </div>
                     </div>
@@ -187,7 +192,6 @@
             $("#empty-cart").attr("onclick","EmptyShoppingCart()");
             $('#empty-cart-modal-text').text("Sepeti boşaltmak istediğinize emin misiniz?");
         }
-
 
         function EmptyShoppingCart(){
 
@@ -246,6 +250,80 @@
             xhttp.open("POST", "/api/empty-cart", true);
             xhttp.setRequestHeader("Content-Type", "application/json");
             xhttp.send();
+
+        }
+
+
+        function PlaceOrder(){
+
+            var billing_address = document.getElementById('billing_address');
+            if(!billing_address){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Lütfen bir fatura adresi ekleyiniz',
+                    showConfirmButton: false,
+                })
+                return;
+            }
+            if($('#billing_address').find(':selected').val() == null || $('#billing_address').find(':selected').val() == undefined || $('#billing_address').find(':selected').val() == ''){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Lütfen fatura adresini seçiniz',
+                    showConfirmButton: false,
+                })
+                return;
+            }
+            $('#loader').removeClass('hidden');
+            let formData = new FormData();
+
+alert('STOP');
+return;
+
+            formData.append('shipping_address', $('#address_type').find(':selected').val());
+            formData.append('city', $('#city').find(':selected').val());
+            formData.append('district', $('#district').find(':selected').val());
+            formData.append('neighbourhood', $('#neighbourhood').find(':selected').val());
+            fetch('{{route('add_new_address')}}', {
+
+                method: "POST",
+                body: formData
+
+            })
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.result == '1') {
+
+                        $('#loader').addClass('hidden');
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.msg,
+                            showConfirmButton: false,
+                            outsideClick: false,
+                        })
+
+                        window.location.reload();
+                    }else{
+
+                        $('#loader').addClass('hidden');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ups!',
+                            text: data.msg
+                        })
+                    }
+
+
+
+                })
+                .catch((error) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: error,
+                    })
+                });
+
 
         }
     </script>

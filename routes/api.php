@@ -44,8 +44,6 @@ use Illuminate\Support\Facades\Route;
     /** USER  */
     Route::post('/update-user', [ApiController::class, 'update_user']);
     Route::post('/add-new-address', [ApiController::class, 'insert_address'])->name('add_new_address');
-    Route::post('/update-address', [ApiController::class, 'update_address'])->name('update_address');
-Route::post('/update-address-modal', [ApiController::class, 'update_address_modal'])->name('update_address_modal');
     Route::post('/delete-address', [ApiController::class, 'delete_address'])->name('delete_address');
 
     Route::post('/get-city', [ApiController::class, 'get_city']);

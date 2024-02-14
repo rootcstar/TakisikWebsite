@@ -198,7 +198,7 @@
                             </div>
                             <div class="form-group form-group-address">
                                 <label for="address_title" class="control-label">ADRES BAŞLIĞI*</label>
-                                <input type="text" class="form-control form-new-address-fields" id="address_title"   name="address_title"  pattern="[a-zA-Z]{3}[a-zA-Z ]{1,30}" required>
+                                <input type="text" class="form-control form-new-address-fields" id="address_title"   name="address_title"   required>
                             </div>
                             <div class="row">
                                 <div class="form-group form-group-address col-md-6">
@@ -230,7 +230,7 @@
                                 <label for="address" class="control-label">ADRES*</label>
                                 <input type="text" class="form-control form-new-address-fields" id="address" name="address" required>
                             </div>
-                            <input type="text" class=" form-new-address-fields" value="{{Session::get('website.user.user_info')->user_id}}" id="user_id" name="user_id" required hidden>
+                            <input type="text" class=" form-new-address-fields" value="@if(Session::has('website.user')){{Session::get('website.user.user_info')->user_id}}@endif" id="user_id" name="user_id" required hidden>
                             <button  class="btn w-100" onclick="AddNewAddress()">ADRES EKLE</button>
                         </div>
                     </div>
@@ -1067,114 +1067,6 @@
 
     }
 
-
-    function UpdateAddressModal(type,id){
-        $('#update-address-body').html('');
-        $('#update-address-body').append('<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>');
-
-         var data = '{"address_type":"' + type + '","record_id":"' + id + '"}';
-
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-
-            if (this.readyState == 4 && this.status == 200) {
-                let response = JSON.parse(this.responseText);
-
-                if(response['result'] == 1){
-
-                    $('#update-address-body').html('');
-                    $('#update-address-body').append(response['modal']);
-
-                }else{
-                    Swal.fire(response['msg']);
-                }
-            } else if (this.status >= 400 && this.status < 500) {
-                let response = JSON.parse(this.responseText);
-                $('#loader').addClass("hidden");
-                Swal.fire(response['msg']);
-            } else if (this.status >= 500) {
-                let response = JSON.parse(this.responseText);
-                $('#loader').addClass('hidden');
-                Swal.fire(response['msg']);
-
-            }
-            xhttp.onerror = function onError(e) {
-
-                alert('con error:'+e);
-            }
-        };
-
-        xhttp.open("POST", "/api/update-address-modal", true);
-        xhttp.setRequestHeader("Content-Type", "application/json");
-        xhttp.send(data);
-
-    }
-
-    function UpdateAddress(){
-        is_valid = validate_form('update_address_form');
-        if (!is_valid) {
-            return;
-        }
-        $('#loader').removeClass('hidden');
-
-        let formData = new FormData();
-
-        $('.form-update-address-fields').each(function () {
-
-            formData.append($(this).attr('name'),$(this).val());
-
-        });
-        formData.append('address_type', $('#address_type').find(':selected').val());
-        formData.append('city', $('#city').find(':selected').val());
-        formData.append('district', $('#district').find(':selected').val());
-        formData.append('neighbourhood', $('#neighbourhood').find(':selected').val());
-
-
-
-        fetch('{{route('update_address')}}', {
-
-            method: "POST",
-            body: formData
-
-        })
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                if (data.result == '1') {
-
-                    $('#loader').addClass('hidden');
-                    Swal.fire({
-                        icon: 'success',
-                        title: data.msg,
-                        showConfirmButton: false,
-                        outsideClick: false,
-                    })
-
-                    window.location.reload();
-                }else{
-
-                    $('#loader').addClass('hidden');
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Ups!',
-                        text: data.msg
-                    })
-                }
-
-
-
-            })
-            .catch((error) => {
-                Swal.fire({
-                    icon: 'error',
-                    title: error,
-                })
-            });
-
-
-
-    }
 </script>
 
 

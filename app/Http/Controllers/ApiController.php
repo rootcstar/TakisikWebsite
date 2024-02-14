@@ -59,6 +59,15 @@ class ApiController extends Controller
 
         Session::put('website.default_products', $default_products);
 
+
+        $user_fav_products_data = DB::select("SELECT * FROM v_user_favs_with_details WHERE user_id = '" . $user_id . "'");
+        $user_billing_address_data = UserBillingAddress::where(['user_id'=>$user_id,'is_deleted'=>false])->get();
+        $user_shipping_address_data = UserShippingAddress::where(['user_id'=>$user_id,'is_deleted'=>false])->get();
+
+        Session::put('website.user.billing_addresses', $user_billing_address_data);
+        Session::put('website.user.shipping_addresses', $user_shipping_address_data);
+        Session::put('website.user.favorites', $user_fav_products_data);
+
         $data_user_discount = DB::select("SELECT * FROM user_discounts WHERE user_id= '" . $user_id . "'");
         $user_discount = 0;
         if (!empty($data_user_discount)) {
@@ -110,21 +119,15 @@ class ApiController extends Controller
                 return response(['result' => -2, "msg" => 'Lütfen şifrenizi doğru girdiğinizden emin olun.'], 200);
             }
 
-            $user_fav_products_data = DB::select("SELECT * FROM v_user_favs_with_details WHERE user_id = '" . $user_data[0]->user_id . "'");
 
             if($user_data[0]->is_confirmed != 1){
                 return response(['result' => -2, "msg" => "Mailinizi kontrol ederek hesabınızın onaylandığından emin olunuz."], 200);
             }
 
-            $user_billing_address_data = UserBillingAddress::where('user_id',$user_data[0]->user_id)->get();
-            $user_shipping_address_data = UserShippingAddress::where('user_id',$user_data[0]->user_id)->get();
 
 
             Session::put('website.is_login', true);
             Session::put('website.user.user_info', $user_data[0]);
-            Session::put('website.user.billing_addresses', $user_billing_address_data);
-            Session::put('website.user.shipping_addresses', $user_shipping_address_data);
-            Session::put('website.user.favorites', $user_fav_products_data);
             Session::put('website.shopping_cart.products', array());
             $this->set_sessions_for_shopping($user_data[0]->user_id);
 
@@ -1385,7 +1388,7 @@ class ApiController extends Controller
 
                     UserShippingAddress::create($updated_data);
 
-                    $user_shipping_address_data = UserShippingAddress::where('user_id',$data['user_id'])->get();
+                    $user_shipping_address_data = UserShippingAddress::where(['user_id'=>$data['user_id'],'is_deleted'=>false])->get();
                     Session::put('website.user.shipping_addresses', $user_shipping_address_data);
 
                 } catch (QueryException $e) {
@@ -1408,7 +1411,7 @@ class ApiController extends Controller
 
                     UserBillingAddress::create($updated_data);
 
-                    $user_billing_address_data = UserBillingAddress::where('user_id',$data['user_id'])->get();
+                    $user_billing_address_data = UserBillingAddress::where(['user_id'=>$data['user_id'],'is_deleted'=>false])->get();
                     Session::put('website.user.billing_addresses', $user_billing_address_data);
                 } catch (QueryException $e) {
                     $response = response(['result' => -500, 'msg' => "Hata oluştu. Lütfen daha sonra tekrar deneyin","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
@@ -1424,214 +1427,6 @@ class ApiController extends Controller
 
 
             return response(['result' => 1, 'msg' => 'Adres Eklendi'],200);
-
-        } catch (\Throwable $t) {
-            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
-            $request = new Request();
-            $request['log_type'] = 'Takisik_Website_500_error';
-            $request['data'] = $resp->getContent();
-            $maintenance_controller = new GeneralController;
-            $maintenance_controller->send_data_to_maintenance($request);
-            if(env('APP_ENV') == 'local'){
-                return $resp;
-            }
-            return response(['result' => -500, 'msg' => "Sistem hatası. Lütfen daha sonra tekrar deneyin veya destek ekibimize başvurun."], 500);
-        }
-    }
-    public function update_address(Request $request){
-        try {
-            $data = $request->only(['user_id','record_id','address_type','address_title','address','city','district','neighbourhood','zip']);
-            $validator = Validator::make($data, [
-                'user_id' => [
-                    "required",
-                    "integer",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-                'record_id' => [
-                    "required",
-                    "integer",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-                'address_type' => [
-                    "required",
-                    "integer",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-                'address_title' => [
-                    "required",
-                    "string",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-                'address' => [
-                    "required",
-                    "string",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-                'city' => [
-                    "required",
-                    "string",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-                'district' => [
-                    "required",
-                    "string",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-                'neighbourhood' => [
-                    "required",
-                    "string",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-                'zip' => [
-                    "required",
-                    'integer',
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-            ]);
-
-            if ($validator->fails()) {
-                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
-                $request = new Request();
-                $request['log_type'] = 'Takisik_Website_validation_error';
-                $request['data'] = $response->getContent();
-                $maintenance_controller = new GeneralController();
-                $maintenance_controller->send_data_to_maintenance($request);
-                if(env('APP_ENV') == 'local'){
-                    return $response;
-                }
-                return response(['result' => -1, 'msg' => 'Hatalı giriş. Lütfen tekrar deneyin'], 403);
-            }
-
-
-            if($data['address_type'] == 1){ //SHIPPING ADDRESS
-                try {
-                    $updated_data = $data;
-                    unset($updated_data['user_id']);
-                    unset($updated_data['record_id']);
-                    UserShippingAddress::where(['user_id',$data['user_id'],
-                                                    'record_id',$data['record_id']])->update($data);
-
-                    $user_shipping_address_data = UserShippingAddress::where('user_id',$data['user_id'])->get();
-                    Session::put('website.user.shipping_addresses', $user_shipping_address_data);
-
-                } catch (QueryException $e) {
-                    $response = response(['result' => -500, 'msg' => "Hata oluştu. Lütfen daha sonra tekrar deneyin","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
-                    $request = new Request();
-                    $request['log_type'] = 'Takisik_Website_query_error';
-                    $request['data'] = $response->getContent();
-                    $maintenance_controller = new GeneralController();
-                    $maintenance_controller->send_data_to_maintenance($request);
-                    return $response;
-                }
-            }
-
-            if($data['address_type'] == 2){ //BILLING ADDRESS
-                try {
-                    $updated_data = $data;
-                    unset($updated_data['user_id']);
-                    unset($updated_data['record_id']);
-                    UserBillingAddress::where(['user_id',$data['user_id'],
-                        'record_id',$data['record_id']])->update($data);
-
-                    $user_billing_address_data = UserBillingAddress::where('user_id',$data['user_id'])->get();
-                    Session::put('website.user.billing_addresses', $user_billing_address_data);
-                } catch (QueryException $e) {
-                    $response = response(['result' => -500, 'msg' => "Hata oluştu. Lütfen daha sonra tekrar deneyin","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
-                    $request = new Request();
-                    $request['log_type'] = 'Takisik_Website_query_error';
-                    $request['data'] = $response->getContent();
-                    $maintenance_controller = new GeneralController();
-                    $maintenance_controller->send_data_to_maintenance($request);
-                    return $response;
-                }
-            }
-
-
-
-            return response(['result' => 1, 'msg' => 'Adres Eklendi'],200);
-
-        } catch (\Throwable $t) {
-            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
-            $request = new Request();
-            $request['log_type'] = 'Takisik_Website_500_error';
-            $request['data'] = $resp->getContent();
-            $maintenance_controller = new GeneralController;
-            $maintenance_controller->send_data_to_maintenance($request);
-            if(env('APP_ENV') == 'local'){
-                return $resp;
-            }
-            return response(['result' => -500, 'msg' => "Sistem hatası. Lütfen daha sonra tekrar deneyin veya destek ekibimize başvurun."], 500);
-        }
-    }
-    public function update_address_modal(Request $request){
-        try {
-            $data = $request->only(['record_id','address_type']);
-            $validator = Validator::make($data, [
-                'record_id' => [
-                    "required",
-                    "string",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-                'address_type' => [
-                    "required",
-                    "integer",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
-            ]);
-
-            if ($validator->fails()) {
-                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
-                $request = new Request();
-                $request['log_type'] = 'Takisik_Website_validation_error';
-                $request['data'] = $response->getContent();
-                $maintenance_controller = new GeneralController();
-                $maintenance_controller->send_data_to_maintenance($request);
-                if(env('APP_ENV') == 'local'){
-                    return $response;
-                }
-                return response(['result' => -1, 'msg' => 'Hatalı giriş. Lütfen tekrar deneyin'], 403);
-            }
-
-            $record_id = fiki_decrypt($data['record_id']);
-
-            if($data['address_type'] == 1){ //SHIPPING ADDRESS
-                try {
-                    $address_data = UserShippingAddress::where('record_id',$record_id)->get();
-                    $address_data[0]['address_type'] = 1;
-
-
-                } catch (QueryException $e) {
-                    $response = response(['result' => -500, 'msg' => "Hata oluştu. Lütfen daha sonra tekrar deneyin","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
-                    $request = new Request();
-                    $request['log_type'] = 'Takisik_Website_query_error';
-                    $request['data'] = $response->getContent();
-                    $maintenance_controller = new GeneralController();
-                    $maintenance_controller->send_data_to_maintenance($request);
-                    return $response;
-                }
-            }
-
-            if($data['address_type'] == 2){ //BILLING ADDRESS
-                try {
-                    $address_data = UserBillingAddress::where('record_id',$record_id)->get();
-                    $address_data[0]['address_type'] = 2;
-
-                } catch (QueryException $e) {
-                    $response = response(['result' => -500, 'msg' => "Hata oluştu. Lütfen daha sonra tekrar deneyin","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
-                    $request = new Request();
-                    $request['log_type'] = 'Takisik_Website_query_error';
-                    $request['data'] = $response->getContent();
-                    $maintenance_controller = new GeneralController();
-                    $maintenance_controller->send_data_to_maintenance($request);
-                    return $response;
-                }
-            }
-
-
-
-            $update_address_modal = view('partials.update-address-modal', ["data" => $address_data[0]])->render();
-
-            return response(['result' => 1, 'modal' => $update_address_modal],200);
 
         } catch (\Throwable $t) {
             $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
@@ -1682,9 +1477,9 @@ class ApiController extends Controller
 
             if($data['address_type'] == 1){ //SHIPPING ADDRESS
                 try {
-                    UserShippingAddress::where('record_id',$record_id)->delete();
+                    UserShippingAddress::where('record_id',$record_id)->update(['is_deleted'=>true]);
 
-                    $user_shipping_address_data = UserShippingAddress::where('user_id',$user_id)->get();
+                    $user_shipping_address_data = UserShippingAddress::where(['user_id'=>$user_id,'is_deleted'=>false])->get();
                     Session::put('website.user.shipping_addresses', $user_shipping_address_data);
 
                 } catch (QueryException $e) {
@@ -1700,9 +1495,9 @@ class ApiController extends Controller
 
             if($data['address_type'] == 2){ //BILLING ADDRESS
                 try {
-                    UserBillingAddress::where('record_id',$record_id)->delete();
+                    UserBillingAddress::where('record_id',$record_id)->update(['is_deleted'=>true]);
 
-                    $user_billing_address_data = UserBillingAddress::where('user_id',$user_id)->get();
+                    $user_billing_address_data = UserBillingAddress::where(['user_id'=>$user_id,'is_deleted'=>false])->get();
                     Session::put('website.user.billing_addresses', $user_billing_address_data);
                 } catch (QueryException $e) {
                     $response = response(['result' => -500, 'msg' => "Hata oluştu. Lütfen daha sonra tekrar deneyin","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);

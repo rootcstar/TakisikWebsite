@@ -236,14 +236,12 @@ class AdminWebsiteController extends Controller
         ];
         $billing_address_table_name = 'user_billing_addresses';
 
-        $user_cards_keys = [
+
+        $user_discount_keys = [
             'record_id',
-            'name_on_card',
-            'card_type',
-            'last_four_digit',
-            'is_active',
+            'discount_percentage',
         ];
-        $user_cards_table_name = 'user_cards';
+        $user_discount_table_name = 'user_discounts';
 
         if($data == null || empty($data)){
             return view('admin.errors.404');
@@ -253,8 +251,8 @@ class AdminWebsiteController extends Controller
             ->with('shipping_address_keys',$shipping_address_keys)
             ->with('billing_address_table_name',$billing_address_table_name)
             ->with('billing_address_keys',$billing_address_keys)
-            ->with('user_cards_table_name',$user_cards_table_name)
-            ->with('user_cards_keys',$user_cards_keys)
+            ->with('user_discount_table_name',$user_discount_table_name)
+            ->with('user_discount_keys',$user_discount_keys)
             ->with('data',$data);
     }
     public function get_update_customer_shipping_address($pri_id){

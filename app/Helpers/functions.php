@@ -101,6 +101,7 @@ function LanguageChange($value){
                     "Name On Card"=> "Kart Üstündeki İsim",
                     "Card Type"=> "Kart Türü",
                     "Last Four Digit"=> "Son 4 Hane",
+                    "Discount Percentage"=> "İndirim (%)",
                     );
 
     if(Session::get('admin.lang') == 'tr'){

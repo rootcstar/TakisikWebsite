@@ -13,6 +13,7 @@
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#shipping-info" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">Kargo Adresleri</span></a> </li>
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#billing-info" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">Fatura Adresleri</span></a> </li>
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#card-info" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">Kart Bilgileri</span></a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#discount-info" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">İndirim Bilgileri</span></a> </li>
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content tab-content-border">
@@ -135,13 +136,34 @@
                             </tfoot>
                         </table>
                     </div>
-                    <div class="tab-pane p-20" id="card-info" role="tabpanel">
-                        <table id="{{$user_cards_table_name}}" class="table table-striped table-bordered w-100" >
+
+                    <div class="tab-pane p-20" id="discount-info" role="tabpanel">
+                        <div class="card card-default">
+                            <div class="card-body">
+                                <div class="tab-content" id="custom-tabs-above-tabContent">
+                                    <div class="tab-pane fade show active" id="tagstab" role="tabpanel" aria-labelledby="tags-tab">
+                                        <form class="row g-3 needs-validation" id="user_discount_form" novalidate>
+                                            <div class="col-md-6 form-group">
+                                                <div class="form-floating">
+                                                    <label >İndirim Oranı (%)</label>
+                                                    <input id="discount_percentage" type="number" class="form-control" placeholder="Lütfen doldurunuz" required>
+                                                    <input class="form-control input-fields hide" id="user_id" value="{{$data['user_id']}}" readonly>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6" style="top: 28px;text-align: justify;">
+                                                <div class="btn btn-primary" id="user_discount_form_submit">Yeni Ekle</div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        <table id="{{$user_discount_table_name}}" class="table table-striped table-bordered w-100" >
                             <thead>
                             <tr>
                                 <th>Güncelle</th>
-                                @foreach($user_cards_keys as $user_cards_key)
-                                    <th>{{ LanguageChange(ucwords(str_replace("_"," ",$user_cards_key))) }}</th>
+                                @foreach($user_discount_keys as $user_discount_key)
+                                    <th>{{ LanguageChange(ucwords(str_replace("_"," ",$user_discount_key))) }}</th>
                                 @endforeach
                                 <th>Sil</th>
                             </tr>
@@ -153,8 +175,8 @@
                             <tfoot>
                             <tr>
                                 <th>Güncelle</th>
-                                @foreach($user_cards_keys as $user_cards_key)
-                                    <th>{{ LanguageChange(ucwords(str_replace("_"," ",$user_cards_key))) }}</th>
+                                @foreach($user_discount_keys as $user_discount_key)
+                                    <th>{{ LanguageChange(ucwords(str_replace("_"," ",$user_discount_key))) }}</th>
                                 @endforeach
                                 <th>Sil</th>
                             </tr>
@@ -222,6 +244,70 @@
                     }).then((result) => {
                         if (result.isDismissed || result.isConfirmed) {
                             window.location = '{{route('admin_panel_customers')}}';
+                        }
+
+                    })
+
+                })
+                .catch((error) => {
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: error,
+                    })
+
+                });
+
+
+        });
+
+        $('#user_discount_form_submit').on('click', function () {
+
+            is_valid = validate_form('user_discount_form');
+            if (!is_valid) {
+                return;
+            }
+
+            show_loader();
+            let formData = new FormData();
+
+            formData.append('discount_percentage', $('#discount_percentage').val());
+            formData.append('user_id', $('#user_id').val());
+
+
+            fetch('{{ route('new_user_discount_api') }}', {
+
+                method: "POST",
+                body: formData
+
+            })
+                .then(response => {
+                    if (response.status == 301) {
+                        window.location = '{{route('admin_panel_logout')}}';
+                        throw new Error('Logging out...');
+                    }
+                    return response.json();
+
+                })
+                .then(data => {
+
+                    if (data.result != '1') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: data.msg,
+                            confirmButtonColor: '#367ab2',
+                        })
+                        return;
+                    }
+
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: data.msg,
+                        confirmButtonColor: '#367ab2',
+                    }).then((result) => {
+                        if (result.isDismissed || result.isConfirmed) {
+                            window.location.reload();
                         }
 
                     })
@@ -383,8 +469,8 @@
 
         $(document).ready(function () {
 
-            var table_name = "user_cards"
-            var where = "user_id = {{$data['user_id']}}"
+            var table_name = "user_discounts"
+            var where = "user_id = {{$data['user_id']}} AND is_deleted = false"
             var post_or_get = "GET"
             var primary_key = 'user_id'
 
@@ -393,7 +479,7 @@
                 "post_or_get="+post_or_get+"&&"+
                 "primary_key="+primary_key;
 
-            $('#{{$user_cards_table_name}}').DataTable({
+            $('#{{$user_discount_table_name}}').DataTable({
                 "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
                 "serverSide": true,
                 "processing": true,
@@ -417,7 +503,7 @@
                 ], "searching": true,
                 'fnCreatedRow': function (nRow, aData, iDataIndex) {
 
-                    $(nRow).attr('id', '{{$user_cards_table_name}}_' + aData.user_id); // or whatever you choose to set as the id
+                    $(nRow).attr('id', '{{$user_discount_table_name}}_' + aData.user_id); // or whatever you choose to set as the id
                 },
                 "ajax": "{{route('fill_datatable_api')}}?" +query_string+ "",
                 "columnDefs": [{
@@ -436,15 +522,12 @@
                         }
                     },
                     {"data": "record_id"},
-                    {"data": "name_on_card"},
-                    {"data": "card_type"},
-                    {"data": "last_four_digit"},
-                    {"data": "is_active"},
+                    {"data": "discount_percentage"},
                     {
                         "data":null,
                         "className": 'text-center ',
                         mRender: function (data, type, row) {
-                            return '<button type="button" class="btn btn-danger" onclick=""><i class="fas fa-trash"></i></button>'
+                            return '<button type="button" class="btn btn-danger" onclick="DeleteDiscount('+row.record_id+','+row.user_id+')"><i class="fas fa-trash"></i></button>'
                         }
                     },
 
@@ -452,6 +535,66 @@
                 ]
             });
         });
+
+        function DeleteDiscount(record_id,user_id){
+
+            Swal.fire({
+                title: 'Silmek istediğinizden emin misiniz?',
+                showCancelButton: true,
+                confirmButtonText: 'Sil',
+                cancelButtonText: 'İptal',
+                confirmButtonColor: '#367ab2',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    show_loader();
+
+                    let formData = new FormData();
+
+                    formData.append('record_id', record_id);
+                    formData.append('user_id', user_id);
+
+                    fetch('{{ route('delete_user_discount_api') }}', {
+                        method: "POST",
+                        body: formData
+                    })
+                        .then(response => {
+                            if (response.status == 301) {
+                                window.location = '{{route('admin_panel_logout')}}';
+                                throw new Error('Logging out...');
+                            }
+                            return response.json();
+
+                        })
+                        .then(data => {
+
+                            if (data.result != '1') {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: data.msg,
+                                    confirmButtonColor: '#367ab2',
+                                })
+                                return;
+                            }
+                            Swal.fire({
+                                icon: 'success',
+                                title: data.msg,
+                                confirmButtonColor: '#367ab2',
+                            })
+                            window.location.reload();
+
+                        })
+                        .catch((error) => {
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: error,
+                            })
+                        });
+
+                }
+            })
+
+        }
     </script>
 @endsection
 
