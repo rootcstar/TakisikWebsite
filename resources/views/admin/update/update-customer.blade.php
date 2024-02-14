@@ -288,8 +288,8 @@
                         "data":null,
                         "className": 'text-center ',
                         mRender: function (data, type, row) {
-                            return '<a  target="_blank" href="/admin/customers/update/'+row.user_id+'">' +
-                                '<button type="button" class="btn btn-warning" >Güncelle</button>'
+                            return '<a  target="_blank" href="/admin/customers/shipping-address/update/'+row.record_id+'">' +
+                                '<button type="button" class="btn btn-warning" onclick="">Güncelle</button>'
                             '</a>'
                         }
                     },
@@ -359,7 +359,7 @@
                         "data":null,
                         "className": 'text-center ',
                         mRender: function (data, type, row) {
-                            return '<a  target="_blank" href="/admin/customers/update/'+row.user_id+'">' +
+                            return '<a  target="_blank" href="/admin/customers/billing-address/update/'+row.record_id+'">' +
                                 '<button type="button" class="btn btn-warning" >Güncelle</button>'
                             '</a>'
                         }

@@ -71,6 +71,9 @@ Route::middleware([AdminLoginControlMiddleware::class])->group(function() {
     Route::get('/admin/customers/new', [AdminWebsiteController::class, 'get_new_user'])->name('admin_panel_new_user');
     Route::get('/admin/customers/update/{pri_id}', [AdminWebsiteController::class, 'get_update_customer']);
 
+    Route::get('/admin/customers/shipping-address/update/{pri_id}', [AdminWebsiteController::class, 'get_update_customer_shipping_address']);
+    Route::get('/admin/customers/billing-address/update/{pri_id}', [AdminWebsiteController::class, 'get_update_customer_billing_address']);
+
     Route::get('/admin/products', [AdminWebsiteController::class, 'get_products'])->name('admin_panel_products');
     Route::get('/admin/products/new', [AdminWebsiteController::class, 'get_new_product'])->name('admin_panel_new_product');
     Route::get('/admin/products/update/{pri_id}', [AdminWebsiteController::class, 'get_update_product']);

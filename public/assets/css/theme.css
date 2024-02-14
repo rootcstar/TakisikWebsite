@@ -10407,7 +10407,7 @@ header .tt-dropdown-obj .tt-dropdown-toggle:before {
         top: 0;
         left: 0;
         width: 100%;
-        background: #151716;
+        background: #202020;
         display: block;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.08);
         -webkit-transform: translate(0, -100%);
@@ -10558,7 +10558,7 @@ header .tt-dropdown-obj .tt-dropdown-toggle:before {
         top: 0;
         left: 0;
         height: 100%;
-        background: #151716;
+        background: #202020;
         margin-left: -20px;
         margin-right: -20px; }
     header .tt-search .tt-dropdown-menu .container {
@@ -11123,9 +11123,9 @@ html.ie .tt-desctop-parent-menu .dropdown-menu {
 .tt-desktop-header {
     position: relative;
     z-index: 8;
-    background-color:#151716;
-    box-shadow:0 0px 6px #000000;
-    border-bottom: 1px solid #FF0080;}
+    background-color:#202020;
+    box-shadow:0px 1px 4px 1px #202020;
+ /*   border-bottom: 1px solid #FF0080;*/}
 @media (max-width: 1024px) {
     .tt-desktop-header {
         display: none; } }
@@ -11893,7 +11893,7 @@ body:not(.touch-device) .tt-menu-toggle:not(.stylization-02):hover i {
         display: none; }
     .tt-mobile-header {
         display: block;
-        background-color:#151716;
+        background-color:#202020;
         box-shadow: 0 0px 37px #d3d3d3;
         border-bottom: 1px solid #FF0080;} }
 
@@ -11988,7 +11988,7 @@ body:not(.touch-device) .tt-menu-toggle:not(.stylization-02):hover i {
     top: 0; }
 @media (max-width: 1024px) {
     .stuck.tt-stuck-nav {
-        background: #151716; }
+        background: #202020; }
     .stuck.tt-stuck-nav .tt-search .tt-dropdown-menu .search-results {
         top: 23px;
         border-top: 1px solid #e9e7e7;
@@ -12007,7 +12007,7 @@ body:not(.touch-device) .tt-menu-toggle:not(.stylization-02):hover i {
         margin-right: -20px; } }
 @media (min-width: 1025px) {
     .stuck.tt-stuck-nav {
-        background: #151716; } }
+        background: #202020; } }
 
 /* tt-promo-02 (header banners) */
 .tt-promo-02 {
@@ -13537,7 +13537,7 @@ footer .tt-newsletter form label.error:after {
         display: none  !important; } }
 @media (min-width: 790px) {
     footer .tt-color-scheme-01 {
-        background: #151716;
+        background: #202020;
         color: #777777; }
     footer .tt-color-scheme-01 .tt-collapse-title {
         color: white; }
@@ -13722,7 +13722,7 @@ footer .tt-newsletter form label.error:after {
 @media (max-width: 789px) {
 
     footer {
-        background: #151716;
+        background: #202020;
         display: -ms-flexbox;
         display: -webkit-flex;
         display: flex;
@@ -13743,7 +13743,7 @@ footer .tt-newsletter form label.error:after {
         align-items: flex-start; }
     footer .tt-footer-col,
     footer .tt-footer-center {
-        background: #151716;
+        background: #202020;
         color: #888888;
         padding: 0px;
         width: 100%; }
@@ -25645,7 +25645,7 @@ html.touch-device {
     overflow-x: hidden; }
 
 body {
-    font-family: "Hind", sans-serif;
+    font-family: "Montserrat", sans-serif;
     font-size: 14px;
     line-height: 22px;
     font-weight: 300;

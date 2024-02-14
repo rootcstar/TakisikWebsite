@@ -6,12 +6,17 @@ use App\Http\Controllers\Controller;
 
 use App\Models\AdminUser;
 use App\Models\AdminUserType;
+use App\Models\City;
+use App\Models\District;
+use App\Models\Neighbourhood;
 use App\Models\PermissionType;
 use App\Models\Product;
 use App\Models\ProductModelAndImage;
 use App\Models\SubTag;
 use App\Models\Tag;
 use App\Models\User;
+use App\Models\UserBillingAddress;
+use App\Models\UserShippingAddress;
 use Session;
 
 class AdminWebsiteController extends Controller
@@ -250,9 +255,37 @@ class AdminWebsiteController extends Controller
             ->with('billing_address_keys',$billing_address_keys)
             ->with('user_cards_table_name',$user_cards_table_name)
             ->with('user_cards_keys',$user_cards_keys)
-            ->with('data',$data)
-            ->with('title','Kullanıcı Güncelle')
-            ->with('update_button_name','Güncelle');
+            ->with('data',$data);
+    }
+    public function get_update_customer_shipping_address($pri_id){
+
+        $data = UserShippingAddress::where('record_id',$pri_id)->first();
+
+        if($data == null || empty($data)){
+            return view('admin.errors.404');
+        }
+
+        $data['city_id'] = City::where('city_name_uppercase',$data['city'])->value('city_id');
+        $data['district_id'] = District::where('district_name_uppercase',$data['district'])->value('district_id');
+        $data['neighbourhood_id'] = Neighbourhood::where('neighbourhood_name',$data['neighbourhood'])->value('neighbourhood_id');
+
+        return view('admin.update.update-shipping-address')
+            ->with('data',$data);
+    }
+    public function get_update_customer_billing_address($pri_id){
+
+        $data = UserBillingAddress::where('record_id',$pri_id)->first();
+
+        if($data == null || empty($data)){
+            return view('admin.errors.404');
+        }
+
+        $data['city_id'] = City::where('city_name_uppercase',$data['city'])->value('city_id');
+        $data['district_id'] = District::where('district_name_uppercase',$data['district'])->value('district_id');
+        $data['neighbourhood_id'] = Neighbourhood::where('neighbourhood_name',$data['neighbourhood'])->value('neighbourhood_id');
+
+        return view('admin.update.update-billing-address')
+            ->with('data',$data);
     }
 
     public function get_products(){

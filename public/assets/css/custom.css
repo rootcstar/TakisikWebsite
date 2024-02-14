@@ -7,7 +7,7 @@ footer {
      color: #0a0e14 !important;
     user-select: none;
 
-     font-family: "Rubik", sans-serif;
+     font-family: "Montserrat", sans-serif !important;
  }
 
 /*** LOADING SPINNER ***/
@@ -378,6 +378,7 @@ header .tt-cart .tt-cart-layout .tt-cart-content .tt-cart-list .tt-item-close .t
 .modal .modal-header .close{
     color: #FF0080;
 }
+
 @media (min-width: 1025px) {
     .modal .modal-header .close {
         right: 0px;

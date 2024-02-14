@@ -39,6 +39,10 @@ use Illuminate\Support\Facades\Route;
     Route::post('/user/update', [AdminApiController::class, 'update_user'])->name('update_user_api');
     Route::post('/user/delete', [AdminApiController::class, 'delete_user'])->name('delete_user_api');
 
+
+        Route::post('/user/shipping-address/update', [AdminApiController::class, 'update_user_shipping_address'])->name('update_user_shipping_address_api');
+        Route::post('/user/billing-address/update', [AdminApiController::class, 'update_user_billing_address'])->name('update_user_billing_address_api');
+
     Route::post('/product/create', [AdminApiController::class, 'insert_product'])->name('new_product_api');
     Route::post('/product/update', [AdminApiController::class, 'update_product'])->name('update_product_api');
     Route::post('/product/update/model', [AdminApiController::class, 'insert_product_model_and_image'])->name('new_product_model_and_image_api');

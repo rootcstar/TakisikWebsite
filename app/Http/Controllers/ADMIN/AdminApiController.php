@@ -8,6 +8,9 @@ use App\Imports\ImportProducts;
 use App\Models\AdminUser;
 use App\Models\AdminUserType;
 use App\Models\AdminUserTypePermission;
+use App\Models\City;
+use App\Models\District;
+use App\Models\Neighbourhood;
 use App\Models\PermissionType;
 use App\Models\Product;
 use App\Models\ProductImage;
@@ -17,6 +20,8 @@ use App\Models\SubTag;
 use App\Models\Tag;
 use App\Models\TagToSubTag;
 use App\Models\User;
+use App\Models\UserBillingAddress;
+use App\Models\UserShippingAddress;
 use App\Rules\CheckIfAdminUserTypeExists;
 use App\Rules\CheckIfPermissionTypeExists;
 use App\Rules\Exist_Already_Email_AdminUser;
@@ -2362,6 +2367,208 @@ class AdminApiController extends Controller
 
         }
 
+    }
+
+
+    public function update_user_shipping_address(Request $request){
+        try {
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'user_id' => [
+                    "required",
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'record_id' => [
+                    "required",
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'address_title' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'address' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'city' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'district' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'neighbourhood' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'zip' => [
+                    "required",
+                    'integer',
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+            ]);
+
+            if ($validator->fails()) {
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
+            }
+
+            $city_name = City::where('city_id',$data['city'])->value('city_name_uppercase');
+            $district_name = District::where('district_id',$data['district'])->value('district_name_uppercase');
+            $neighbourhood_name = Neighbourhood::where('neighbourhood_id',$data['neighbourhood'])->value('neighbourhood_name');
+
+
+            try {
+                $updated_data = $data;
+                $updated_data['city'] = $city_name;
+                $updated_data['district'] = $district_name;
+                $updated_data['neighbourhood'] = $neighbourhood_name;
+                unset($updated_data['user_id']);
+                unset($updated_data['record_id']);
+                UserShippingAddress::where('user_id',$data['user_id'])
+                    ->where('record_id',$data['record_id'])->update($updated_data);
+
+            } catch (QueryException $e) {
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
+            }
+
+
+            return response(['result' => 1, 'msg' => 'Kayıt başarıyla güncellendi.']);
+
+        } catch (\Throwable $t) {
+            $resp = response(['result'=>-5050,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
+        }
+    }
+    public function update_user_billing_address(Request $request){
+        try {
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'user_id' => [
+                    "required",
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'record_id' => [
+                    "required",
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'address_title' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'address' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'city' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'district' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'neighbourhood' => [
+                    "required",
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'zip' => [
+                    "required",
+                    'integer',
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+            ]);
+
+            if ($validator->fails()) {
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Validation Error. Please contact developer.'], 403);
+            }
+
+            $city_name = City::where('city_id',$data['city'])->value('city_name_uppercase');
+            $district_name = District::where('district_id',$data['district'])->value('district_name_uppercase');
+            $neighbourhood_name = Neighbourhood::where('neighbourhood_id',$data['neighbourhood'])->value('neighbourhood_name');
+
+
+            try {
+                $updated_data = $data;
+                $updated_data['city'] = $city_name;
+                $updated_data['district'] = $district_name;
+                $updated_data['neighbourhood'] = $neighbourhood_name;
+                unset($updated_data['user_id']);
+                unset($updated_data['record_id']);
+                UserBillingAddress::where('user_id',$data['user_id'])
+                    ->where('record_id',$data['record_id'])->update($updated_data);
+
+            } catch (QueryException $e) {
+                $response = response(['result' => -500, 'msg' => "Something went wrong ","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Admin_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
+            }
+
+
+            return response(['result' => 1, 'msg' => 'Kayıt başarıyla güncellendi.']);
+
+        } catch (\Throwable $t) {
+            $resp = response(['result'=>-5050,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Admin_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Something went wrong. Contact with developer. "], 500);
+        }
     }
 
 

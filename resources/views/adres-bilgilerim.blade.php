@@ -33,8 +33,7 @@
                                                             <span class="card-text-address mt-0">{{$billing_address->address}}</span>
                                                             <span class="card-text mt-0">{{$billing_address->district}}/{{$billing_address->city}}</span>
                                                             <div class="tt-shop-btn">
-                                                                <btn class="btn-link" data-target="#UpdateAddressModal" data-toggle="modal" onclick="UpdateAddressModal('2','{{fiki_encrypt($billing_address->record_id)}}')"><i class="fa fa-pen"></i>DÜZENLE</btn>
-                                                                <btn class="btn-link" data-toggle="modal" data-target="#DeleteAddressModal" onclick="DeleteAddressModal('2','{{fiki_encrypt($billing_address->record_id)}}')" ><i class="fa fa-trash"></i>SİL</btn>
+                                                               <btn class="btn-link" data-toggle="modal" data-target="#DeleteAddressModal" onclick="DeleteAddressModal('2','{{fiki_encrypt($billing_address->record_id)}}')" ><i class="fa fa-trash"></i>SİL</btn>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -53,7 +52,6 @@
                                                             <span class="card-text-address mt-0">{{$shipping_address->address}}</span>
                                                             <span class="card-text mt-0">{{$shipping_address->district}}/{{$shipping_address->city}}</span>
                                                             <div class="tt-shop-btn">
-                                                                <btn class="btn-link" data-target="#UpdateAddressModal" data-toggle="modal" onclick="UpdateAddressModal('1','{{fiki_encrypt($shipping_address->record_id)}}')"><i class="fa fa-pen"></i>DÜZENLE</btn>
                                                                 <btn class="btn-link" data-toggle="modal" data-target="#DeleteAddressModal" onclick="DeleteAddressModal('1','{{fiki_encrypt($shipping_address->record_id)}}')" ><i class="fa fa-trash"></i>SİL</btn>
                                                             </div>
                                                         </div>

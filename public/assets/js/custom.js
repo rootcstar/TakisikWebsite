@@ -133,3 +133,17 @@ $(document).ready(function() {
         xhttp.send(data);
     }
 });
+
+function checkCheckbox() {
+    var checkbox = document.getElementById("check_adr");
+    if (checkbox.checked) {
+        $('#form-group-billing-address').addClass('hide');
+        $('#billing_address').prop('disabled','disabled');
+        $('#billing_address').prop('required','');
+    } else {
+
+        $('#form-group-billing-address').removeClass('hide');
+        $('#billing_address').prop('disabled','');
+        $('#billing_address').prop('required','required');
+    }
+}

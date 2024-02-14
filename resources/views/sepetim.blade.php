@@ -98,7 +98,7 @@
                             </table>
                             <div class="tt-shopcart-btn">
                                 <div class="col-left">
-                                    <a class="btn-link" href="/alisveris"><i class="icon-e-19"></i>ALIŞVERİŞE DEVAM ET</a>
+                                    <a class="btn-link" href="/kategoriler"><i class="icon-e-19"></i>ALIŞVERİŞE DEVAM ET</a>
                                 </div>
                                 <div class="col-right">
                                     <a class="btn-link" data-toggle="modal" data-target="#EmptyCartModal" onclick="EmptyShoppingCartModal()"><i class="icon-h-02"></i>SEPETİ TEMİZLE</a>
@@ -109,13 +109,45 @@
                     <div class="col-sm-12 col-xl-4">
                         <div class="tt-shopcart-wrapper">
                             <div class="tt-shopcart-box">
-                                <h4 class="tt-title">
-                                    NOT
-                                </h4>
-                                <p>Siparişiniz ile ilgili eklemek istediklerinizi aşağıya ekleyibilirsiniz.</p>
-                                <form class="form-default">
+                                <div class="form-default">
+                                    <div class="form-group" id="form-group-shipping-address">
+                                        <h5 class="control-label pb-1">Teslimat Adresi</h5>
+                                        <select class="form-control" id="shipping_address" name="shipping_address" required="">
+                                            <option value="" >Seçiniz</option>
+                                            <?php
+                                                $user = Session::get('website.user');
+                                            ?>
+                                            @if(count($user['shipping_addresses']) != 0)
+                                                @foreach($user['shipping_addresses'] as $shipping_address)
+                                                    <option class="text-truncate" value="{{$shipping_address->record_id}}">{{$shipping_address->address_title}} ({{$shipping_address->address}})</option>
+                                                @endforeach
+                                            @endif
+
+                                        </select>
+                                    </div>
+                                    <div class="form-group  hide" id="form-group-billing-address">
+                                        <h5 class="control-label pb-1">Fatura Adresi</h5>
+                                        <select class="form-control " id="billing_address" name="billing_address" disabled>
+                                            <option value="" >Seçiniz</option>
+                                            <?php
+                                                $user = Session::get('website.user');
+                                            ?>
+                                            @if(count($user['billing_addresses']) != 0)
+                                                @foreach($user['billing_addresses'] as $billing_address)
+                                                    <option class="text-truncate"  value="{{$billing_address->record_id}}">{{$billing_address->address_title}} ({{$billing_address->address}})</option>
+                                                @endforeach
+                                            @endif
+
+                                        </select>
+                                    </div>
+                                    <input type="checkbox" id="check_adr" onclick="checkCheckbox()" checked> Faturamı aynı adrese gönder.</input>
+                                    <hr>
+                                    <h4 class="tt-title">
+                                        NOT
+                                    </h4>
+                                    <p>Siparişiniz ile ilgili eklemek istediklerinizi aşağıya ekleyibilirsiniz.</p>
                                     <textarea class="form-control" rows="7"></textarea>
-                                </form>
+                                </div>
                             </div>
                             <div class="tt-shopcart-box tt-boredr-large">
                                 <table class="tt-shopcart-table01" id="shopping-cart-totals">
