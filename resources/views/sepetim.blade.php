@@ -256,8 +256,12 @@
 
         function PlaceOrder(){
 
+            $('#loader').removeClass('hidden');
+            let formData = new FormData();
+
             var shipping_address = document.getElementById('shipping_address');
             if(!shipping_address){
+                $('#loader').addClass('hidden');
                 Swal.fire({
                     icon: 'warning',
                     title: 'Lütfen bir teslimat adresi ekleyiniz',
@@ -266,6 +270,7 @@
                 return;
             }
             if(!$('#shipping_address').find(':selected').val()){
+                $('#loader').addClass('hidden');
                 Swal.fire({
                     icon: 'warning',
                     title: 'Lütfen teslimat adresini seçiniz',
@@ -274,13 +279,15 @@
                 return;
             }
 
-            var check_billing_address = false;
+
             var checkbox = document.getElementById("check_billing_address");
             if (checkbox.checked) {
-                 check_billing_address = true;
+                 check_billing_address = 1;
             }else{
+                var check_billing_address = 0;
                 var billing_address = document.getElementById('billing_address');
                 if(!billing_address){
+                    $('#loader').addClass('hidden');
                     Swal.fire({
                         icon: 'warning',
                         title: 'Lütfen bir fatura adresi ekleyiniz',
@@ -289,6 +296,7 @@
                     return;
                 }
                 if(!$('#billing_address').find(':selected').val()){
+                    $('#loader').addClass('hidden');
                     Swal.fire({
                         icon: 'warning',
                         title: 'Lütfen fatura adresini seçiniz',
@@ -296,21 +304,20 @@
                     })
                     return;
                 }
+                formData.append('billing_address', $('#billing_address').find(':selected').val());
             }
 
-            $('#loader').removeClass('hidden');
-            let formData = new FormData();
+            if($('#note').val()){
+                formData.append('note', $('#note').val());
+            }
 
 
             formData.append('shipping_address', $('#shipping_address').find(':selected').val());
-            formData.append('billing_address', $('#billing_address').find(':selected').val());
             formData.append('check_billing_address', check_billing_address);
             formData.append('note', $('#note').val());
 
 
-            alert('STOP');
-            return;
-            fetch('{{route('add_new_address')}}', {
+            fetch('{{route('place_order')}}', {
 
                 method: "POST",
                 body: formData
@@ -330,7 +337,7 @@
                             outsideClick: false,
                         })
 
-                        window.location.reload();
+                    //    window.location.reload();
                     }else{
 
                         $('#loader').addClass('hidden');

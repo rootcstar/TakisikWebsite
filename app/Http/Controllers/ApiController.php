@@ -17,6 +17,7 @@ use App\Rules\PasswordRule;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ConfirmAccountMail;
 use App\Mail\ForgetPasswordMail;
+use Illuminate\Validation\Rules\RequiredIf;
 use Session;
 
 class ApiController extends Controller
@@ -1212,7 +1213,6 @@ class ApiController extends Controller
         }
     }
 
-
     public function update_user(Request $request){
         try {
             $data = $request->only(['user_id','company_name','first_name','last_name','phone']);
@@ -1511,7 +1511,6 @@ class ApiController extends Controller
         }
     }
 
-
     public function get_city(Request $request)
     {
         try {
@@ -1588,6 +1587,97 @@ class ApiController extends Controller
 
         }
 
+    }
+
+
+    public function place_order(Request $request){
+        try {
+            $data = $request->only(['shipping_address','billing_address','check_billing_address','note']);
+           // return response(['result' => 1, 'msg' => json_encode($data)],200);
+            $validator = Validator::make($data, [
+                'shipping_address' => [
+                    "required",
+                    "integer",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'check_billing_address' => [
+                    "required",
+                    "boolean",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'billing_address' => [
+                    Rule::requiredIf(function () use ($request) {
+                        if($request->check_billing_address == true){
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }),
+
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+                'note' => [
+                    "string",
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                ],
+            ]);
+
+            if ($validator->fails()) {
+                $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Website_validation_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                if(env('APP_ENV') == 'local'){
+                    return $response;
+                }
+                return response(['result' => -1, 'msg' => 'Hatalı giriş. Lütfen tekrar deneyin'], 403);
+            }
+
+
+
+            return response(['result' => 1, 'msg' => json_encode($data)],200);
+
+            try {
+
+                $user_id = $data['user_id'];
+                unset($data['user_id']);
+                User::where('user_id',$user_id)->update(['company_name'=>$data['company_name'],
+                    'first_name'=>$data['first_name'],
+                    'last_name'=>$data['last_name'],
+                    'phone'=>$data['phone']
+                ]);
+
+
+            } catch (QueryException $e) {
+                $response = response(['result' => -500, 'msg' => "Hata oluştu. Lütfen daha sonra tekrar deneyin","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Website_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
+            }
+
+            $user_data =  User::where('user_id',$user_id)->get();
+            Session::put('website.user.user_info',$user_data[0]);
+
+
+            return response(['result' => 1, 'msg' => 'Başarıyla güncellendi'],200);
+
+        } catch (\Throwable $t) {
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Website_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Sistem hatası. Lütfen daha sonra tekrar deneyin veya destek ekibimize başvurun."], 500);
+        }
     }
 
 }

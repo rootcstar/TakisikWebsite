@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ADMIN\AdminApiController;
+use App\Http\Controllers\ADMIN\AdminPanelApiController;
 use App\Http\Controllers\ApiController;
 use App\Http\Middleware\AdminLoginControlMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -49,3 +49,6 @@ use Illuminate\Support\Facades\Route;
     Route::post('/get-city', [ApiController::class, 'get_city']);
     Route::post('/get-district', [ApiController::class, 'get_district']);
     Route::post('/get-neighbourhood', [ApiController::class, 'get_neighbourhood']);
+
+
+Route::post('/place-order', [ApiController::class, 'place_order'])->name('place_order');
