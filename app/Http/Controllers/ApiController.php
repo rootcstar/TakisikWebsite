@@ -418,7 +418,7 @@ class ApiController extends Controller
             Session::put("website.selected_tag", $data['tag_id']);
             Session::put("website.selected_sub_tag", $data['sub_tag_id']);
             foreach ($data_products as $product) {
-                $product->final_price = number_format(CalculateProductPrice($product->wholesale_price, $product->kdv, Session::get('website.user.user_discount')), 2, '.', '');
+                $product->final_price = number_format(CalculateProductPrice($product->wholesale_price, $product->kdv), 2, ',', '.');
             }
 
             $products_div = view('partials.products-div', ["products" => $data_products, "empty_message" => "THERE ARE NO PRODUCT IN THIS CATEGORY"])->render();
@@ -493,7 +493,7 @@ class ApiController extends Controller
             Session::put("website.selected_tag", $data['tag_id']);
             Session::put("website.selected_sub_tag", $data['sub_tag_id']);
             foreach ($data_products as $product) {
-                $product->final_price = number_format(CalculateProductPrice($product->wholesale_price, $product->kdv, Session::get('website.user.user_discount')), 2, '.', '');
+                $product->final_price = number_format(CalculateProductPrice($product->wholesale_price, $product->kdv), 2, ',', '.');
             }
 
             $products_div = view('partials.products-div', ["products" => $data_products, "empty_message" => "THERE ARE NO PRODUCT IN THIS CATEGORY"])->render();
@@ -560,7 +560,7 @@ class ApiController extends Controller
             }
 
             foreach ($data_products as $product) {
-                $product->final_price = number_format(CalculateProductPrice($product->wholesale_price, $product->kdv, Session::get('website.user.user_discount')), 2, '.', '');
+                $product->final_price = number_format(CalculateProductPrice($product->wholesale_price, $product->kdv), 2, ',', '.');
             }
 
 
@@ -650,7 +650,7 @@ class ApiController extends Controller
                                                                                                                 sub_tag_is_active ='1' and product_is_active = '1' ");
 
                 $data_product = $data_product[0];
-                $data_product->new_price = number_format(CalculateProductPrice($data_product->wholesale_price, $data_product->kdv, Session::get('website.user.user_discount')), 2, '.', '');
+                $data_product->new_price = number_format(CalculateProductPrice($data_product->wholesale_price, $data_product->kdv), 2, '.', '');
 
                 $data_product->quantity = $data['qty'];
                 Session::push('website.shopping_cart.products', $data_product);
@@ -673,11 +673,13 @@ class ApiController extends Controller
             //  return response(['result'=>-58,"msg"=>json_encode($shopping_cart_products)],200);
             for ($i = 0; $i < count($shopping_cart_products); $i++) {
                 $cart_total_qty += $shopping_cart_products[$i]->quantity;
-
+return $shopping_cart_products[$i]->new_price;
                 $total_price += ($shopping_cart_products[$i]->new_price) * ($shopping_cart_products[$i]->quantity);
-                $total_price = number_format($total_price, 2, '.', '');
+                $total_price = number_format($total_price, 2, ',', '.');
 
             }
+
+
 
 
             Session::put('website.shopping_cart.total_qty', $cart_total_qty);
@@ -748,7 +750,7 @@ class ApiController extends Controller
                                                                                                                 sub_tag_is_active ='1' and product_is_active = '1' ");
 
                 $data_product = $data_product[0];
-                $data_product->new_price = number_format(CalculateProductPrice($data_product->wholesale_price, $data_product->kdv, Session::get('website.user.user_discount')), 2, '.', '');
+                $data_product->new_price = number_format(CalculateProductPrice($data_product->wholesale_price, $data_product->kdv), 2, ',', '.');
 
                 $data_product->quantity = $data['qty'];
                 Session::push('website.shopping_cart.products', $data_product);
@@ -768,7 +770,7 @@ class ApiController extends Controller
                 $cart_total_qty += $shopping_cart_products[$i]->quantity;
 
                 $total_price += ($shopping_cart_products[$i]->new_price) * ($shopping_cart_products[$i]->quantity);
-                $total_price = number_format($total_price, 2, '.', '');
+                $total_price = number_format($total_price, 2, ',', '.');
 
             }
 
@@ -856,7 +858,7 @@ class ApiController extends Controller
                 $cart_total_qty += $shopping_cart_products[$i]->quantity;
 
                 $total_price += ($shopping_cart_products[$i]->new_price) * ($shopping_cart_products[$i]->quantity);
-                $total_price = number_format($total_price, 2, '.', '');
+                $total_price = number_format($total_price, 2, ',', '.');
 
             }
 
@@ -942,7 +944,7 @@ class ApiController extends Controller
                     $cart_total_qty += $shopping_cart_products[$i]->quantity;
 
                     $total_price += ($shopping_cart_products[$i]->new_price) * ($shopping_cart_products[$i]->quantity);
-                    $total_price = number_format($total_price, 2, '.', '');
+                    $total_price = number_format($total_price, 2, ',', '.');
 
                 }
 
@@ -1114,7 +1116,7 @@ class ApiController extends Controller
 
             $data_product = $data_product[0];
             $product_code_model_number =  $data_product->product_code.'-'. $data_product->model_number ;
-            $product_price = number_format(CalculateProductPrice($data_product->wholesale_price,$data_product->kdv,Session::get('website.user.user_discount')),2,'.','').' TL';
+            $product_price = number_format(CalculateProductPrice($data_product->wholesale_price,$data_product->kdv),2,',','.').' TL';
             $enc_model_record_id = fiki_encrypt($data_product->model_record_id);
 
             $product_div = view('partials.product-image',['product_images' => $data_product->product_image])->render();
@@ -1190,7 +1192,7 @@ class ApiController extends Controller
                 $cart_total_qty += $shopping_cart_products[$i]->quantity;
 
                 $total_price += ($shopping_cart_products[$i]->new_price) * ($shopping_cart_products[$i]->quantity);
-                $total_price = number_format($total_price, 2, '.', '');
+                $total_price = number_format($total_price, 2, ',', '.');
 
             }
 
@@ -1589,11 +1591,57 @@ class ApiController extends Controller
 
     }
 
+    public function apply_user_discount(Request $request){
+        try {
 
+
+
+            return response(['result' => 1, 'msg' => 'user discount applied'],200);
+
+
+
+
+            try {
+
+                $user_id = $data['user_id'];
+                unset($data['user_id']);
+                User::where('user_id',$user_id)->update(['company_name'=>$data['company_name'],
+                    'first_name'=>$data['first_name'],
+                    'last_name'=>$data['last_name'],
+                    'phone'=>$data['phone']
+                ]);
+
+
+            } catch (QueryException $e) {
+                $response = response(['result' => -500, 'msg' => "Hata oluştu. Lütfen daha sonra tekrar deneyin","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                $request = new Request();
+                $request['log_type'] = 'Takisik_Website_query_error';
+                $request['data'] = $response->getContent();
+                $maintenance_controller = new GeneralController();
+                $maintenance_controller->send_data_to_maintenance($request);
+                return $response;
+            }
+
+
+
+            return response(['result' => 1, 'msg' => 'Başarıyla güncellendi'],200);
+
+        } catch (\Throwable $t) {
+            $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
+            $request = new Request();
+            $request['log_type'] = 'Takisik_Website_500_error';
+            $request['data'] = $resp->getContent();
+            $maintenance_controller = new GeneralController;
+            $maintenance_controller->send_data_to_maintenance($request);
+            if(env('APP_ENV') == 'local'){
+                return $resp;
+            }
+            return response(['result' => -500, 'msg' => "Sistem hatası. Lütfen daha sonra tekrar deneyin veya destek ekibimize başvurun."], 500);
+        }
+    }
     public function place_order(Request $request){
         try {
             $data = $request->only(['shipping_address','billing_address','check_billing_address','note']);
-           // return response(['result' => 1, 'msg' => json_encode($data)],200);
             $validator = Validator::make($data, [
                 'shipping_address' => [
                     "required",
@@ -1618,10 +1666,9 @@ class ApiController extends Controller
                 ],
                 'note' => [
                     "string",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
+                    Rule::notIn(['null', 'undefined', 'NULL', ' ', '']),
                 ],
             ]);
-
             if ($validator->fails()) {
                 $response =  response(['result' => -1, "msg" => $validator->errors()->first(), 'error' => $validator->errors(), "function" => __FUNCTION__, "data" => $data], 403);
                 $request = new Request();
@@ -1636,8 +1683,12 @@ class ApiController extends Controller
             }
 
 
+            $shopping_cart = Session::get('website.shopping_cart');
 
-            return response(['result' => 1, 'msg' => json_encode($data)],200);
+            return response(['result' => 1, 'msg' => json_encode($shopping_cart)],200);
+
+
+
 
             try {
 
@@ -1660,8 +1711,6 @@ class ApiController extends Controller
                 return $response;
             }
 
-            $user_data =  User::where('user_id',$user_id)->get();
-            Session::put('website.user.user_info',$user_data[0]);
 
 
             return response(['result' => 1, 'msg' => 'Başarıyla güncellendi'],200);

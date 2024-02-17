@@ -51,4 +51,5 @@ use Illuminate\Support\Facades\Route;
     Route::post('/get-neighbourhood', [ApiController::class, 'get_neighbourhood']);
 
 
-Route::post('/place-order', [ApiController::class, 'place_order'])->name('place_order');
+    Route::post('/apply-user-discount', [ApiController::class, 'apply_user_discount'])->name('apply_user_discount');
+    Route::post('/place-order', [ApiController::class, 'place_order'])->name('place_order');

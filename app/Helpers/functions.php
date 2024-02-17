@@ -117,10 +117,10 @@ function LanguageChange($value){
     }
 }
 
-function CalculateProductPrice($price,$kdv,$discount_percentage){
+function CalculateProductPrice($price,$kdv){
 
-    $discounted_price = $price - (($price * $discount_percentage)/100);
-    $price =$discounted_price + (($discounted_price*$kdv)/100);
+
+    $price =$price + (($price*$kdv)/100);
 
     return $price;
 }

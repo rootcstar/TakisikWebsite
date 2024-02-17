@@ -31,7 +31,7 @@
                             </div><h1 class="tt-title" id="prd-nm">{{ $product->product_name }}</h1>
                             <h4 class="m-0" id="prd-cm">{{ $product->product_code }}-{{ $product->model_number }}</h4>
                             <div class="tt-price">
-                                <span class="new-price" id="prd-pr">{{ number_format(CalculateProductPrice($product->wholesale_price,$product->kdv,Session::get('website.user.user_discount')),2,'.','') }} TL</span>
+                                <span class="new-price" id="prd-pr">{{ number_format(CalculateProductPrice($product->wholesale_price,$product->kdv),2,',','.') }} TL</span>
                                 <span class="old-price"></span>
                             </div>
                             <div class="tt-review">

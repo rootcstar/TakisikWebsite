@@ -378,7 +378,37 @@ header .tt-cart .tt-cart-layout .tt-cart-content .tt-cart-list .tt-item-close .t
 .modal .modal-header .close{
     color: #FF0080;
 }
-
+.btn-discount{
+    color: #ffffff !important;
+    background:#21b549 !important;
+    border: 2px solid #21b549 !important;
+}
+.btn-discount-border{
+    background: transparent !important;
+    color: #0087ff !important;
+    border: 2px solid #0087ff !important;
+    height: 40px;
+    padding-left: 29px;
+    padding-right: 29px;
+}
+.btn-discount-border:hover{
+    background: #0087ff !important;
+    color: #ffffff !important;
+}
+hr:not([class]) {
+     margin-top: 2rem !important;;
+     margin-bottom: 2rem !important;;
+ }
+.disc-text{
+    font-size: 16px;
+    color: #0087ff;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+.disc-icon{
+    font-size: x-large;
+}
 @media (min-width: 1025px) {
     .modal .modal-header .close {
         right: 0px;

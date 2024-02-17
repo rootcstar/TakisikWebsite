@@ -60,7 +60,7 @@
                                                         </li>
                                                         <li>
                                                             <div class="tt-price subtotal">
-                                                                {{ number_format(($product->new_price *  $product->quantity), 2, '.', '') }} TL
+                                                                {{ number_format(($product->new_price *  $product->quantity), 2, ',', '.') }} TL
                                                             </div>
                                                         </li>
                                                     </ul>
@@ -89,7 +89,7 @@
                                             </td>
                                             <td>
                                                 <div class="tt-price subtotal">
-                                                    {{ number_format(($product->new_price *  $product->quantity), 2, '.', '') }} TL
+                                                    {{ number_format(($product->new_price *  $product->quantity), 2, ',', '.') }} TL
                                                 </div>
                                             </td>
                                         </tr>
@@ -145,14 +145,27 @@
 
 
                                     </div>
-                                    <input type="checkbox" id="check_billing_address" onclick="checkCheckbox()" checked> Faturamı aynı adrese gönder.</input>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" name="checkbox" id="check_billing_address" onclick="checkCheckbox()" checked>
+                                        <label for="check_billing_address">
+                                            <span class="check"></span>
+                                            <span class="box"></span>
+                                            Faturamı aynı adrese gönder.
+                                        </label>
+                                    </div>
                                     <hr>
-                                    <h4 class="tt-title">
+                                    @if(Session::get('website.user.user_discount'))
+                                        <p class="disc-text"><i class="fas fa-gift disc-icon"></i> Sepetinize özel %{{Session::get('website.user.user_discount')}} indirim!</p>
+                                        <button onclick="ApplyUserDiscount()" class="btn btn-discount-border" id="discount-button">%{{Session::get('website.user.user_discount')}} İNDİRİM UYGULA</button>
+                                        <hr>
+                                    @endif
+                                    <h5 class="tt-title">
                                         NOT
-                                    </h4>
+                                    </h5>
                                     <p>Siparişiniz ile ilgili eklemek istediklerinizi aşağıya ekleyibilirsiniz.</p>
                                     <textarea class="form-control" rows="7" id="note"></textarea>
                                 </div>
+                                </table>
                             </div>
                             <div class="tt-shopcart-box tt-border-large">
                                 <table class="tt-shopcart-table01" id="shopping-cart-totals">
@@ -163,13 +176,13 @@
                                         </tr>
                                         <tr>
                                             <th>KARGO</th>
-                                            <td>19.99 TL</td>
+                                            <td>{{config('constants.cargo_price')}} TL</td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
                                         <tr>
                                             <th>TOPLAM</th>
-                                            <td>{{ Session::get('website.shopping_cart.total_price') }} + KARGO TL</td>
+                                            <td>{{ Session::get('website.shopping_cart.final_price') }} TL</td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -253,7 +266,6 @@
 
         }
 
-
         function PlaceOrder(){
 
             $('#loader').removeClass('hidden');
@@ -314,7 +326,7 @@
 
             formData.append('shipping_address', $('#shipping_address').find(':selected').val());
             formData.append('check_billing_address', check_billing_address);
-            formData.append('note', $('#note').val());
+
 
 
             fetch('{{route('place_order')}}', {
@@ -360,5 +372,53 @@
 
 
         }
+
+        function ApplyUserDiscount(){
+
+            $('#loader').removeClass('hidden');
+
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+
+                if (this.readyState == 4 && this.status == 200) {
+
+                    let response = JSON.parse(this.responseText);
+
+                    if(response['result'] == 1){
+
+
+                        $('#loader').addClass("hidden");
+
+                        $('#discount-button').html('');
+                        $('#discount-button').html('test');
+                        alert('here stop');
+
+                    }else{
+
+                        $('#loader').addClass("hidden");
+                        Swal.fire(response['msg']);
+                    }
+                } else if (this.status >= 400 && this.status < 500) {
+                    let response = JSON.parse(this.responseText);
+                    $('#loader').addClass("hidden");
+                    Swal.fire(response['msg']);
+                } else if (this.status >= 500) {
+                    let response = JSON.parse(this.responseText);
+                    $('#loader').addClass('hidden');
+                    Swal.fire(response['msg']);
+
+                }
+                xhttp.onerror = function onError(e) {
+
+                    alert('con error:'+e);
+                }
+            };
+
+            xhttp.open("POST", "/api/apply-user-discount", true);
+            xhttp.setRequestHeader("Content-Type", "application/json");
+            xhttp.send();
+
+        }
+
     </script>
 @endsection
