@@ -18,8 +18,8 @@ return [
     'requester_type'=>$requester_type,
     'admin_token'=> $admin_token,
     'cargo_price'=>39.99,
-    'min_cart_total_price'=>350,
-    'total_price_for_free_shipping'=>1000
+    'min_cart_total_price'=>200,
+    'total_price_for_free_shipping'=>350
 
 
 

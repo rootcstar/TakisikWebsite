@@ -527,8 +527,7 @@
                     $('#quick-view-body').html('');
                     $('#quick-view-body').append(response['quick_view_modal']);
 
-                    $( "#shopping-cart-table" ).load(window.location.href + " #shopping-cart-table" );
-                    $( "#shopping-cart-totals" ).load(window.location.href + " #shopping-cart-totals" );
+                    $( "#shopping-cart-calcs" ).load(window.location.href + " #shopping-cart-calcs" );
 
 
                 }else{
@@ -620,8 +619,7 @@
                     $('#quick-view-body').html('');
                     $('#quick-view-body').append(response['quick_view_modal']);
 
-                    $( "#shopping-cart-table" ).load(window.location.href + " #shopping-cart-table" );
-                    $( "#shopping-cart-totals" ).load(window.location.href + " #shopping-cart-totals" );
+                    $( "#shopping-cart-calcs" ).load(window.location.href + " #shopping-cart-calcs" );
 
 
                 }else{
@@ -679,8 +677,7 @@
                         $( "#shopping-cart-page" ).load(window.location.href + " #shopping-cart-page" );
                     }else{
 
-                        $( "#shopping-cart-table" ).load(window.location.href + " #shopping-cart-table" );
-                        $( "#shopping-cart-totals" ).load(window.location.href + " #shopping-cart-totals" );
+                        $( "#shopping-cart-calcs" ).load(window.location.href + " #shopping-cart-calcs" );
                     }
 
 
@@ -744,8 +741,7 @@
                         $( "#shopping-cart-page" ).load(window.location.href + " #shopping-cart-page" );
                     }else{
 
-                        $( "#shopping-cart-table" ).load(window.location.href + " #shopping-cart-table" );
-                        $( "#shopping-cart-totals" ).load(window.location.href + " #shopping-cart-totals" );
+                        $( "#shopping-cart-calcs" ).load(window.location.href + " #shopping-cart-calcs" );
                     }
 
 

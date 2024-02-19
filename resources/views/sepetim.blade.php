@@ -182,7 +182,7 @@
                                 </div>
                                 </table>
                             </div>
-                            <div class="tt-shopcart-box tt-border-large">
+                            <div class="tt-shopcart-box tt-border-large" id="shopping-cart-calcs">
                                 <table class="tt-shopcart-table01" id="shopping-cart-totals">
                                     <tbody id="shopping-cart-totals-body">
                                         <tr>
@@ -191,14 +191,20 @@
                                         </tr>
                                         @if(Session::has('website.user.user_discount') && (Session::get('website.user.user_discount.is_applied') == true))
                                             <tr>
-                                                <th>İNDİRİM</th>
-                                                <td>- {{Session::get('website.shopping_cart.discount_amount')}} TL</td>
+                                                <th class="discount-label">İNDİRİM</th>
+                                                <td class="discount-value">- {{Session::get('website.shopping_cart.discount_amount')}} TL</td>
                                             </tr>
                                         @endif
                                         <tr>
                                             <th>KARGO</th>
                                             <td>{{config('constants.cargo_price')}} TL</td>
                                         </tr>
+                                        @if(Session::get('website.shopping_cart.total_price') >= config('constants.total_price_for_free_shipping'))
+                                        <tr>
+                                            <th class="discount-label">KARGO-ÜCRETSİZ</th>
+                                            <td class="discount-value">- {{config('constants.cargo_price')}} TL</td>
+                                        </tr>
+                                        @endif
                                     </tbody>
                                     <tfoot>
                                     @if(Session::has('website.user.user_discount') && (Session::get('website.user.user_discount.is_applied') == true))
@@ -214,7 +220,11 @@
                                     @endif
                                     </tfoot>
                                 </table>
-                                <a  onclick="PlaceOrder()" class="btn btn-lg"><span class="icon icon-check_circle"></span>SİPARİŞİ TAMAMLA</a>
+                                @if(Session::get('website.shopping_cart.total_price') < config('constants.min_cart_total_price'))
+                                    <button  class="btn btn-lg place-order-btn" disabled >Min. sepet tutarı {{config('constants.min_cart_total_price')}} TL</button>
+                                @else
+                                    <button  class="btn btn-lg  place-order-btn"  >SİPARİŞİ TAMAMLA</button>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -412,7 +422,7 @@
 
                     let response = JSON.parse(this.responseText);
 
-                    $( "#shopping-cart-totals" ).load(window.location.href + " #shopping-cart-totals" );
+                    $( "#shopping-cart-calcs" ).load(window.location.href + " #shopping-cart-calcs" );
                     if(response['result'] == 1){
 
 

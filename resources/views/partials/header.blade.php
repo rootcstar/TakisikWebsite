@@ -175,6 +175,32 @@
             </div>
         </div>
     </div>
+    @if(Session::has('website.shopping_cart.total_qty') && (Session::get('website.shopping_cart.total_qty') > 0))
+        @php $price = (config('constants.total_price_for_free_shipping')-Session::get('website.shopping_cart.total_price')) @endphp
+        @if($price > 0)
+            <div class="tt-color-scheme-05">
+                <div class="container">
+                    <div class="tt-header-row tt-top-row text-center">
+                        <div class="tt-box-info ">
+                            <p>{{$price}} TL'lik daha ürün ekle ücretsiz kargo fırsatından yararlan!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+    @else
+
+        <div class="tt-color-scheme-05">
+            <div class="container">
+                <div class="tt-header-row tt-top-row text-center">
+                    <div class="tt-box-info ">
+                        <p>{{config('constants.total_price_for_free_shipping')}} TL ve üzeri siparişlerinizde ücretsiz kargo fırsatı!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
 </header>
 
 @yield('content')

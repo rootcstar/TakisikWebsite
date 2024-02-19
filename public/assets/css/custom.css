@@ -396,8 +396,8 @@ header .tt-cart .tt-cart-layout .tt-cart-content .tt-cart-list .tt-item-close .t
     color: #ffffff !important;
 }
 hr:not([class]) {
-     margin-top: 2rem !important;;
-     margin-bottom: 2rem !important;;
+     margin-top: 2rem !important;
+     margin-bottom: 2rem !important;
  }
 .disc-text{
     font-size: 16px;
@@ -408,6 +408,18 @@ hr:not([class]) {
 }
 .disc-icon{
     font-size: x-large;
+}
+
+header .tt-color-scheme-05 {
+    background: #28c14a;
+    color: #ffffff;
+    font-size: 18px;
+}
+.discount-label{
+    color: #7cd77c !important;
+}
+.discount-value{
+    color: #7cd77c !important;
 }
 @media (min-width: 1025px) {
     .modal .modal-header .close {
