@@ -11,7 +11,7 @@
                     <h2 class="tt-title"><a href="/urun-detay/{{ fiki_encrypt($product->model_record_id) }}">{{ $product->product_name }}</a></h2>
                     <h2 class="tt-title"><a href="/urun-detay/{{ fiki_encrypt($product->model_record_id) }}">{{ $product->product_code }}-{{ $product->model_number }}</a></h2>
                     <div class="tt-price">
-                        <span class="new-price">${{ number_format(CalculateProductPrice($product->wholesale_price,$product->kdv),2,',','.') }} </span>
+                        <span class="new-price">${{ number_format(CalculateProductPrice($product->wholesale_price,$product->kdv),2,'.','') }} </span>
 
                     </div>
                 </div>

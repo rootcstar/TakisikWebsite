@@ -60,7 +60,7 @@
                                                         </li>
                                                         <li>
                                                             <div class="tt-price subtotal">
-                                                                {{ number_format(($product->new_price *  $product->quantity), 2, ',', '.') }} TL
+                                                                {{ number_format(($product->new_price *  $product->quantity), 2, '.', '') }} TL
                                                             </div>
                                                         </li>
                                                     </ul>
@@ -89,7 +89,7 @@
                                             </td>
                                             <td>
                                                 <div class="tt-price subtotal">
-                                                    {{ number_format(($product->new_price *  $product->quantity), 2, ',', '.') }} TL
+                                                    {{ number_format(($product->new_price *  $product->quantity), 2, '.', '') }} TL
                                                 </div>
                                             </td>
                                         </tr>
@@ -99,6 +99,7 @@
                             <div class="tt-shopcart-btn">
                                 <div class="col-left">
                                     <a class="btn-link" href="/kategoriler"><i class="icon-e-19"></i>ALIŞVERİŞE DEVAM ET</a>
+
                                 </div>
                                 <div class="col-right">
                                     <a class="btn-link" data-toggle="modal" data-target="#EmptyCartModal" onclick="EmptyShoppingCartModal()"><i class="icon-h-02"></i>SEPETİ TEMİZLE</a>
@@ -154,36 +155,63 @@
                                         </label>
                                     </div>
                                     <hr>
-                                    @if(Session::get('website.user.user_discount'))
-                                        <p class="disc-text"><i class="fas fa-gift disc-icon"></i> Sepetinize özel %{{Session::get('website.user.user_discount')}} indirim!</p>
-                                        <button onclick="ApplyUserDiscount()" class="btn btn-discount-border" id="discount-button">%{{Session::get('website.user.user_discount')}} İNDİRİM UYGULA</button>
+                                    @if(Session::has('website.user.user_discount') && (Session::get('website.user.user_discount.is_applied') == false))
+                                        <p class="disc-text">
+                                            <i class="fas fa-gift disc-icon"></i> Sepetinize özel %{{Session::get('website.user.user_discount.percentage')}} indirim!
+                                        </p>
+                                        <button onclick="ApplyUserDiscount()" class="btn btn-discount-border" id="discount-button">
+                                            %{{Session::get('website.user.user_discount.percentage')}} İNDİRİM UYGULA
+                                        </button>
+                                        <hr>
+                                    @endif
+
+                                    @if(Session::has('website.user.user_discount') && (Session::get('website.user.user_discount.is_applied') == true))
+                                        <p class="disc-text">
+                                            <i class="fas fa-gift disc-icon"></i> Sepetinize özel %{{Session::get('website.user.user_discount.percentage')}} indirim!
+                                        </p>
+                                        <button onclick="ApplyUserDiscount()" class="btn btn-discount" id="discount-button">
+                                            %{{Session::get('website.user.user_discount.percentage')}} İNDİRİM UYGULANDI <span class="icon-f-68"></span>
+                                        </button>
                                         <hr>
                                     @endif
                                     <h5 class="tt-title">
                                         NOT
                                     </h5>
                                     <p>Siparişiniz ile ilgili eklemek istediklerinizi aşağıya ekleyibilirsiniz.</p>
-                                    <textarea class="form-control" rows="7" id="note"></textarea>
+                                    <textarea class="form-control" rows="5" id="note"></textarea>
                                 </div>
                                 </table>
                             </div>
                             <div class="tt-shopcart-box tt-border-large">
                                 <table class="tt-shopcart-table01" id="shopping-cart-totals">
-                                    <tbody>
+                                    <tbody id="shopping-cart-totals-body">
                                         <tr>
                                             <th>ARA TOPLAM</th>
                                             <td>{{ Session::get('website.shopping_cart.total_price') }} TL</td>
                                         </tr>
+                                        @if(Session::has('website.user.user_discount') && (Session::get('website.user.user_discount.is_applied') == true))
+                                            <tr>
+                                                <th>İNDİRİM</th>
+                                                <td>- {{Session::get('website.shopping_cart.discount_amount')}} TL</td>
+                                            </tr>
+                                        @endif
                                         <tr>
                                             <th>KARGO</th>
                                             <td>{{config('constants.cargo_price')}} TL</td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
+                                    @if(Session::has('website.user.user_discount') && (Session::get('website.user.user_discount.is_applied') == true))
                                         <tr>
                                             <th>TOPLAM</th>
-                                            <td>{{ Session::get('website.shopping_cart.final_price') }} TL</td>
+                                            <td>{{ Session::get('website.shopping_cart.final_price_with_discount') }} TL</td>
                                         </tr>
+                                    @else
+                                        <tr>
+                                            <th id="total-label">TOPLAM</th>
+                                            <td id="total-value">{{ Session::get('website.shopping_cart.final_price') }} TL</td>
+                                        </tr>
+                                    @endif
                                     </tfoot>
                                 </table>
                                 <a  onclick="PlaceOrder()" class="btn btn-lg"><span class="icon icon-check_circle"></span>SİPARİŞİ TAMAMLA</a>
@@ -384,20 +412,38 @@
 
                     let response = JSON.parse(this.responseText);
 
+                    $( "#shopping-cart-totals" ).load(window.location.href + " #shopping-cart-totals" );
                     if(response['result'] == 1){
 
 
+                        $('#discount-button').html('');
+                        $('#discount-button').html('%'+{{Session::get('website.user.user_discount.percentage')}}+' İNDİRİM UYGULANDI <span class="icon-f-68"></span>');
+
+                        $('#discount-button').removeClass('btn-discount-border');
+                        $('#discount-button').addClass('btn-discount');
+
+
                         $('#loader').addClass("hidden");
+
+
+                    }
+
+                    if(response['result'] == 2){
+
 
                         $('#discount-button').html('');
-                        $('#discount-button').html('test');
-                        alert('here stop');
+                        $('#discount-button').html('%'+{{Session::get('website.user.user_discount.percentage')}}+' İNDİRİM UYGULA');
 
-                    }else{
+                        $('#discount-button').addClass('btn-discount-border');
+                        $('#discount-button').removeClass('btn-discount');
+
 
                         $('#loader').addClass("hidden");
-                        Swal.fire(response['msg']);
+
+
                     }
+
+
                 } else if (this.status >= 400 && this.status < 500) {
                     let response = JSON.parse(this.responseText);
                     $('#loader').addClass("hidden");

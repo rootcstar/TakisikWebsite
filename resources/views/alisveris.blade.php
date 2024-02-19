@@ -41,7 +41,7 @@
                                                     <h2 class="tt-title"><a href="">{{ $product->product_code }}</a></h2>
                                                     <h2 class="tt-title"><a href="">{{ $product->product_name }}</a></h2>
                                                     <div class="tt-price">
-                                                        {{ number_format(CalculateProductPrice($product->wholesale_price,$product->kdv),2,',','.') }} TL
+                                                        {{ number_format(CalculateProductPrice($product->wholesale_price,$product->kdv),2,'.','') }} TL
                                                     </div>
                                                     <div class="tt-product-inside-hover">
                                                         <div class="tt-row-btn">

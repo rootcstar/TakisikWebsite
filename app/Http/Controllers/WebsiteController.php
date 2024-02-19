@@ -155,9 +155,9 @@ class WebsiteController extends Controller
 
         $total_price = Session::get('website.shopping_cart.total_price');
 
-        $final_price = number_format($total_price + config('constants.cargo_price'),2,',','.');
+        $cart_final_price = number_format($total_price + config('constants.cargo_price'),2,'.','');
 
-        Session::put('website.shopping_cart.final_price',$final_price);
+        Session::put('website.shopping_cart.final_price',$cart_final_price);
 
         return view('sepetim');
     }

@@ -73,8 +73,9 @@ class ApiController extends Controller
         $user_discount = 0;
         if (!empty($data_user_discount)) {
             $user_discount = $data_user_discount[0]->discount_percentage;
+            Session::put('website.user.user_discount.percentage', $user_discount);
+            Session::put('website.user.user_discount.is_applied', false);
         }
-        Session::put('website.user.user_discount', $user_discount);
 
 
     }
@@ -418,7 +419,7 @@ class ApiController extends Controller
             Session::put("website.selected_tag", $data['tag_id']);
             Session::put("website.selected_sub_tag", $data['sub_tag_id']);
             foreach ($data_products as $product) {
-                $product->final_price = number_format(CalculateProductPrice($product->wholesale_price, $product->kdv), 2, ',', '.');
+                $product->final_price = number_format(CalculateProductPrice($product->wholesale_price, $product->kdv), 2, '.', '');
             }
 
             $products_div = view('partials.products-div', ["products" => $data_products, "empty_message" => "THERE ARE NO PRODUCT IN THIS CATEGORY"])->render();
@@ -493,7 +494,7 @@ class ApiController extends Controller
             Session::put("website.selected_tag", $data['tag_id']);
             Session::put("website.selected_sub_tag", $data['sub_tag_id']);
             foreach ($data_products as $product) {
-                $product->final_price = number_format(CalculateProductPrice($product->wholesale_price, $product->kdv), 2, ',', '.');
+                $product->final_price = number_format(CalculateProductPrice($product->wholesale_price, $product->kdv), 2, '.', '');
             }
 
             $products_div = view('partials.products-div', ["products" => $data_products, "empty_message" => "THERE ARE NO PRODUCT IN THIS CATEGORY"])->render();
@@ -560,7 +561,7 @@ class ApiController extends Controller
             }
 
             foreach ($data_products as $product) {
-                $product->final_price = number_format(CalculateProductPrice($product->wholesale_price, $product->kdv), 2, ',', '.');
+                $product->final_price = number_format(CalculateProductPrice($product->wholesale_price, $product->kdv), 2, '.', '');
             }
 
 
@@ -673,13 +674,24 @@ class ApiController extends Controller
             //  return response(['result'=>-58,"msg"=>json_encode($shopping_cart_products)],200);
             for ($i = 0; $i < count($shopping_cart_products); $i++) {
                 $cart_total_qty += $shopping_cart_products[$i]->quantity;
-return $shopping_cart_products[$i]->new_price;
+
                 $total_price += ($shopping_cart_products[$i]->new_price) * ($shopping_cart_products[$i]->quantity);
-                $total_price = number_format($total_price, 2, ',', '.');
+                $total_price = number_format($total_price, 2, '.', '');
 
             }
 
+            if(Session::has('website.user.user_discount') && (Session::get('website.user.user_discount.is_applied')==true)){
 
+                $user_discount_percentage = Session::get('website.user.user_discount.percentage');
+                $discount_amount = (($total_price*$user_discount_percentage)/100);
+
+                $total_price_with_discount = $total_price - $discount_amount;
+                $cart_final_price_formatted =number_format(($total_price_with_discount + config('constants.cargo_price')),2,'.','');
+
+
+                Session::put('website.shopping_cart.discount_amount',number_format($discount_amount,2,'.',''));
+                Session::put('website.shopping_cart.final_price_with_discount',$cart_final_price_formatted);
+            }
 
 
             Session::put('website.shopping_cart.total_qty', $cart_total_qty);
@@ -750,7 +762,7 @@ return $shopping_cart_products[$i]->new_price;
                                                                                                                 sub_tag_is_active ='1' and product_is_active = '1' ");
 
                 $data_product = $data_product[0];
-                $data_product->new_price = number_format(CalculateProductPrice($data_product->wholesale_price, $data_product->kdv), 2, ',', '.');
+                $data_product->new_price = number_format(CalculateProductPrice($data_product->wholesale_price, $data_product->kdv), 2, '.', '');
 
                 $data_product->quantity = $data['qty'];
                 Session::push('website.shopping_cart.products', $data_product);
@@ -770,10 +782,23 @@ return $shopping_cart_products[$i]->new_price;
                 $cart_total_qty += $shopping_cart_products[$i]->quantity;
 
                 $total_price += ($shopping_cart_products[$i]->new_price) * ($shopping_cart_products[$i]->quantity);
-                $total_price = number_format($total_price, 2, ',', '.');
+                $total_price = number_format($total_price, 2, '.', '');
 
             }
 
+
+            if(Session::has('website.user.user_discount') && (Session::get('website.user.user_discount.is_applied')==true)){
+
+                $user_discount_percentage = Session::get('website.user.user_discount.percentage');
+                $discount_amount = (($total_price*$user_discount_percentage)/100);
+
+                $total_price_with_discount = $total_price - $discount_amount;
+                $cart_final_price_formatted =number_format(($total_price_with_discount + config('constants.cargo_price')),2,'.','');
+
+
+                Session::put('website.shopping_cart.discount_amount',number_format($discount_amount,2,'.',''));
+                Session::put('website.shopping_cart.final_price_with_discount',$cart_final_price_formatted);
+            }
 
             Session::put('website.shopping_cart.total_qty', $cart_total_qty);
             Session::put('website.shopping_cart.total_price', $total_price);
@@ -858,10 +883,23 @@ return $shopping_cart_products[$i]->new_price;
                 $cart_total_qty += $shopping_cart_products[$i]->quantity;
 
                 $total_price += ($shopping_cart_products[$i]->new_price) * ($shopping_cart_products[$i]->quantity);
-                $total_price = number_format($total_price, 2, ',', '.');
+                $total_price = number_format($total_price, 2, '.', '');
 
             }
 
+
+            if(Session::has('website.user.user_discount') && (Session::get('website.user.user_discount.is_applied')==true)){
+
+                $user_discount_percentage = Session::get('website.user.user_discount.percentage');
+                $discount_amount = (($total_price*$user_discount_percentage)/100);
+
+                $total_price_with_discount = $total_price - $discount_amount;
+                $cart_final_price_formatted =number_format(($total_price_with_discount + config('constants.cargo_price')),2,'.','');
+
+
+                Session::put('website.shopping_cart.discount_amount',number_format($discount_amount,2,'.',''));
+                Session::put('website.shopping_cart.final_price_with_discount',$cart_final_price_formatted);
+            }
 
             Session::put('website.shopping_cart.total_qty', $cart_total_qty);
             Session::put('website.shopping_cart.total_price', $total_price);
@@ -944,7 +982,7 @@ return $shopping_cart_products[$i]->new_price;
                     $cart_total_qty += $shopping_cart_products[$i]->quantity;
 
                     $total_price += ($shopping_cart_products[$i]->new_price) * ($shopping_cart_products[$i]->quantity);
-                    $total_price = number_format($total_price, 2, ',', '.');
+                    $total_price = number_format($total_price, 2, '.', '');
 
                 }
 
@@ -967,6 +1005,8 @@ return $shopping_cart_products[$i]->new_price;
             if($cart_total_qty == 0){
                 $empty_cart = true;
             }
+
+
 
 
             return response(['result' => 1, "msg" => $message, "shopping_cart" => $shopping_cart_header_div,"empty_cart"=>$empty_cart], 200);
@@ -1116,7 +1156,7 @@ return $shopping_cart_products[$i]->new_price;
 
             $data_product = $data_product[0];
             $product_code_model_number =  $data_product->product_code.'-'. $data_product->model_number ;
-            $product_price = number_format(CalculateProductPrice($data_product->wholesale_price,$data_product->kdv),2,',','.').' TL';
+            $product_price = number_format(CalculateProductPrice($data_product->wholesale_price,$data_product->kdv),2,'.','').' TL';
             $enc_model_record_id = fiki_encrypt($data_product->model_record_id);
 
             $product_div = view('partials.product-image',['product_images' => $data_product->product_image])->render();
@@ -1192,11 +1232,12 @@ return $shopping_cart_products[$i]->new_price;
                 $cart_total_qty += $shopping_cart_products[$i]->quantity;
 
                 $total_price += ($shopping_cart_products[$i]->new_price) * ($shopping_cart_products[$i]->quantity);
-                $total_price = number_format($total_price, 2, ',', '.');
+                $total_price = number_format($total_price, 2, '.', '');
 
             }
 
 
+            Session::put('website.user.user_discount.is_applied', false);
             Session::put('website.shopping_cart.total_qty', $cart_total_qty);
             Session::put('website.shopping_cart.total_price', $total_price);
 
@@ -1594,37 +1635,41 @@ return $shopping_cart_products[$i]->new_price;
     public function apply_user_discount(Request $request){
         try {
 
-
-
-            return response(['result' => 1, 'msg' => 'user discount applied'],200);
-
-
-
-
-            try {
-
-                $user_id = $data['user_id'];
-                unset($data['user_id']);
-                User::where('user_id',$user_id)->update(['company_name'=>$data['company_name'],
-                    'first_name'=>$data['first_name'],
-                    'last_name'=>$data['last_name'],
-                    'phone'=>$data['phone']
-                ]);
-
-
-            } catch (QueryException $e) {
-                $response = response(['result' => -500, 'msg' => "Hata oluştu. Lütfen daha sonra tekrar deneyin","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
-                $request = new Request();
-                $request['log_type'] = 'Takisik_Website_query_error';
-                $request['data'] = $response->getContent();
-                $maintenance_controller = new GeneralController();
-                $maintenance_controller->send_data_to_maintenance($request);
-                return $response;
+            if(!Session::has('website.user.user_discount') && (Session::get('website.user.user_discount.percentage') <= 0)){
+                return response(['result' => -1, 'msg' => 'Hesabınıza tanımlı bir indirim bulunamamıştır. Lütfen tekrar kontrol ediniz'],403);
             }
 
+            if(Session::get('website.user.user_discount.is_applied') == false){
 
 
-            return response(['result' => 1, 'msg' => 'Başarıyla güncellendi'],200);
+                $user_discount_percentage = Session::get('website.user.user_discount.percentage');
+
+
+                $total_price = Session::get('website.shopping_cart.total_price');
+
+                $discount_amount = (($total_price*$user_discount_percentage)/100);
+
+                $total_price_with_discount = $total_price - $discount_amount;
+                $cart_final_price_formatted =number_format(($total_price_with_discount + config('constants.cargo_price')),2,'.','');
+
+
+                Session::put('website.user.user_discount.is_applied',true);
+                Session::put('website.shopping_cart.discount_amount',number_format($discount_amount,2,'.',''));
+                Session::put('website.shopping_cart.final_price_with_discount',$cart_final_price_formatted);
+
+                return response(['result' => 1, 'msg' => 'Applied'],200);
+            }
+
+            if(Session::get('website.user.user_discount.is_applied') == true){
+
+
+                Session::put('website.user.user_discount.is_applied',false);
+                Session::forget('website.shopping_cart.discount_amount');
+                Session::forget('website.shopping_cart.final_price_with_discount');
+
+                return response(['result' => 2, 'msg' => 'Removed'],200);
+            }
+
 
         } catch (\Throwable $t) {
             $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
