@@ -26,7 +26,7 @@
 
                     <div class="tt-product-inside-hover">
                         <div class="tt-row-btn">
-                            <a href="#" class="tt-btn-addtocart thumbprod-button-bg" data-toggle="modal" data-target="#modalAddToCartProduct" onclick="AddToCart('{{ fiki_encrypt($product->model_record_id) }}',1)">SEPETE EKLE</a>
+                            <a href="#" class="tt-btn-addtocart thumbprod-button-bg" data-toggle="modal" data-target="#modalAddToCartProduct" onclick="AddToCart('{{ fiki_encrypt($product->model_record_id) }}')">SEPETE EKLE</a>
                         </div>
                         <div class="tt-row-btn">
                             <a href="#" class="tt-btn-quickview" data-toggle="modal" data-target="#ModalquickView" onclick="QuickView('{{ fiki_encrypt($product->product_code) }}')"></a>

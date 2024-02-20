@@ -140,8 +140,8 @@ class WebsiteController extends Controller
                                 ->with('product_models',$products)
                                 ->with('product_images',$products[0]->product_image)
                                         ->with('qty',($cart_search_result !== false) ? Session::get('website.shopping_cart.products')[$cart_search_result]->quantity : 0 )
-                                        ->with('tag_name',( isset($product_data[0]->tag_name)) ? $product_data[0]->tag_name : "ERROR" )
-                                        ->with('sub_tag_name',(isset($product_data[0]->sub_tag_name)) ? $product_data[0]->sub_tag_name : "ERROR" )
+                                        ->with('tag_name',( isset($products[0]->tag_name)) ? $products[0]->tag_name : "ERROR" )
+                                        ->with('sub_tag_name',(isset($products[0]->sub_tag_name)) ? $products[0]->sub_tag_name : "ERROR" )
                                         ->with('fav',($fav_search_result !== false) ? "fav" :"" )
                                         ->with('fav_text',($fav_search_result !== false) ? "FAVORİLERDEN ÇIKAR" :"FAVORİLERE EKLE" );
     }

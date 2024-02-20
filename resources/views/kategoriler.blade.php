@@ -1,14 +1,6 @@
 @extends('layout.app')
 
 @section('content')
-    <div class="tt-breadcrumb">
-    <div class="container">
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li>Listing</li>
-        </ul>
-    </div>
-</div>
     <div id="tt-pageContent">
         <div class="container-indent">
             <div class="container">

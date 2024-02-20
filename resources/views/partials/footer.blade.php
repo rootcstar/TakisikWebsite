@@ -476,34 +476,15 @@
 
     }
 
-    function AddToCart(mri,qty){
+    function AddToCart(mri){
 
 
-        if(qty == null || qty == undefined){
-
-             var qty = parseInt($('#counter-input').val());
-
-        }
-
-        if(qty == 0){
-
-            Swal.fire({
-                icon: 'warning',
-                title: 'Lütfen üründen kaç adet eklemek istediğinizi seçin.',
-                timer: 2000,
-                showCancelButton: false,
-                showConfirmButton: false
-            })
-            $('#modalAddToCartProduct').remove();
-
-            return;
-        }
         $('#loader').removeClass('hidden');
         $('#add-complete-body').html('');
         $('#add-complete-body').append('<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>');
 
 
-        var data = '{"mri":"' + mri + '","qty":"' + qty + '"}';
+        var data = '{"mri":"' + mri + '"}';
 
 
         var xhttp = new XMLHttpRequest();
@@ -527,6 +508,8 @@
                     $('#quick-view-body').html('');
                     $('#quick-view-body').append(response['quick_view_modal']);
 
+                    $( "#header-info-box" ).load(window.location.href + " #header-info-box" );
+                    $( "#shopping-cart-table" ).load(window.location.href + " #shopping-cart-table" );
                     $( "#shopping-cart-calcs" ).load(window.location.href + " #shopping-cart-calcs" );
 
 
@@ -619,6 +602,9 @@
                     $('#quick-view-body').html('');
                     $('#quick-view-body').append(response['quick_view_modal']);
 
+
+                    $( "#header-info-box" ).load(window.location.href + " #header-info-box" );
+                    $( "#shopping-cart-table" ).load(window.location.href + " #shopping-cart-table" );
                     $( "#shopping-cart-calcs" ).load(window.location.href + " #shopping-cart-calcs" );
 
 
@@ -673,10 +659,15 @@
                     $('#quick-view-body').html('');
                     $('#quick-view-body').append(response['quick_view_modal']);
 
+                    $( "#header-info-box" ).load(window.location.href + " #header-info-box" );
+
                     if(response['empty_cart'] == true){
+
                         $( "#shopping-cart-page" ).load(window.location.href + " #shopping-cart-page" );
+
                     }else{
 
+                        $( "#shopping-cart-table" ).load(window.location.href + " #shopping-cart-table" );
                         $( "#shopping-cart-calcs" ).load(window.location.href + " #shopping-cart-calcs" );
                     }
 
@@ -736,11 +727,13 @@
                     $('#shopping-cart-desktop').append(response['shopping_cart']);
 
                     $( "#product-detail" ).load(window.location.href + " #product-detail" );
+                    $( "#header-info-box" ).load(window.location.href + " #header-info-box" );
 
                     if(response['empty_cart'] == true){
                         $( "#shopping-cart-page" ).load(window.location.href + " #shopping-cart-page" );
                     }else{
 
+                        $( "#shopping-cart-table" ).load(window.location.href + " #shopping-cart-table" );
                         $( "#shopping-cart-calcs" ).load(window.location.href + " #shopping-cart-calcs" );
                     }
 

@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('content')
-
+{{json_encode(Session::get('website.shopping_cart'))}}
     <div id="tt-pageContent">
         <div class="container-indent">
             <div class="container">
@@ -82,7 +82,7 @@
                                                                 <span class="minus-btn"  type=button"  onclick="DeleteItem('{{ fiki_encrypt($product->model_record_id) }}')"></span>
                                                             @endif
                                                             <input class="cart-counter" value="{{ $product->quantity }}" size="1000" id="counter-input" disabled>
-                                                            <span class="plus-btn" type=button"  onclick="AddToCart('{{ fiki_encrypt($product->model_record_id) }}',1)"></span>
+                                                            <span class="plus-btn" type=button"  onclick="AddToCart('{{ fiki_encrypt($product->model_record_id) }}')"></span>
                                                         </div>
 
                                                 </div>
@@ -223,7 +223,7 @@
                                 @if(Session::get('website.shopping_cart.total_price') < config('constants.min_cart_total_price'))
                                     <button  class="btn btn-lg place-order-btn" disabled >Min. sepet tutarı {{config('constants.min_cart_total_price')}} TL</button>
                                 @else
-                                    <button  class="btn btn-lg  place-order-btn"  >SİPARİŞİ TAMAMLA</button>
+                                    <button  class="btn btn-lg  place-order-btn" onclick="PlaceOrder()" >SİPARİŞİ TAMAMLA</button>
                                 @endif
                             </div>
                         </div>
@@ -422,7 +422,9 @@
 
                     let response = JSON.parse(this.responseText);
 
+                    $( "#header-info-box" ).load(window.location.href + " #header-info-box" );
                     $( "#shopping-cart-calcs" ).load(window.location.href + " #shopping-cart-calcs" );
+                    $( "#shopping-cart-table" ).load(window.location.href + " #shopping-cart-table" );
                     if(response['result'] == 1){
 
 

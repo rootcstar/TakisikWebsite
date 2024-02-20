@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\City;
 use App\Models\District;
 use App\Models\Neighbourhood;
+use App\Models\Order;
+use App\Models\OrderProduct;
 use App\Models\User;
 use App\Models\UserBillingAddress;
 use App\Models\UserShippingAddress;
@@ -441,7 +443,7 @@ class ApiController extends Controller
 
             }
 
-            $this->set_sessions_for_shopping(Session::get('website.user.user_id'));
+            $this->set_sessions_for_shopping(Session::get('website.user.user_info')->user_id);
 
             return response(['result' => 1, "products" => $products_div, "sub_tag_filter" => $sub_tag_filter, "load-more" => $load_more], 200);
 
@@ -506,7 +508,7 @@ class ApiController extends Controller
             </div>';
 
 
-            $this->set_sessions_for_shopping(Session::get('website.user.user_id'));
+            $this->set_sessions_for_shopping(Session::get('website.user.user_info')->user_id);
 
             return response(['result' => 1, "products" => $products_div, "sub_tag_filter" => $sub_tag_filter, "load-more" => $load_more], 200);
 
@@ -622,11 +624,6 @@ class ApiController extends Controller
                     "required",
                     Rule::notIn(['null', 'undefined', 'NULL', ' ']),
                 ],
-                'qty' => [
-                    "integer",
-                    "required",
-                    Rule::notIn(['null', 'undefined', 'NULL', ' ']),
-                ],
             ]);
 
             if ($validator->fails()) {
@@ -635,11 +632,8 @@ class ApiController extends Controller
 
             }
 
-            if (!is_numeric($data['qty'])) {
 
-                $data['qty'] = 1;
-
-            }
+            $data['qty'] = 1;
 
 
             $shopping_cart_products = Session::get('website.shopping_cart.products');
@@ -1073,7 +1067,7 @@ class ApiController extends Controller
 
             $result = array_search($data['model_record_id'], array_column($user_fav_products, 'model_record_id')); // Gives false or index of the product in the array
 
-            $user = Session::get('website.user');
+            $user = Session::get('website.user.user_info');
 
             if ($result === false) { // This product not in the user fav list
                 $data_product = DB::select("SELECT * FROM v_shop_products_with_tags WHERE model_record_id = '" . $data['model_record_id'] . "' AND
@@ -1085,7 +1079,7 @@ class ApiController extends Controller
                 Session::push('website.user.favorites',$data_product);
 
 
-                $insert_data['user_id'] = $user[0]->user_id;
+                $insert_data['user_id'] = $user->user_id;
                 $insert_data['product_model_record_id'] = $data['model_record_id'];
                 DB::table('user_fav_items')->insert($insert_data);
 
@@ -1098,7 +1092,7 @@ class ApiController extends Controller
                 array_splice($user_fav_products, $result, 1);
                 Session::put('website.user.favorites', $user_fav_products);
 
-                DB::table('user_fav_items')->where('user_id',$user[0]->user_id)->where('product_model_record_id',$data['model_record_id'])->delete();
+                DB::table('user_fav_items')->where('user_id',$user->user_id)->where('product_model_record_id',$data['model_record_id'])->delete();
                 $fav_list_div = view('partials.favorites-list-div')->render();
                 return response(['result' => 2, "msg" => 'Ürün favorilerinizden çıkarıldı!', "enc-mri"=>$enc_model_record_id, "fav_txt"=>"FAVORİLERE EKLE", "fav_div"=>$fav_list_div ], 200);
 
@@ -1727,23 +1721,44 @@ class ApiController extends Controller
                 return response(['result' => -1, 'msg' => 'Hatalı giriş. Lütfen tekrar deneyin'], 403);
             }
 
-
+            $user = Session::get('website.user.user_info');
             $shopping_cart = Session::get('website.shopping_cart');
 
-            return response(['result' => 1, 'msg' => json_encode($shopping_cart)],200);
 
+            if(Session::has('website.user.user_discount') && (Session::get('website.user.user_discount.is_applied') == true)) {
 
+                $is_discount_used = true;
+                $amount = $shopping_cart['final_price_with_discount'];
+                $discount_percentage = Session::get('website.user.user_discount.percentage');
+            }else{
 
+                $is_discount_used = false;
+                $amount = $shopping_cart['final_price'];
+                $discount_percentage = null;
+            }
+
+            $billing_address_id = null;
+            if(!$data['check_billing_address'] && isset($data['billing_address'])){
+                $billing_address_id = $data['billing_address'];
+            }
+
+            $note = '';
+            if(isset($data['note'])){
+                $note = $data['note'];
+            }
 
             try {
 
-                $user_id = $data['user_id'];
-                unset($data['user_id']);
-                User::where('user_id',$user_id)->update(['company_name'=>$data['company_name'],
-                    'first_name'=>$data['first_name'],
-                    'last_name'=>$data['last_name'],
-                    'phone'=>$data['phone']
-                ]);
+                $order_id = Order::create(['user_id'=>$user->user_id,
+                                            'order_status_id'=>1, // not confirmed
+                                            'amount'=> $amount,
+                                            'is_discount_used'=> $is_discount_used,
+                                            'discount_percentage'=> $discount_percentage,
+                                            'shipping_address_id'=> $data['shipping_address'],
+                                            'billing_same_as_shipping'=> $data['check_billing_address'],
+                                            'billing_address_id'=> $billing_address_id,
+                                            'note'=> $note,
+                                            ])->order_id;
 
 
             } catch (QueryException $e) {
@@ -1757,8 +1772,40 @@ class ApiController extends Controller
             }
 
 
+            $products = Session::get('website.shopping_cart.products');
 
-            return response(['result' => 1, 'msg' => 'Başarıyla güncellendi'],200);
+            foreach ($products as $product) {
+                try {
+
+                    $total_price = number_format($product->wholesale_price*$product->quantity,'2',',','.');
+
+                    OrderProduct::create(['order_id'=>$order_id,
+                        'model_record_id'=>$product->model_record_id,
+                        'product_id'=> $product->product_id,
+                        'product_name'=> $product->product_name,
+                        'quantity'=> $product->quantity,
+                        'wholesale_price'=> $product->wholesale_price,
+                        'total_price'=> $total_price,
+                        'order_status'=> 1, // not confirmed
+                    ])->order_id;
+
+
+                } catch (QueryException $e) {
+                    $response = response(['result' => -500, 'msg' => "Hata oluştu. Lütfen daha sonra tekrar deneyin","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
+                    $request = new Request();
+                    $request['log_type'] = 'Takisik_Website_query_error';
+                    $request['data'] = $response->getContent();
+                    $maintenance_controller = new GeneralController();
+                    $maintenance_controller->send_data_to_maintenance($request);
+                    return $response;
+                }
+
+            }
+
+
+            return response(['result' => 1, 'msg' => $is_discount_used],200);
+
+
 
         } catch (\Throwable $t) {
             $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);

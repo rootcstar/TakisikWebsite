@@ -99,9 +99,9 @@ footer {
 }
 .lds-ellipsis {
     display: inline-block;
-    position: relative;
-    width: 80px;
-    height: 80px;
+    position: fixed;
+    top: 32%;
+    left: 50%;
 }
 .lds-ellipsis div {
     position: absolute;
@@ -380,8 +380,8 @@ header .tt-cart .tt-cart-layout .tt-cart-content .tt-cart-list .tt-item-close .t
 }
 .btn-discount{
     color: #ffffff !important;
-    background:#21b549 !important;
-    border: 2px solid #21b549 !important;
+    background:#7cd77c !important;
+    border: 2px solid #7cd77c !important;
 }
 .btn-discount-border{
     background: transparent !important;
@@ -420,6 +420,9 @@ header .tt-color-scheme-05 {
 }
 .discount-value{
     color: #7cd77c !important;
+}
+.tt-header .tt-box-info{
+    line-height: 40px;
 }
 @media (min-width: 1025px) {
     .modal .modal-header .close {

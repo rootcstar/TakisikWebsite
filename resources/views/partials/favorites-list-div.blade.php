@@ -17,8 +17,8 @@
                 </div>
             </div>
             <div class="tt-col-btn">
-                <a class="tt-btn-addtocart" data-toggle="modal" data-target="#modalAddToCartProduct" onclick="AddToCart('{{ fiki_encrypt($product->model_record_id) }}',10)"><i class="icon-f-39"></i>SEPETE EKLE</a>
-                <a class="btn-link"  data-toggle="modal" data-target="#ModalquickView" onclick="QuickView('{{ fiki_encrypt($product->model_record_id) }}')"><i class="icon-f-73"></i>ÜRÜNE GÖZAT</a>
+                <a class="tt-btn-addtocart" data-toggle="modal" data-target="#modalAddToCartProduct" onclick="AddToCart('{{ fiki_encrypt($product->model_record_id) }}')"><i class="icon-f-39"></i>SEPETE EKLE</a>
+                <a class="btn-link"  data-toggle="modal" data-target="#ModalquickView" onclick="QuickView('{{ fiki_encrypt($product->product_code) }}')"><i class="icon-f-73"></i>ÜRÜNE GÖZAT</a>
                 <a class="btn-link js-removeitem" onclick="AddToFav('{{ fiki_encrypt($product->model_record_id) }}',{{$key}})"  id="fav-btn-{{$key}}" href="#"><i class="icon-h-02"></i>KALDIR</a>
             </div>
         </div>

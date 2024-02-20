@@ -2,17 +2,7 @@
 
 @section('content')
 
-   <div class="tt-breadcrumb">
-        <div class="container">
-            <ul>
-                <li><a href="/">ANASAYFA</a></li>
-                <li>{{ $tag_name }}</li>
-                <li>{{ $sub_tag_name }}</li>
-
-            </ul>
-        </div>
-    </div>
-
+<div id="tt-pageContent">
     <div class="container-indent">
         <div class="tt-mobile-product-layout visible-xs" id="image-part-mobile">
             @include('partials.product-image-mobile')
@@ -116,5 +106,6 @@
             </div>
         </div>
     </div>
+</div>
 @endsection
 
