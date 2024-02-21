@@ -304,10 +304,10 @@
 <script src="{{ asset('assets/plugins/slick/slick.min.js') }}"></script>
 <script src="{{ asset('assets/plugins/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
 <script src="{{ asset('assets/plugins/panelmenu/panelmenu.js') }}"></script>
-<!--
+
 <script src="{{ asset('assets/plugins/countdown/jquery.countdown.min.js') }}"></script>
 <script src="{{ asset('assets/plugins/rs-plugin/js/jquery.themepunch.tools.min.js') }}"></script>
-<script src="{{ asset('assets/plugins/rs-plugin/js/jquery.themepunch.revolution.min.js') }}"></script>-->
+<script src="{{ asset('assets/plugins/rs-plugin/js/jquery.themepunch.revolution.min.js') }}"></script>
 <script src="{{ asset('assets/plugins/magnific-popup/jquery.magnific-popup.min.js') }}"></script>
 <script src="{{ asset('assets/js/lazyLoad/lazyload.min.js') }}"></script>
 <script src="{{ asset('assets/js/main.js') }}"></script>
