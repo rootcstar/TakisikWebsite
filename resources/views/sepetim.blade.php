@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('content')
-{{json_encode(Session::get('website.shopping_cart'))}}
+{{json_encode(Session::get('website.shopping_cart.products'))}}
     <div id="tt-pageContent">
         <div class="container-indent">
             <div class="container">

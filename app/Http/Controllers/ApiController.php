@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderReceivedMail;
 use App\Models\City;
 use App\Models\District;
 use App\Models\Neighbourhood;
@@ -1721,6 +1722,8 @@ class ApiController extends Controller
                 return response(['result' => -1, 'msg' => 'Hatalı giriş. Lütfen tekrar deneyin'], 403);
             }
 
+            DB::beginTransaction();
+
             $user = Session::get('website.user.user_info');
             $shopping_cart = Session::get('website.shopping_cart');
 
@@ -1762,6 +1765,8 @@ class ApiController extends Controller
 
 
             } catch (QueryException $e) {
+
+                DB::rollBack();
                 $response = response(['result' => -500, 'msg' => "Hata oluştu. Lütfen daha sonra tekrar deneyin","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
                 $request = new Request();
                 $request['log_type'] = 'Takisik_Website_query_error';
@@ -1777,7 +1782,7 @@ class ApiController extends Controller
             foreach ($products as $product) {
                 try {
 
-                    $total_price = number_format($product->wholesale_price*$product->quantity,'2',',','.');
+                    $product_total_price = number_format($product->wholesale_price*$product->quantity,'2',',','.');
 
                     OrderProduct::create(['order_id'=>$order_id,
                         'model_record_id'=>$product->model_record_id,
@@ -1785,12 +1790,13 @@ class ApiController extends Controller
                         'product_name'=> $product->product_name,
                         'quantity'=> $product->quantity,
                         'wholesale_price'=> $product->wholesale_price,
-                        'total_price'=> $total_price,
+                        'total_price'=> $product_total_price,
                         'order_status'=> 1, // not confirmed
                     ])->order_id;
 
 
                 } catch (QueryException $e) {
+                    DB::rollBack();
                     $response = response(['result' => -500, 'msg' => "Hata oluştu. Lütfen daha sonra tekrar deneyin","error"=>$e->getMessage(). " at ". $e->getFile(). ":". $e->getLine(),"function" => __FUNCTION__], 400);
                     $request = new Request();
                     $request['log_type'] = 'Takisik_Website_query_error';
@@ -1802,12 +1808,55 @@ class ApiController extends Controller
 
             }
 
+            $shipping_address = UserShippingAddress::where('record_id',$data['shipping_address'])->first();
+            $products = Session::get('website.shopping_cart.products');
+            $receiver_mail = Session::get('website.user.user_info')->email;
+            $total_price = Session::get('website.shopping_cart.total_price');
 
-            return response(['result' => 1, 'msg' => $is_discount_used],200);
+
+            $mail_data = ['order_no'=>$order_id,
+                          'shipping_address'=> $shipping_address->address,
+                          'shipping_address_city'=> $shipping_address['city'],
+                          'shipping_address_district'=> $shipping_address['district'],
+                          'products'=> $products,
+                'total_price'=> $total_price,
+                'cargo_price'=> config('constants.cargo_price'),
+
+
+                ];
+
+            if(Session::has('website.user.user_discount') && (Session::get('website.user.user_discount.is_applied') == true)){
+                $mail_data['discount_amount'] = Session::get('website.shopping_cart.discount_amount');
+            }
+            if($billing_address_id != null){
+                $billing_address = UserBillingAddress::where('record_id',$data['billing_address'])->first();
+
+                $mail_data['billing_address'] = $billing_address['address'];
+                $mail_data['billing_address_city'] = $billing_address['city'];
+                $mail_data['billing_address_district'] = $billing_address['district'];
+            }
+
+            if(Session::get('website.shopping_cart.total_price') >= config('constants.total_price_for_free_shipping')){
+                $mail_data['free_cargo'] = true;
+            }
+            $mail_data['final_price'] = Session::get('website.shopping_cart.final_price');
+            if(Session::has('website.user.user_discount') && (Session::get('website.user.user_discount.is_applied') == true)){
+                $mail_data['final_price'] = Session::get('website.shopping_cart.final_price_with_discount');
+            }
+
+            if(!Mail::to($receiver_mail)->send(new OrderReceivedMail($mail_data))){
+                DB::rollBack();
+                return response(['result' => 1, 'msg' => 'Bir sorun oluştu. Lütfen bizimle iletişime geçiniz'],403);
+            }
+
+
+            DB::commit();
+            return response(['result' => 1, 'msg' => 'Siparişiniz alındı. Lütfen mail adresinizi kontrol ediniz'],200);
 
 
 
         } catch (\Throwable $t) {
+            DB::rollBack();
             $resp = response(['result'=>-500,"msg"=>$t->getMessage(). " at ". $t->getFile(). ":". $t->getLine(),"function"=>__FUNCTION__],500);
             $request = new Request();
             $request['log_type'] = 'Takisik_Website_500_error';
